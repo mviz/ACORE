@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- The base file for each page on teh website, should have a naviation bar
+    at the top with options to navigate the site, as well as a header on teh top of the page 
+    that represents the content -->
+<html> 
+<head>
+    <title>{% block title %}Yathi's Website{% endblock title %}</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    {% block css %}{% endblock css %}
+</head>
+<body>
+    <!-- Fixed navbar at the top of the pgae -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"> Yathi's Game</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/about">About</a></li>
+            <li><a href="/survey/questions">Survey</a></li>
+            <li><a href="/survey/results">Results</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="jumbotron">
+        <div class="container">{% block page_title %}{% endblock page_title %} </div>
+    </div>
+    <div class="container">
+        {% block page_content %}{% endblock page_content %}
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    {% block js %}{% endblock js %}
+</body>
+</html>
