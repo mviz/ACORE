@@ -1,0 +1,10 @@
+Matthew Fritze
+Updated June 16 2014
+
+You'll need python2.7 installed.
+
+To see the site, from the root directory run the command:
+$python2.7 manage.py runserver
+
+In a browser go to:
+127.0.0.1:8000/
