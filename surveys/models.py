@@ -4,8 +4,8 @@ from django.db import models
 
 class Question(models.Model):
     question = models.CharField("Survey Question", max_length=256)
-    integer_question = models.IntegerField('0 if yes, else no', default = 0)
-    question_index = models.IntegerField('For order', default=-1)
+    integer_question = models.IntegerField('Set to 1 if True', default = 0)
+    question_index = models.IntegerField('Orders the Questions', default=-1)
 
     def __unicode__(self):
         return self.question

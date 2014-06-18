@@ -7,19 +7,20 @@ from . import forms
 
 import pdb
 
-class Results(generic.TemplateView):
+class Results(generic.ListView):
     template_name = 'surveys/survey_results.html'
+    model = Question
 
-class SurveyList(
-    generic.ListView
-    ):
+    def get_context_data(self, **kwargs):
+        return super(Results, self).get_context_data(**kwargs)
+
+class SurveyList(generic.ListView):
     model = Question
     template_name = "surveys/survey_list.html"
     #form_class = forms.SurveyForm
 
-    def get_context_data(self, **kwargs):
-        context = super(SurveyList, self).get_context_data(**kwargs)
-        return context
+    def get_context_data(self, **kwargs): 
+        return super(SurveyList, self).get_context_data(**kwargs)
 
 def submit_survey(request):
     choices = []
@@ -33,7 +34,8 @@ def submit_survey(request):
         try:
             choices.append(get_object_or_404(Answer, pk=value))
         except(KeyError, Answer.DoesotExist):
-            raise Http404
+            return render(request, 'surveys/questions.html', 
+            { 'not_complete':"Please answer all questions",})
 
     for answer_obj in choices:
         answer_obj.votes += 1
@@ -41,4 +43,8 @@ def submit_survey(request):
 
     #pdb.set_trace()
 
-    return HttpResponseRedirect('http://127.0.0.1:8000/')
+    return HttpResponseRedirect('http://127.0.0.1:8000/surveys/results/')
+
+    
+
+

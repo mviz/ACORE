@@ -1,8 +1,10 @@
 Matthew Fritze
 Updated June 16 2014
 
-You'll need python2.7, django-braces installed.
-https://github.com/brack3t/django-braces
+You'll need python2.7 and django version 1.6.5
+Install with pip2.7
+
+$pip2.7 install Django==1.6.5
 
 
 To see the site, from the root directory run the command:

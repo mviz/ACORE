@@ -1,8 +1,39 @@
 {% extends '_layouts/base.html' %}
+{% load surveys_stats %}
 
 {% block page_title %} <h2> Results </h2> {% endblock page_title %}
 
 {% block page_content %} 
-<p> test </p>
 
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-7">
+
+        <ul style="list-style-type:none; padding:0; margin:0"> 
+
+            {% for survey_question in object_list %}
+
+                <li> <h4> {{survey_question.question}} [Total Votes: {{ survey_question.answer_set.all | count_votes }} ] {% if survey_question.integer_question %} [Average: {{ survey_question.answer_set.all | calc_average }}] {% endif %}</h4></li>
+                    
+                    <ul>
+                            {% for mc_answer in survey_question.answer_set.all %}
+                                <li style="list-style-type:none; padding:0; margin:0">
+                                    <h5 style="display:inline-block"> <strong>  {{mc_answer.answer_text}}</strong> [{{mc_answer.votes}}] </h5>
+
+                                    <div class="progress">
+                                    <div class="progress-bar" style="width:{{ survey_question.answer_set.all | percentage:forloop.counter }}%;"></div>
+                                    </div>
+                                </li>
+
+                            {% endfor %}
+                    </ul>
+
+                <div class="page-header"></div>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+    <div class="col-sm-4"></div>
+</div>
 {% endblock page_content %}

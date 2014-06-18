@@ -8,7 +8,7 @@
     <div class="col-sm-1"></div>
     <div class="col-sm-6">
 
-        {% if not_complete %} <div class="alert alert-danger"> Please answer all questions</div> {% endif %}
+        {% if not_complete %} <div class="alert alert-danger"> {{not_complete}}</div> {% endif %}
 
         <form method="post" action="http://127.0.0.1:8000/surveys/submitting/">
             {% csrf_token %}
@@ -37,3 +37,5 @@
 </div>
 
 {% endblock page_content %}
+
+
