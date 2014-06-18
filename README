@@ -1,7 +1,9 @@
 Matthew Fritze
 Updated June 16 2014
 
-You'll need python2.7 installed.
+You'll need python2.7, django-braces installed.
+https://github.com/brack3t/django-braces
+
 
 To see the site, from the root directory run the command:
 $python2.7 manage.py runserver
