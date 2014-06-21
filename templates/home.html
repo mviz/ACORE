@@ -1,42 +1,135 @@
 {% extends '_layouts/base.html' %}
 
+
 {% block page_title %} <h2>The Game</h2> {% endblock page_title %}
 {% block page_content %} 
 
     <!-- This half is the game -->
     <div class="col-sm-6">
             <h3> The Game Side </h3>
-            <p> Haven't decided on the border around the game text to make it stand out </p>
-            <div class="well"> Game text prompts </div>
+            <strong><p id="last_move"> </p></strong>
+            <div class="well" id="game_text"> Game text prompts </div>
             <div class="row" style="margin-left:auto; margin-right:auto">
-                <button type="button" class="btn btn-success"> A</button> 
-                <button type="button" class="btn btn-primary"> B </button> 
-                <button type="button" class="btn btn-warning"> C </button> 
-                <button type="button" class="btn btn-danger"> D </button> 
+                <button type="button" class="btn btn-success" id="game_input_a"> A</button> 
+                <button type="button" class="btn btn-primary" id="game_input_b"> B </button> 
+                <button type="button" class="btn btn-warning" id="game_input_c"> C </button> 
+                <button type="button" class="btn btn-danger" id="game_input_d">  D </button> 
 
             </div>
     </div>
 
     <!-- This half displays the NPCs -->
     <div class="col-sm-6">
-        <h3> NPCs </h3>
-        <!-- Add forloop here for each npc -->
-        <p> There will be a for loop to add each of the NPCs here: Here are some examples </p>
-        <div class="alert alert-success"> 
-            <h5 style="margin-top:-1em"> NPC NAME 1 </h5>
-            <p> Emotion: SAD </p>
-            <p> Next Action: Move in line </p>
+        <h3 style="text-align:center"> NPCs </h3>
+        <div class="col-sm-6">
+            <!-- Add forloop here for each npc -->
+            <h4> Current NPCs </h4>
+            <div class="alert alert-success" id="npc_1"> 
+                <h5 style="margin-top:-1em" class="npc_name"> NPC NAME 1 </h5>
+                <p class="npc_emotion"> Emotion: SAD </p>
+                <p class="npc_action"> Next Action: Move in line </p>
+            </div>
+            <div class="alert alert-success" id="npc_3"> 
+                <h5 style="margin-top:-1em" class="npc_name"> NPC NAME 2 </h5>
+                <p class="npc_emotion"> Emotion: HAPPY </p>
+                <p class="npc_action"> Next Action: PASSIVE </p>
+            </div>
+            <div class="alert alert-success" id="npc_5"> 
+                <h5 style="margin-top:-1em" class="npc_name"> NPC NAME 3 </h5>
+                <p class="npc_emotion"> Emotion: ANXIOUS </p>
+                <p class="npc_action"> Next Action: STOP ANYONE FROM MOVING </p>
+            </div>
         </div>
-        <div class="alert alert-success"> 
-            <h5 style="margin-top:-1em"> NPC NAME 2 </h5>
-            <p> Emotion: HAPPY </p>
-            <p> Next Action: PASSIVE </p>
-        </div>
-        <div class="alert alert-success"> 
-            <h5 style="margin-top:-1em"> NPC NAME 3 </h5>
-            <p> Emotion: ANXIOUS </p>
-            <p> Next Action: STOP ANYONE FROM MOVING </p>
+        <div class="col-sm-6">
+            <!-- Add forloop here for each npc -->
+            <h4> Old NPCs </h4>
+            <div class="alert alert-success" id="npc_2"> 
+                <h5 style="margin-top:-1em" class="npc_name"> NPC NAME 1 </h5>
+                <p class="npc_emotion"> Emotion: SAD </p>
+                <p class="npc_action"> Next Action: Move in line </p>
+            </div>
+            <div class="alert alert-success" id="npc_4"> 
+                <h5 style="margin-top:-1em" class="npc_name"> NPC NAME 2 </h5>
+                <p class="npc_emotion"> Emotion: HAPPY </p>
+                <p class="npc_action"> Next Action: PASSIVE </p>
+            </div>
+            <div class="alert alert-success" id="npc_6"> 
+                <h5 style="margin-top:-1em" class="npc_name"> NPC NAME 3 </h5>
+                <p class="npc_emotion"> Emotion: ANXIOUS </p>
+                <p class="npc_action"> Next Action: STOP ANYONE FROM MOVING </p>
+            </div>
         </div>
     </div>
 
 {% endblock page_content %}
+
+
+
+
+{% block js %}
+    <script>
+        // make this function work.... please
+        function update_last_move($button_pressed){
+            var $last_move = $('#last_move')
+            var button_text = $button_pressed.text()
+            $last_move.html('Last move: ' + button_text)
+        }
+
+        function update_game_text($button_pressed){
+            var $game_text = $('#game_text')
+            var new_text = $button_pressed.text()
+            $game_text.text($game_text.text() + new_text)
+        }
+
+        function update_npcs(){
+            // update for loop bound to a dynamic value
+            for(var i = 1; i < 7; i+=2){
+                var original_id = "npc_" + i
+                var old_id = "npc_" + (i + 1)
+                var $original_npc = $('#' + original_id +)
+                var $old_npc = $('#' + old_id)
+                $old_npc.
+            }
+
+        }
+
+        $('document').ready(function(){
+            $('#game_input_a').click(function(){
+                var $button_selected = $('#game_input_a')
+                update_last_move($button_selected)
+                update_game_text($button_selected)
+                update_npcs()
+            });
+            $('#game_input_b').click(function(){
+                var $button_selected = $('#game_input_b')
+                update_last_move($button_selected)
+                update_game_text($button_selected)
+                update_npcs()
+            });
+            $('#game_input_c').click(function(){
+                var $button_selected = $('#game_input_c')
+                update_last_move($button_selected)
+                update_game_text($button_selected)
+                update_npcs()
+            });
+            $('#game_input_d').click(function(){
+                var $button_selected = $('#game_input_d')
+                update_last_move($button_selected)
+                update_game_text($button_selected)
+                update_npcs()
+            });
+            
+        });
+    </script>
+{% endblock js %}
+
+
+
+
+
+
+
+
+
+
+
