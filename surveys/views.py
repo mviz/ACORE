@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views import generic
 from surveys.models import Question, Answer
 from django.core.urlresolvers import reverse
@@ -6,6 +6,30 @@ from django.http import HttpResponseRedirect, HttpResponse
 from . import forms
 
 import pdb
+
+
+class Npc_temp:
+    name = ''
+    emotion = ''
+    action = ''
+    def __init__(self, name, emotion, action):
+        self.name = name
+        self.emotion = emotion
+        self.action = action
+
+    def get_name(self):
+        return self.name
+    def get_emotion(self):
+        return self.emotion
+    def get_action(self):
+        return self.action
+
+def homepage_view(request):
+    npc_list = [ Npc_temp('Mary', 'happy', 'nothing'), Npc_temp('Jane', 'sad', 'skip'), Npc_temp('Emma', 'mad', 'attack')]
+    context_data = {
+        'npc_list':npc_list,
+    }
+    return render(request, 'surveys/home.html', context_data)
 
 class Results(generic.ListView):
     template_name = 'surveys/survey_results.html'
