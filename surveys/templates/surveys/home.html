@@ -5,78 +5,45 @@
 
 {% block page_content %} 
 
-    <!-- This half is the game -->
-    <div class="col-sm-8">
-            <h3 style="text-align:center"> The Game Side </h3>
-            <strong><p id="last_move"> </p></strong>
-            <div class="well" id="game_text"> Game text prompts </div>
-            <div class="col-sm-2"> </div>
-            <div class="col-sm-8">
-                <div class='col-sm-3'><button type="button" class="btn btn-primary game_input" > A </button> </div>
-                <div class="col-sm-3"><button type="button" class="btn btn-primary game_input" > B </button> </div>
-                <div class="col-sm-3"><button type="button" class="btn btn-primary game_input" > C </button> </div>
-                <div class="col-sm-3"><button type="button" class="btn btn-primary game_input" > D </button> </div>
-            </div>
 
-    </div>
-
-    <!-- This half displays the NPCs -->
-    <div class="col-sm-4">
+    <div class="col-sm-12">
         <h3 style="text-align:center"> NPCs </h3>
             <!-- Add forloop here for each npc -->
-        <h4> Current NPCs </h4>
-        <div id="npc_div"></div>
+        <div class="col-sm-4" id="npc_div0"></div>
+        <div class="col-sm-4" id="npc_div1"></div>
+        <div class="col-sm-4" id="npc_div2"></div>
 
-    <a href="javascript:history.go(0)"><button class="btn btn-success" type="button">Reload page </button></a>
     </div>
+    <a href="javascript:history.go(0)">
+        <button class="btn btn-success" type="button" style="display:block; margin: 4em auto 2em auto">Reload page </button>
+    </a>
+
+    <div class="page-header"></div>
+
+    <p></p> 
 
 {% endblock page_content %}
 
 
 {% block css %}
-<style>
-    .game_input{
-        width:100%;
-    }
-</style>
-
-
 {% endblock css %}
 
 
 {% block js %}
     <script>
 
-        function update_last_move($button_pressed){
-            var $last_move = $('#last_move')
-            var button_text = $button_pressed.text()
-            $last_move.html("Last move:" + button_text)
-        }
-
-
-        function update_game_text($button_pressed){
-            var $game_text = $('#game_text')
-            var new_text = $button_pressed.text()
-            $game_text.text($game_text.text() + new_text)
-        }
-
         function set_npc_list(){
             {% for npc in npc_list %}
-                $('<div class="alert alert-info" id="{{ npc.get_name }}">').appendTo('#npc_div')
-                $('<h5 style="margin-top:-1em"  style="text-align:center"> {{npc.get_name}} </h5>').appendTo('#{{npc.get_name}}') 
-                $("<p>Emotion: {{npc.get_emotion}} </p>").appendTo('#{{npc.get_name}}') 
-                $("<p>Action: {{npc.get_action}} </p>").appendTo('#{{npc.get_name}}') 
+                $('<div id="{{ npc.get_name }}" style="padding:1em 1em 1em 1em;">').appendTo('#npc_div{{forloop.counter | mod_calc}}')
+                $('<h5 style="text-align:center"> {{npc.get_name}} </h5>').appendTo('#{{npc.get_name}}')
+                //$('<p style="text-align:center"> {{npc.get_emotion}} </p>').appendTo('#{{npc.get_name}}')
+                //$('<p style="text-align:center"> {{npc.get_action}} </p>').appendTo('#{{npc.get_name}}') 
+                $("<img src={{ npc.get_emotion | get_emotion_image}} style='display:block; margin-left:auto; margin-right:auto'/>").appendTo('#{{npc.get_name}}')
             {% endfor %}
         }
 
         $('document').ready(function(){
-            $('.game_input').click(function(){
-                var $button = $(this)
-                update_last_move($button)
-                update_game_text($button)
-            });
-        
-        set_npc_list()
+            set_npc_list()
         });
     </script>
 {% endblock js %}
