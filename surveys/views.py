@@ -25,11 +25,16 @@ class Npc_temp:
         return self.action
 
 def homepage_view(request):
-    npc_list = [ Npc_temp('Mary', 'happy', 'nothing'), Npc_temp('Jane', 'sad', 'skip'), Npc_temp('Emma', 'mad', 'attack')]
+    npc_list = [ Npc_temp('Mary', 'joy', 'nothing'), Npc_temp('Jane', 'hope', 'skip'), Npc_temp('Emma', 'distress', 'attack'), Npc_temp('Stone', 'sorrow', 'cry'), Npc_temp('Toby', 'joy','nothing')]
     context_data = {
         'npc_list':npc_list,
     }
     return render(request, 'surveys/home.html', context_data)
+
+
+
+
+
 
 class Results(generic.ListView):
     template_name = 'surveys/survey_results.html'
