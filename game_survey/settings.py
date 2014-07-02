@@ -26,7 +26,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['http://acore-survey.herokuapp.com/']
+ALLOWED_HOSTS = ['acore-survey.herokuapp.com']
 
 
 # Application definition
