@@ -14,6 +14,9 @@ def percentage(answer_objects, index):
         total_votes += obj.votes
 
     #pdb.set_trace()
+    if(total_votes == 0):
+        return 0
+
     return (local_votes*100)//total_votes
 
 @register.filter(name="count_votes")
@@ -34,6 +37,7 @@ def calc_average(object_list):
 
     if(vote_count == 0):
         return 0
+    
     return  (float) ((vote_sum*100)//vote_count)/100
 
 @register.filter
