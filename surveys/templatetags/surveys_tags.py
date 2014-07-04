@@ -31,6 +31,9 @@ def calc_average(object_list):
     for (counter,obj) in enumerate(object_list):
         vote_sum += (counter + 1) * obj.votes
         vote_count += obj.votes
+
+    if(vote_count == 0):
+        return 0
     return  (float) ((vote_sum*100)//vote_count)/100
 
 @register.filter
