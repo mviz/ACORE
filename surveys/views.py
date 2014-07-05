@@ -56,13 +56,14 @@ def submit_survey(request):
     temp = []
     for key, value in request.POST.iteritems():
         #choices.append((key,value))
+        pbd.set_trace()
         if(value == "7qoErK6uBY3yjCZO7YA7VeHlGiDlN5qs"):
             continue
         temp.append(value)
 
         try:
             choices.append(get_object_or_404(Answer, pk=value))
-        except(KeyError, Answer.DoesotExist):
+        except(KeyError, Answer.DoesNotExist):
             return render(request, 'surveys/questions.html', 
             { 'not_complete':"Please answer all questions",})
 
