@@ -56,8 +56,10 @@ def submit_survey(request):
     temp = []
     for key, value in request.POST.iteritems():
         #choices.append((key,value))
-        
+        #pdb.set_trace()
         if(value == "7qoErK6uBY3yjCZO7YA7VeHlGiDlN5qs"):
+            continue
+        if(key=="csrfmiddlewaretoken"):
             continue
         temp.append(value)
 
