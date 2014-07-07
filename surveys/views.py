@@ -73,7 +73,7 @@ def submit_survey(request):
 
     #pdb.set_trace()
 
-    return HttpResponseRedirect('http://acore-survey.herokuapp.com/surveys/results/') # TODO THIS URL WAS POINTED TO A WRONG ABSOLUTE ADDRESS FIX IT NAO
+    return HttpResponseRedirect('/surveys/results') # TODO THIS URL WAS POINTED TO A WRONG ABSOLUTE ADDRESS FIX IT NAO
 
     
 
