@@ -8,7 +8,6 @@
 
     <div class="col-sm-12">
         <h3 style="text-align:center"> NPCs </h3>
-            <!-- Add forloop here for each npc -->
         <div class="col-sm-4" id="npc_div0"></div>
         <div class="col-sm-4" id="npc_div1"></div>
         <div class="col-sm-4" id="npc_div2"></div>
@@ -17,6 +16,8 @@
     <a href="javascript:history.go(0)">
         <button class="btn btn-success" type="button" style="display:block; margin: 4em auto 2em auto">Reload page </button>
     </a>
+
+    <button id="refresh_button" class="btn btn-alert" type="button" style="display:block; margin:0 auto 0 auto"> Next Step </button>
 
     <div class="page-header"></div>
 
@@ -34,16 +35,36 @@
 
         function set_npc_list(){
             {% for npc in npc_list %}
-                $('<div id="{{ npc.get_name }}" style="padding:1em 1em 1em 1em;">').appendTo('#npc_div{{forloop.counter | mod_calc}}')
-                $('<h5 style="text-align:center"> {{npc.get_name}} </h5>').appendTo('#{{npc.get_name}}')
+                //TODO_yathi update npc.get_name to a proper way of identifying npcs. whatever their index is.
+                $('<div id="npc_{{forloop.counter}}" style="padding:1em 1em 1em 1em;"> </div>').appendTo('#npc_div{{forloop.counter | mod_calc}}');
+                //TODO_yathi update npc.get_name to whatever the proper function is, also update the ID here 
+                $('<h5 style="text-align:center"> {{npc.get_name}} </h5>').appendTo('#npc_{{forloop.counter}}');
                 //$('<p style="text-align:center"> {{npc.get_emotion}} </p>').appendTo('#{{npc.get_name}}')
-                //$('<p style="text-align:center"> {{npc.get_action}} </p>').appendTo('#{{npc.get_name}}') 
-                $("<img src={{ npc.get_emotion | get_emotion_image}} style='display:block; margin-left:auto; margin-right:auto'/>").appendTo('#{{npc.get_name}}')
+                //$('<p style="text-align:center"> {{npc.get_action}} </p>').appendTo('#{{npc.get_name}}')
+                //TODO_yathi update the src to the proper image, some neutral image as this is the starting state. Also update to the proper id on the image as well as teh append to
+                $("<img src={{ npc.get_emotion | get_emotion_image}} id='npc_image_{{forloop.counter}}' style='display:block; margin-left:auto; margin-right:auto'/>").appendTo('#npc_{{forloop.counter}}');
             {% endfor %}
         }
 
+
+        function updateNPCs(){
+            for(var i = 1; i <= {{npc_count}}; i++)
+            {
+                //$("<p> Test </p>").appendTo("#npc_div0")
+                
+            }
+            //$("#npc_image_1").attr("src", 'http://twilight.ponychan.net/chan/arch/src/130751482204.png');
+
+        }
+
+
+
         $('document').ready(function(){
-            set_npc_list()
+            $('#refresh_button').click(function(){
+                updateNPCs();
+            });
+
+            set_npc_list();
         });
     </script>
 {% endblock js %}
