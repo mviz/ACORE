@@ -21,7 +21,7 @@ class NPC(object):
 		self.name = name
 		self.A = [] #The actions
 		self.resourceName = ["Health", "Reputation", "Proximity"]
-		self.resourceVector = [1, 1, 0.3]
+		self.resourceVector = [1.0, 1.0, 0.3]
 		self.newResourceVector = []
 		self.resourceWeights = [random(), random(), random()]
 		self.beingPassed = False
@@ -32,7 +32,6 @@ class NPC(object):
 		self.sayHello()
 	#TestMethod
 	def sayHello(self):
-		print self.name , "Hello"
 		return self.name
 
 	def getAction(self):
@@ -48,11 +47,10 @@ class NPC(object):
 		return self.newResourceVector
 
 	def getEmotion(self):
-		return [':'.join(emo) for emo in zip(self.emoName, [str(emoval) for emoval in self.emotion])]
+		return [':'.join(emo) for emo in zip(self.emoName, [str(round(emoval,2)) for emoval in self.emotion])]
 
 	def returnEmotion(self):
 		if self.nextAction == "Pass":
-			#For Reputation
 			Joy = 0
 			Hope = 0
 			Fear = 0
@@ -119,17 +117,18 @@ class NPC(object):
 		return self.emotion
 
 	def finalAction(self):
+		print "Final Action called"
 		if self.nextAction == "Pass":
 			if self.beingProtested:
-				if random() > 0.5:
+				random_variable = random()
+				print random_variable
+				if random_variable > 0.5:
 					Joy = 0
 					Hope = 0
 					Fear = 0
 					Sorrow = 0
 					expectation_repu = 1
-					expectation_proxi = 1
-					self.resourceVector[2] = self.resourceVector[2] + 0.3
-					self.resourceVector[1] = 0.85
+					self.newResourceVector = [self.resourceVector[0], self.resourceVector[1]-0.15, self.resourceVector[2] + 0.3]
 
 					for indx, resource in enumerate(self.resourceVector):
 						desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
@@ -143,16 +142,17 @@ class NPC(object):
 							Sorrow += desire * expectation_repu
 
 					self.emotion = [Joy, Hope, Fear, Sorrow]
+					self.resourceVector = self.newResourceVector
+					print "pass successful"
+					self.nextAction = "Passed_Successfully"
+					return True #This means that the pass action was successful. 
 				else:
 					Joy = 0
 					Hope = 0
 					Fear = 0
 					Sorrow = 0
 					expectation_repu = 1
-					expectation_proxi = 1
-					desire_repu = (0.85 - self.resourceVector[1])*self.resourceWeights[1]
-					desire_proxi = (0)*self.resourceWeights[2]
-					self.resourceVector[1] = 0.85
+					self.newResourceVector = [self.resourceVector[0], self.resourceVector[1]-0.15, self.resourceVector[2]]
 
 					for indx, resource in enumerate(self.resourceVector):
 						desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
@@ -166,18 +166,20 @@ class NPC(object):
 							Sorrow += desire * expectation_repu
 
 					self.emotion = [Joy, Hope, Fear, Sorrow]
+					self.resourceVector = self.newResourceVector
+					print "Pass Pass_Failed"
+					self.nextAction = "Pass_Failed"
+					return False
 			else:
-				if random() > 0.9:
+				random_variable = random()
+				print random_variable
+				if random_variable > 0.1:
 					Joy = 0
 					Hope = 0
 					Fear = 0
 					Sorrow = 0
 					expectation_repu = 1
-					expectation_proxi = 1
-					desire_repu = (0.85 - self.resourceVector[1])*self.resourceWeights[1]
-					desire_proxi = (0.3)*self.resourceWeights[2]
-					self.resourceVector[2] = self.resourceVector[2] + 0.3
-					self.resourceVector[1] = 0.85
+					self.newResourceVector = [self.resourceVector[0], self.resourceVector[1]-0.15, self.resourceVector[2] + 0.3]
 
 					for indx, resource in enumerate(self.resourceVector):
 						desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
@@ -191,16 +193,17 @@ class NPC(object):
 							Sorrow += desire * expectation_repu
 
 					self.emotion = [Joy, Hope, Fear, Sorrow]
+					self.resourceVector = self.newResourceVector
+					print "Pass successful"
+					self.nextAction = "Passed_Successfully"
+					return True #This means the pass action was successful. 
 				else:
 					Joy = 0
 					Hope = 0
 					Fear = 0
 					Sorrow = 0
 					expectation_repu = 1
-					expectation_proxi = 1
-					desire_repu = (0.85 - self.resourceVector[1])*self.resourceWeights[1]
-					desire_proxi = (0)*self.resourceWeights[2]
-					self.resourceVector[1] = 0.85
+					self.newResourceVector = [self.resourceVector[0], self.resourceVector[1]-0.15, self.resourceVector[2]]
 
 					for indx, resource in enumerate(self.resourceVector):
 						desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
@@ -214,15 +217,17 @@ class NPC(object):
 							Sorrow += desire * expectation_repu
 
 					self.emotion = [Joy, Hope, Fear, Sorrow]
+					self.resourceVector = self.newResourceVector
+					print "Last pass fail"
+					self.nextAction = "Pass_Failed"
+					return False
 		elif self.nextAction == "Wait" and self.beingPassed:
 			Joy = 0
 			Hope = 0
 			Fear = 0
 			Sorrow = 0
 			expectation_repu = 1
-			expectation_proxi = 1
-			desire_proxi = (-0.3)*self.resourceWeights[2]
-			self.resourceVector[2] = self.resourceVector[2] - 0.3
+			self.newResourceVector = [self.resourceVector[0], self.resourceVector[1], self.resourceVector[2]-0.3]
 
 			for indx, resource in enumerate(self.resourceVector):
 				desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
@@ -235,15 +240,16 @@ class NPC(object):
 				elif (desire < 0) and (expectation_repu < 1):
 					Sorrow += desire * expectation_repu
 				self.emotion = [Joy, Hope, Fear, Sorrow]
+				self.resourceVector = self.newResourceVector
+				return False
 		elif self.nextAction == "Protest":
 			Joy = 0
 			Hope = 0
 			Fear = 0
 			Sorrow = 0
 			expectation_repu = 1
-			expectation_proxi = 1
-			desire_repu = (0.85 - self.resourceVector[1])*self.resourceWeights[1]
-			desire_proxi = (0.3)*self.resourceWeights[2]
+			self.newResourceVector = [self.resourceVector[0]-0.05, self.resourceVector[1]-0.15, self.resourceVector[2]]
+			self.resourceVector[2] -= 0.3
 
 			for indx, resource in enumerate(self.resourceVector):
 				desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
@@ -257,6 +263,7 @@ class NPC(object):
 					Sorrow += desire * expectation_repu
 
 				self.emotion = [Joy, Hope, Fear, Sorrow]
+				self.resourceVector = self.newResourceVector
 
 	def passCost(self):
 		return ((1-self.resourceVector[0])*self.resourceWeights[0] + 

@@ -113,6 +113,8 @@ def homepage_view(request):
     global initialized
     global stateOfNPCCounter
 
+    passing_people = []
+
     #TODO_yathi these NPCs will be replaced by your NPC list. It goes into the context dictionary so that the template can access it
     if not initialized:
         initialize()
@@ -124,14 +126,14 @@ def homepage_view(request):
         if (stateOfNPCCounter%3)!=0:
             for indx, person in enumerate(line):
                 print "\nName: " , person.name, " " , str(indx)
-                print "Emotion: " , person.returnEmotion()
-                print "Desired Action: " , person.bestAction()
-                print "Protest Cost: " , person.protestCost()
-                print "Wait Cost: " , person.waitCost()
-                print "Pass Cost: " , person.passCost()
-                print "Resources: " , person.getResources()
-                print "Weight Vector" , person.getWeights()
-                print "New Resources: " , person.newResourceVector
+                # print "Emotion: " , person.returnEmotion()
+                # print "Desired Action: " , person.bestAction()
+                # print "Protest Cost: " , person.protestCost()
+                # print "Wait Cost: " , person.waitCost()
+                # print "Pass Cost: " , person.passCost()
+                # print "Resources: " , person.getResources()
+                # print "Weight Vector" , person.getWeights()
+                # print "New Resources: " , person.newResourceVector
                 if person.bestAction() == "Pass":
                     line[indx-1].beingPassed = True
                 if person.bestAction() == "Protest":
@@ -139,9 +141,20 @@ def homepage_view(request):
                     if indx < (len(line)-1):
                         line[indx+1].beingProtested == True
         elif (stateOfNPCCounter%3)==0:
+            for indx, person in enumerate(line):
+                if person.finalAction():
+                    passing_people.append(indx)
+
+            print "The people passing :" , passing_people
+            for indx in passing_people:
+                if indx != 0:
+                    line[indx], line[indx-1] = line[indx-1], line[indx]
+
             for person in line:
-             person.finalAction()
-            displayLine()
+                if person.nextAction == "Protest":
+                    person.nextAction = "Wait"
+
+            #displayLine() 
     
     #TODO_yathi, npc_count just needs to be the number of npcs
     npc_count = 5
