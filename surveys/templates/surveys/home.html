@@ -1,5 +1,9 @@
 {% extends '_layouts/base.html' %}
 {% load surveys_tags %}
+{% load staticfiles %}
+    
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
+
 
 {% block page_title %} <h2>The Game</h2> {% endblock page_title %}
 
@@ -14,11 +18,11 @@
 
     </div>
     <a href="javascript:history.go(0)">
-        <button class="btn btn-success" type="button" style="display:block; margin: 4em auto 2em auto">Reload page </button>
+        <button class="btn btn-success" type="button" style="display:block; margin: 4em auto 2em auto">Next Step </button>
     </a>
 
-    <button id="refresh_button" class="btn btn-alert" type="button" style="display:block; margin:0 auto 0 auto"> Next Step </button>
-
+<!--     <button id="refresh_button" class="btn btn-alert" type="button" style="display:block; margin:0 auto 0 auto"> Next Step </button>
+ -->
     <div class="page-header"></div>
 
     <p></p> 
@@ -27,6 +31,24 @@
 
 
 {% block css %}
+<style type="text/css">
+.line_box {
+    padding:1em 1em 1em 1em; 
+    border: dotted green 1px;
+}
+
+.Wait {
+    background-color: cyan;
+}
+
+.Pass {
+    background-color: orange;
+}
+
+.Protest {
+    background-color: green;
+}
+</style>
 {% endblock css %}
 
 
@@ -36,13 +58,17 @@
         function set_npc_list(){
             {% for npc in npc_list %}
                 //TODO_yathi update npc.get_name to a proper way of identifying npcs. whatever their index is.
-                $('<div id="npc_{{forloop.counter}}" style="padding:1em 1em 1em 1em;"> </div>').appendTo('#npc_div{{forloop.counter | mod_calc}}');
+                $('<div id="npc_{{forloop.counter}}" class="line_box {{npc.getAction}}"> </div>').appendTo('#npc_div{{forloop.counter | mod_calc}}');
+                // $('<div class="line_box"> Test </div>').appendTo('#npc_div{{forloop.counter | mod_calc}}');
                 //TODO_yathi update npc.get_name to whatever the proper function is, also update the ID here 
-                $('<h5 style="text-align:center"> {{npc.get_name}} </h5>').appendTo('#npc_{{forloop.counter}}');
-                //$('<p style="text-align:center"> {{npc.get_emotion}} </p>').appendTo('#{{npc.get_name}}')
-                //$('<p style="text-align:center"> {{npc.get_action}} </p>').appendTo('#{{npc.get_name}}')
+                $('<h5 style="text-align:center"> Name: {{npc.sayHello}} </h5>').appendTo('#npc_{{forloop.counter}}');
+                $('<p style="text-align:center"> Emotion: {{npc.getEmotion}} </p>').appendTo('#npc_{{forloop.counter}}');
+                $('<p style="text-align:center"> Action: {{npc.getAction}} </p>').appendTo('#npc_{{forloop.counter}}');
+                $('<p style="text-align:center"> Weights: {{npc.getWeights}} </p>').appendTo('#npc_{{forloop.counter}}');
+                $('<p style="text-align:center"> Resources: {{npc.getResources}} </p>').appendTo('#npc_{{forloop.counter}}');
+                $('<p style="text-align:center"> New Resources: {{npc.getNewResources}} </p>').appendTo('#npc_{{forloop.counter}}');
                 //TODO_yathi update the src to the proper image, some neutral image as this is the starting state. Also update to the proper id on the image as well as teh append to
-                $("<img src={{ npc.get_emotion | get_emotion_image}} id='npc_image_{{forloop.counter}}' style='display:block; margin-left:auto; margin-right:auto'/>").appendTo('#npc_{{forloop.counter}}');
+                // $("<img src={{ npc.get_emotion | get_emotion_image}} id='npc_image_{{forloop.counter}}' style='display:block; margin-left:auto; margin-right:auto'/>").appendTo('#npc_{{forloop.counter}}');
             {% endfor %}
         }
 

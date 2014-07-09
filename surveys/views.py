@@ -9,22 +9,62 @@ import pdb
 import random
 import json
 
-#TODO_yathi, this dummy class needs to be replaced eventually
-class Npc_temp:
-    name = ''
-    emotion = ''
-    action = ''
-    def __init__(self, name, emotion, action):
-        self.name = name
-        self.emotion = emotion
-        self.action = action
+from emotion import *
+from npc import human
+import time
+from random import random, randint
 
-    def get_name(self):
-        return self.name
-    def get_emotion(self):
-        return self.emotion
-    def get_action(self):
-        return self.action
+counter = 0
+line = []
+stateOfNPCCounter = 0
+nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
+"Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam",
+"Ahmed", "Merriam"]
+initialized = False
+
+def makeNPC():
+    global counter
+    name = nameList.pop(randint(0, (len(nameList))-1))
+    npc = human(name)
+    npc.resourceVector[2] += counter*0.3
+    counter += 1
+    return npc
+
+def initialize():
+    global line
+    count = 0
+    for count in range(6):
+        line.append(makeNPC())
+        count += 1
+
+def displayLine():
+    for person in line:
+        print "\nName: " , person.name
+        print "Emotion: " , person.emotion
+        print "Desired Action: " , person.bestAction()
+        print "Protest Cost: " , person.protestCost()
+        print "Wait Cost: " , person.waitCost()
+        print "Pass Cost: " , person.passCost()
+        print "Resources: " , person.resourceVector
+        print "New Resources: " , person.newResourceVector
+
+
+#TODO_yathi, this dummy class needs to be replaced eventually
+# class Npc_temp:
+#     name = ''
+#     emotion = ''
+#     action = ''
+#     def __init__(self, name, emotion, action):
+#         self.name = name
+#         self.emotion = emotion
+#         self.action = action
+
+#     def get_name(self):
+#         return self.name
+#     def get_emotion(self):
+#         return self.emotion
+#     def get_action(self):
+#         return self.action
 
 
 class Results(generic.ListView):
@@ -69,21 +109,45 @@ def submit_survey(request):
 
 def homepage_view(request):
     #ajax for updating images
-    if(request.is_ajax()):
-        if(random.randint(0,1)):
-            image =  'http://theumbrellaagency.com/wp-content/uploads/2009/07/umbrella_agency_smiley_face-200x200.jpg'
-        else:
-            image =  'http://twilight.ponychan.net/chan/arch/src/130751482204.png'
-
-        json_response = {'npc_data':{'npc_image':image}}
-        return HttpResponse(json.dumps(json_response), content_type='application/json')
+    global line
+    global initialized
+    global stateOfNPCCounter
 
     #TODO_yathi these NPCs will be replaced by your NPC list. It goes into the context dictionary so that the template can access it
-    npc_list = [ Npc_temp('Mary', 'joy', 'nothing'), Npc_temp('Jane', 'hope', 'skip'), Npc_temp('Emma', 'distress', 'attack'), Npc_temp('Stone', 'sorrow', 'cry'), Npc_temp('Toby', 'joy','nothing')]
+    if not initialized:
+        initialize()
+        initialized = True
+    else:
+        print "Has been initialized "
+        stateOfNPCCounter += 1
+        #print "\n\nThe counter is :", str(stateOfNPCCounter%3) , "And the counter is " , str(stateOfNPCCounter) ,  "\n"
+        if (stateOfNPCCounter%3)!=0:
+            for indx, person in enumerate(line):
+                print "\nName: " , person.name, " " , str(indx)
+                print "Emotion: " , person.returnEmotion()
+                print "Desired Action: " , person.bestAction()
+                print "Protest Cost: " , person.protestCost()
+                print "Wait Cost: " , person.waitCost()
+                print "Pass Cost: " , person.passCost()
+                print "Resources: " , person.getResources()
+                print "Weight Vector" , person.getWeights()
+                print "New Resources: " , person.newResourceVector
+                if person.bestAction() == "Pass":
+                    line[indx-1].beingPassed = True
+                if person.bestAction() == "Protest":
+                    #print "\nIndex is ", str(indx), "And the len is : ", str(len(line)), "\n"
+                    if indx < (len(line)-1):
+                        line[indx+1].beingProtested == True
+        elif (stateOfNPCCounter%3)==0:
+            for person in line:
+             person.finalAction()
+            displayLine()
+    
     #TODO_yathi, npc_count just needs to be the number of npcs
     npc_count = 5
+    #print line[1].returnEmotion()
     context_data = {
-        'npc_list':npc_list,
+        'npc_list':line,
         'npc_count':npc_count,
     }
 
