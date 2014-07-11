@@ -8,82 +8,121 @@
 {% block page_title %} <h2>The Game</h2> {% endblock page_title %}
 
 {% block page_content %} 
-
-
-    <div class="col-sm-12">
-        <h3 style="text-align:center"> NPCs </h3>
-        <div class="col-sm-4" id="npc_div0"></div>
-        <div class="col-sm-4" id="npc_div1"></div>
-        <div class="col-sm-4" id="npc_div2"></div>
-
+    <div class="col-sm-4">    
+        <a href="javascript:history.go(0)">
+            <button class="btn btn-danger" type="button">Next Step (refresh) </button>
+        </a>
+        <button id="refresh_button" class="btn btn-success" type="button"> Next Step (AJAX) </button>
     </div>
-    <a href="javascript:history.go(0)">
-        <button class="btn btn-success" type="button" style="display:block; margin: 4em auto 2em auto">Next Step </button>
-    </a>
-
-<!--     <button id="refresh_button" class="btn btn-alert" type="button" style="display:block; margin:0 auto 0 auto"> Next Step </button>
- -->
-    <div class="page-header"></div>
-
-    <p></p> 
+    <div class="col-sm-4" id="npc_div"></div>
+    <div class="col-sm-4">
+        <div class="col-sm-3"> </div>
+        <div id='scoreboard' class="col-sm-6"> </div>
+        <div class="col-sm-3"> </div>
+    </div>
 
 {% endblock page_content %}
 
 
 {% block css %}
-<style type="text/css">
-.line_box {
-    padding:1em 1em 1em 1em; 
-    border: dotted green 1px;
-}
-
-.Wait {
-    background-color: cyan;
-}
-
-.Pass, .Passed_Successfully {
-    background-color: orange;
-}
-
-.Protest {
-    background-color: green;
-}
-</style>
 {% endblock css %}
 
 
 {% block js %}
     <script>
 
+        function getPanelClass(action){
+            if(action == 'Wait'){
+                return 'panel panel-primary';
+            } else if (action == 'Pass'){
+                return 'panel panel-warning';
+            } else if (action == 'Passed_Successfully'){
+                return 'panel panel-success';
+            } else if (action == 'Protest'){
+                return 'panel panel-danger';
+            } else if (action == 'Pass_Failed'){
+                return 'panel panel-default'
+            } 
+        }
+
+        function getAlertClass(action){
+            if(action == 'Wait'){
+                return 'alert alert-info';
+            } else if (action == 'Pass'){
+                return 'alert alert-warning';
+            } else if (action == 'Passed_Successfully'){
+                return 'alert alert-success';
+            } else if (action == 'Protest'){
+                return 'alert alert-danger';
+            } else if (action == 'Pass_Failed'){
+                return 'alert alert-info'
+            } 
+        }
         function set_npc_list(){
             {% for npc in npc_list %}
-                //TODO_yathi update npc.get_name to a proper way of identifying npcs. whatever their index is.
-                $('<div id="npc_{{forloop.counter}}" class="line_box {{npc.getAction}}"> </div>').appendTo('#npc_div{{forloop.counter | mod_calc}}');
-                // $('<div class="line_box"> Test </div>').appendTo('#npc_div{{forloop.counter | mod_calc}}');
-                //TODO_yathi update npc.get_name to whatever the proper function is, also update the ID here 
-                $('<h5 style="text-align:center"> Name: {{npc.sayHello}} </h5>').appendTo('#npc_{{forloop.counter}}');
-                $('<p style="text-align:center"> Emotion: {{npc.getEmotion}} </p>').appendTo('#npc_{{forloop.counter}}');
-                $('<p style="text-align:center"> Action: {{npc.getAction}} </p>').appendTo('#npc_{{forloop.counter}}');
-                $('<p style="text-align:center"> Weights: {{npc.getWeights}} </p>').appendTo('#npc_{{forloop.counter}}');
-                $('<p style="text-align:center"> Resources: {{npc.getResources}} </p>').appendTo('#npc_{{forloop.counter}}');
-                $('<p style="text-align:center"> New Resources: {{npc.getNewResources}} </p>').appendTo('#npc_{{forloop.counter}}');
-                //TODO_yathi update the src to the proper image, some neutral image as this is the starting state. Also update to the proper id on the image as well as teh append to
-                // $("<img src={{ npc.get_emotion | get_emotion_image}} id='npc_image_{{forloop.counter}}' style='display:block; margin-left:auto; margin-right:auto'/>").appendTo('#npc_{{forloop.counter}}');
+
+                $("<div id='npc_parent_{{forloop.counter}}' class='" + getPanelClass("{{npc.getAction}}") +"'> \
+                    <div class='panel-heading' style='text-align:center'> \
+                        <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}} __ {{forloop.counter}} </h4> \
+                    </div> \
+                    <div class='panel-body' id='npc_{{npc.sayHello}}'> \
+                        <p id='emotion_{{npc.sayHello}}'> Emotion:{{npc.getEmotion}} </p> \
+                        <p id='action_{{npc.sayHello}}'> Action:{{npc.getAction}} </p> \
+                        <p id='weights_{{npc.sayHello}}'> Weights:{{npc.getWeights}} </p> \
+                        <p id='resources_{{npc.sayHello}}'> Resources:{{npc.getResources}} </p> \
+                        <p id='newresources_{{npc.sayHello}}'> New Resources:{{npc.getNewResources}} </p> \
+                    </div> \
+                </div>").appendTo('#npc_div');
+
+                //$("<li class='list-group-item' style='text-align:center; background-color:#ff00ff'> {{npc.sayHello}} </p>").appendTo('.list-group');
+                $("<div  id='scoreboard_{{forloop.counter}}' class='" + getAlertClass("{{npc.getAction}}") + "' style='margin:0; text-align:center;'> {{npc.sayHello}}</div>").appendTo('#scoreboard');
             {% endfor %}
         }
 
 
-        function updateNPCs(){
-            for(var i = 1; i <= {{npc_count}}; i++)
-            {
-                //$("<p> Test </p>").appendTo("#npc_div0")
-                
+        function updateNPCs(test){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", "surveys/ajax", true);
+            xmlhttp.onload=function(){
+                    var npc_data = JSON.parse(xmlhttp.response);
+
+                    //TODO at some point this should be changed to camelCase since it's javascript
+                    var name_list = npc_data["names"];
+                    var action_list = npc_data["actions"];
+                    var emotion_list = npc_data["emotions"];
+                    var weight_list = npc_data["weights"];
+                    var resource_list = npc_data["resources"];
+                    var newresource_list = npc_data["newresources"];
+                    var finalAction = npc_data["finalAction"];
+                    var passingNPCs = npc_data["passing_list"];
+
+                    if(finalAction){
+                        for(var i=0; i < passingNPCs.length; i ++){
+                            if(passingNPCs[i] != 0){
+                                //$('#npc_parent_'+passingNPCs[i]).before($('#npc_parent_' + (passingNPCs[i] - 1)));
+                                $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'temp');
+                                $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));
+                                $('#temp').attr('id', 'npc_parent_' + passingNPCs[i]);
+                            }
+                        }
+                    }
+
+                    for(var i = 0; i < npc_data["npc_count"]; i++){
+                        $('#name_' + name_list[i]).text(name_list[i] + ' __ ' + (i+1));
+                        $('#emotion_'+ name_list[i]).text("Emotion:" + emotion_list[i]);
+                        $('#action_'+ name_list[i]).text("Action:" + action_list[i]);
+                        $('#weights_'+ name_list[i]).text("Weights:" + weight_list[i]);
+                        $('#resources_'+ name_list[i]).text("Resources:" + resource_list[i]);
+                        $('#newresources_'+ name_list[i]).text("New Resources:" + newresource_list[i]);
+                        $("#npc_parent_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
+
+                        $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
+                        $('#scoreboard_' + (i+1)).html(name_list[i]);
+                    }
+
             }
-            //$("#npc_image_1").attr("src", 'http://twilight.ponychan.net/chan/arch/src/130751482204.png');
-
+            xmlhttp.send();
         }
-
-
 
         $('document').ready(function(){
             $('#refresh_button').click(function(){

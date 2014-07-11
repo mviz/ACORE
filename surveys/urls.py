@@ -9,4 +9,5 @@ urlpatterns = patterns(
     url(r'^questions/$', views.SurveyList.as_view(), name='questions'),
     url(r'^results/$', views.Results.as_view(), name='results'),
     url(r'^submitting/$', views.submit_survey, name='submitting'),
+    url(r'^ajax/$', views.ajax_view_handler, name="ajax"),
 )

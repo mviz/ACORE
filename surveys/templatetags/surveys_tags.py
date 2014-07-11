@@ -47,7 +47,6 @@ def mod_calc(n):
 
 @register.filter
 def get_emotion_image(emotion):
-    #TODO_yathi, this needs a way of getting the URLs for the real NPC emotion images. Whether that's just importing it and then returning a object attribute or hard coding it.
     if(emotion== 'joy'):
         return 'http://theumbrellaagency.com/wp-content/uploads/2009/07/umbrella_agency_smiley_face-200x200.jpg'
     elif (emotion == 'hope'):
