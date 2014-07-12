@@ -234,14 +234,20 @@ def get_npc_resources():
     global line
     new_list = []
     for npc in line:
-        new_list.append(npc.getResources())
+        temp = []
+        for res in npc.getResources():
+            temp.append(((1000*res)//1)/1000)
+        new_list.append(temp)
     return new_list
 
 def get_npc_new_resources():
     global line
     new_list = []
     for npc in line:
-        new_list.append(npc.getNewResources())
+        temp = []
+        for nres in npc.getNewResources():
+            temp.append(((1000*nres)//1)/1000)
+        new_list.append(temp)
     return new_list
 
 

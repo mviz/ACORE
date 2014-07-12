@@ -14,7 +14,7 @@
         </a>
         <button id="refresh_button" class="btn btn-success" type="button"> Next Step (AJAX) </button>
     </div>
-    <div class="col-sm-4" id="npc_div"></div>
+    <div class="col-sm-4" id="npc_div" style='position:relative'></div>
     <div class="col-sm-4">
         <div class="col-sm-3"> </div>
         <div id='scoreboard' class="col-sm-6"> </div>
@@ -61,7 +61,7 @@
         function set_npc_list(){
             {% for npc in npc_list %}
 
-                $("<div id='npc_parent_{{forloop.counter}}' class='" + getPanelClass("{{npc.getAction}}") +"'> \
+                $("<div id='npc_parent_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
                     <div class='panel-heading' style='text-align:center'> \
                         <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}} __ {{forloop.counter}} </h4> \
                     </div> \
@@ -99,7 +99,21 @@
                     if(finalAction){
                         for(var i=0; i < passingNPCs.length; i ++){
                             if(passingNPCs[i] != 0){
-                                //$('#npc_parent_'+passingNPCs[i]).before($('#npc_parent_' + (passingNPCs[i] - 1)));
+
+                                var movingUp = $('#npc_parent_'+ (passingNPCs[i] + 1));
+                                var movingDown = $('#npc_parent_' + passingNPCs[i]);
+                                var upHeight = movingUp.outerHeight();
+                                //var downHeight = movingDown.outerHeight();
+                                $.when(
+                                movingUp.animate({top: -upHeight}, 750),
+                                movingDown.animate({top: upHeight},750)).then( 
+                                function(){ 
+                                    movingUp.css('top', '0px');
+                                    movingDown.css('top', '0px');
+                                    movingUp.insertBefore(movingDown);
+                                });
+
+
                                 $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'temp');
                                 $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));
                                 $('#temp').attr('id', 'npc_parent_' + passingNPCs[i]);
