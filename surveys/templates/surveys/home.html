@@ -102,15 +102,16 @@
 
                                 var movingUp = $('#npc_parent_'+ (passingNPCs[i] + 1));
                                 var movingDown = $('#npc_parent_' + passingNPCs[i]);
-                                var upHeight = movingUp.outerHeight();
-                                //var downHeight = movingDown.outerHeight();
+                                var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
+                                var upHeight = movingUp.outerHeight() + marginDif;
+                                var downHeight = movingDown.outerHeight() + marginDif;
                                 $.when(
-                                movingUp.animate({top: -upHeight}, 750),
-                                movingDown.animate({top: upHeight},750)).then( 
-                                function(){ 
-                                    movingUp.css('top', '0px');
-                                    movingDown.css('top', '0px');
-                                    movingUp.insertBefore(movingDown);
+                                    movingUp.animate({top: -upHeight}, 750),
+                                    movingDown.animate({top: downHeight},750)).then( 
+                                    function(){ 
+                                        movingUp.insertBefore(movingDown);
+                                        movingUp.css('top', '0px');
+                                        movingDown.css('top', '0px');
                                 });
 
 
