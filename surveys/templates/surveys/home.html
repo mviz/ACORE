@@ -31,6 +31,17 @@
 {% block js %}
     <script>
 
+
+        String.prototype.format = String.prototype.f = function() {
+            var s = this,
+                i = arguments.length;
+
+            while (i--) {
+                s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+            }
+            return s;
+        };
+
         function getPanelClass(action){
             if(action == 'Wait'){
                 return 'panel panel-primary';
@@ -58,6 +69,7 @@
                 return 'alert alert-info'
             } 
         }
+
         function set_npc_list(){
             {% for npc in npc_list %}
 
@@ -66,11 +78,11 @@
                         <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}} __ {{forloop.counter}} </h4> \
                     </div> \
                     <div class='panel-body' id='npc_{{npc.sayHello}}'> \
-                        <p id='emotion_{{npc.sayHello}}'> Emotion:{{npc.getEmotion}} </p> \
-                        <p id='action_{{npc.sayHello}}'> Action:{{npc.getAction}} </p> \
-                        <p id='weights_{{npc.sayHello}}'> Weights:{{npc.getWeights}} </p> \
-                        <p id='resources_{{npc.sayHello}}'> Resources:{{npc.getResources}} </p> \
-                        <p id='newresources_{{npc.sayHello}}'> New Resources:{{npc.getNewResources}} </p> \
+                        <p id='emotion_{{npc.sayHello}}'> Emotion: {{npc.getEmotion}} </p> \
+                        <p id='action_{{npc.sayHello}}'> Action: {{npc.getAction}} </p> \
+                        <p id='weights_{{npc.sayHello}}'> Weights: {{npc.getWeights}} </p> \
+                        <p id='resources_{{npc.sayHello}}'> Resources: {{npc.getResources}} </p> \
+                        <p id='newresources_{{npc.sayHello}}'> New Resources: {{npc.getNewResources}} </p> \
                     </div> \
                 </div>").appendTo('#npc_div');
 
@@ -123,12 +135,12 @@
                     }
 
                     for(var i = 0; i < npc_data["npc_count"]; i++){
-                        $('#name_' + name_list[i]).text(name_list[i] + ' __ ' + (i+1));
-                        $('#emotion_'+ name_list[i]).text("Emotion:" + emotion_list[i]);
-                        $('#action_'+ name_list[i]).text("Action:" + action_list[i]);
-                        $('#weights_'+ name_list[i]).text("Weights:" + weight_list[i]);
-                        $('#resources_'+ name_list[i]).text("Resources:" + resource_list[i]);
-                        $('#newresources_'+ name_list[i]).text("New Resources:" + newresource_list[i]);
+                        $('#name_' + name_list[i]).text(name_list[i]);
+                        $('#emotion_'+ name_list[i]).text("Emotions: " + formatEmotion(emotion_list[i]));  
+                        $('#action_'+ name_list[i]).text("Action: " + action_list[i]);
+                        $('#weights_'+ name_list[i]).text("Weights: " + formatSpaces(weight_list[i]));
+                        $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
+                        $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
                         $("#npc_parent_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
 
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
@@ -137,6 +149,14 @@
 
             }
             xmlhttp.send();
+        }
+
+        function formatEmotion(emotionList){
+            return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Fear [" + emotionList[2].substring(5) + "] Sorrow [" + emotionList[3].substring(7) +"]";
+        }
+
+        function formatSpaces(dataList){
+            return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
         }
 
         $('document').ready(function(){
