@@ -88,7 +88,6 @@ def submit_survey(request):
     #Restrict users to a single submission
     #TODO
     if (request.COOKIES.has_key('submitted')):
-        pdb.set_trace()
         context_data['not_complete'] = 'You can only submit once.'
         return render(request, 'surveys/questions.html', context_data)
 
@@ -113,12 +112,11 @@ def homepage_view(request):
 
     context_data = {
         'npc_list':line,
-        'npc_count':npc_count,
+        'npc_count':len(line),
     }
 
     response = HttpResponse()
 
-    npc_count = len(line)
 
     return render(request, 'surveys/home.html', context_data)
 
