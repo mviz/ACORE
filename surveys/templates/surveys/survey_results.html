@@ -17,11 +17,11 @@
                     
                     <ul>
                             {% for mc_answer in survey_question.answer_set.all %}
-                                <li style="list-style-type:none; padding:0; margin:0">
-                                    <h5 style="display:inline-block"> <strong>  {{mc_answer.answer_text}}</strong> [{{mc_answer.votes}}] </h5>
+                                <li style="list-style-type:none; padding:0; margin:0;">
+                                    <h5> <strong>  {{mc_answer.answer_text}}</strong> [{{mc_answer.votes}}] </h5>
 
                                     <div class="progress">
-                                    <div class="progress-bar" style="width:{{ survey_question.answer_set.all | percentage:forloop.counter }}%;"></div>
+                                        <div class="progress-bar {{forloop.counter | progress_color }}" style="width:{{ survey_question.answer_set.all | percentage:forloop.counter }}%;"></div>
                                     </div>
                                 </li>
 
@@ -37,6 +37,15 @@
     <div class="col-sm-4"></div>
 </div>
 {% endblock page_content %}
+
+{% block css %}
+<style>
+    .bar-label{
+        float:left;
+        margin-right:1em;
+    }
+</style>
+{% endblock css %}
 
 {% block js %}
      <script>

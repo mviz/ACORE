@@ -68,4 +68,13 @@ def format_weights(weights):
     new_string.replace("'",'')
     return new_string[:-3]
 
-
+@register.filter
+def progress_color(index):
+    if(index%4==0):
+        return ''
+    elif(index%4 == 1):
+        return 'progress-bar-success'
+    elif(index%4 == 2):
+        return 'progress-bar-warning'
+    elif(index%4 == 3):
+        return 'progress-bar-danger'

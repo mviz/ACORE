@@ -64,8 +64,16 @@ class SurveyList(generic.ListView):
         return super(SurveyList, self).get_context_data(**kwargs)
 
 def submit_survey(request):
+    global line
     choices = []
     temp = []
+
+    context_data = {
+        'npc_list':line,
+        'npc_count':len(line),
+    }
+
+
     for key, value in request.POST.iteritems():
         if(key=="csrfmiddlewaretoken"):
             continue
@@ -74,8 +82,20 @@ def submit_survey(request):
         try:
             choices.append(get_object_or_404(Answer, pk=value))
         except(KeyError, Answer.DoesNotExist):
-            return render(request, 'surveys/questions.html', 
-            { 'not_complete':"Please answer all questions",})
+            context_data['not_complete'] = 'Please answer all of the questions'
+            return render(request, 'surveys/questions.html', context_data)
+
+    #Restrict users to a single submission
+    #TODO
+    if (request.COOKIES.has_key('submitted')):
+        pdb.set_trace()
+        context_data['not_complete'] = 'You can only submit once.'
+        return render(request, 'surveys/questions.html', context_data)
+
+    else:
+        pdb.set_trace()
+        response = HttpResponse('Submission_Cookie')
+        response.set_cookie('submitted', 'yes')
 
     for answer_obj in choices:
         answer_obj.votes += 1
@@ -91,11 +111,15 @@ def homepage_view(request):
         initialize()
         initialized = True
 
-    npc_count = len(line)
     context_data = {
         'npc_list':line,
         'npc_count':npc_count,
     }
+
+    response = HttpResponse()
+
+    npc_count = len(line)
+
     return render(request, 'surveys/home.html', context_data)
 
 
