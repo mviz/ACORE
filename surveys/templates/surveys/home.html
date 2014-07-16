@@ -128,8 +128,8 @@
                                 var upHeight = movingUp.outerHeight() + marginDif;
                                 var downHeight = movingDown.outerHeight() + marginDif;
                                 $.when(
-                                    movingUp.animate({top: -upHeight}, 750),
-                                    movingDown.animate({top: downHeight},750)).then( 
+                                    movingUp.animate({top: -downHeight}, 750),
+                                    movingDown.animate({top: upHeight},750)).then( 
                                     function(){ 
                                         movingUp.insertBefore(movingDown);
                                         movingUp.css('top', '0px');

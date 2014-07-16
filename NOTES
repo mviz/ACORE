@@ -1,6 +1,5 @@
 TODO
-	-Fix multi-NPC animations
-	-Fix formatting
+	-Fix multi-NPC animations ** There is a bug where if you need to pass a div who's size differs from the passing div because of extra lines (caused by new resources, usually), then it just fails to do so and hangs in a non-organized position. Couldn't repeat bug on first run of code, ever. Continue to debug as Yathi's code changes.
 	-Add Lorem Ipsum for the Extra pages
 	-Change color for each entry in the results page
 	-Add django cookie
