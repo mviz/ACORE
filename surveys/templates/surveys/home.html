@@ -1,30 +1,63 @@
 {% extends '_layouts/base.html' %}
 {% load surveys_tags %}
 {% load staticfiles %}
-    
-<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
 
 
 {% block page_title %} <h2>The Game</h2> {% endblock page_title %}
 
 {% block page_content %} 
-    <div class="col-sm-4">    
-        <a href="javascript:history.go(0)">
-            <button class="btn btn-danger" type="button"> Refresh Page </button>
-        </a>
+    <div class="col-sm-2">    
         <button id="refresh_button" class="btn btn-success" type="button"> Next Step</button>
     </div>
-    <div class="col-sm-4" id="npc_div" style='position:relative'></div>
-    <div class="col-sm-4">
-        <div class="col-sm-3"> </div>
-        <div id='scoreboard' class="col-sm-6"> </div>
-        <div class="col-sm-3"> </div>
+    <div class="col-sm-7" id="npc_div" style='position:relative'></div>
+    <div class="col-sm-3">
+        <div class="col-sm-2"> </div>
+        <div id='scoreboard' class="col-sm-8"> </div>
+        <div class="col-sm-2"> </div>
     </div>
 
 {% endblock page_content %}
 
 
-{% block css %}
+    {% block css %}
+<style>
+    * { 
+        font-family: Helvetica, Arial;
+    }
+
+    dt { 
+        float: left; 
+        padding: 4px; 
+    }
+
+    .graph_bar {
+        margin-bottom: 10px;
+        color: #fff;
+        padding: 4px;
+        text-align: center;
+        border-radius: 2px;
+    }
+
+    .neutral_bar{
+        background: -webkit-gradient(linear, left top, left bottom, from(#afafd3), to(#d4d4d4));
+    }
+
+    .hope_bar {
+        background: -webkit-gradient(linear, left top, left bottom, from(#2b669a), to(#4098e6));
+    }
+    .joy_bar {
+        background: -webkit-gradient(linear, left top, left bottom, from(#3b8f3b), to(#5edf5e));
+    }
+    .fear_bar {
+        background: -webkit-gradient(linear, left top, left bottom, from(#965d0c), to(#e38d13));
+    }
+    .sorrow_bar { 
+        background: -webkit-gradient(linear, left top, left bottom, from(#b92c28), to(#6e1b18));
+    }
+
+
+
+</style>
 {% endblock css %}
 
 
@@ -84,16 +117,32 @@
         function initializeNPCs(){
             {% for npc in npc_list %}
 
-                $("<div id='npc_parent_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
-                    <div class='panel-heading' style='text-align:center'> \
-                        <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}}</h4> \
+                $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12'> \
+                    <div class='col-sm-7'> \
+                        <div id='npc_child_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
+                            <div class='panel-heading' style='text-align:center'> \
+                                <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}}</h4> \
+                            </div> \
+                            <div class='panel-body' id='npc_{{npc.sayHello}}'> \
+                                <p id='emotion_{{npc.sayHello}}'>Emotions: {{npc.getEmotion | format_emotions}}</p> \
+                                <p id='action_{{npc.sayHello}}'>Action: {{npc.getAction}}</p> \
+                                <p id='weights_{{npc.sayHello}}'>Weights: {{npc.getWeights | format_weights}} </p> \
+                                <p id='resources_{{npc.sayHello}}'>Resources: {{npc.getResources | format_weights }} </p> \
+                                <p id='newresources_{{npc.sayHello}}'>New Resources: {{npc.getNewResources | format_weights}} </p> \
+                            </div> \
+                        </div> \
                     </div> \
-                    <div class='panel-body' id='npc_{{npc.sayHello}}'> \
-                        <p id='emotion_{{npc.sayHello}}'>Emotions: {{npc.getEmotion | format_emotions}}</p> \
-                        <p id='action_{{npc.sayHello}}'>Action: {{npc.getAction}}</p> \
-                        <p id='weights_{{npc.sayHello}}'>Weights: {{npc.getWeights | format_weights}} </p> \
-                        <p id='resources_{{npc.sayHello}}'>Resources: {{npc.getResources | format_weights }} </p> \
-                        <p id='newresources_{{npc.sayHello}}'>New Resources: {{npc.getNewResources | format_weights}} </p> \
+                    <div class='col-sm-5'> \
+                        <dl style='width:100%'> \
+                            <dt>Joy</dt> \
+                            <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | emotion_percentage}}%'> {{npc.getEmotion | emotion_percentage}}</div></dd> \
+                            <dt>Hope</dt> \
+                            <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: 80%'>CHANGE ME</div></dd> \
+                            <dt>Fear</dt> \
+                            <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: 64%'> CHANGE ME</div></dd> \
+                            <dt>Sorrow</dt> \
+                            <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: 97%'>CHANGE ME</div></dd> \
+                        </dl> \
                     </div> \
                 </div>").appendTo('#npc_div');
 
@@ -137,9 +186,13 @@
                                 });
 
 
-                                $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'temp');
-                                $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));
-                                $('#temp').attr('id', 'npc_parent_' + passingNPCs[i]);
+                                $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'ptemp');
+                                $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));                                
+                                $('#ptemp').attr('id', 'npc_parent_' + passingNPCs[i]);
+
+                                $('#npc_child_' + (passingNPCs[i]+1)).attr('id', 'ctemp');
+                                $('#npc_child_'+ passingNPCs[i]).attr('id', 'npc_child_'+ (passingNPCs[i] + 1));                                
+                                $('#ctemp').attr('id', 'npc_child_' + passingNPCs[i]);                                                                    
                             }
                         }
                     }
@@ -151,7 +204,7 @@
                         $('#weights_'+ name_list[i]).text("Weights: " + formatSpaces(weight_list[i]));
                         $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
                         $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
-                        $("#npc_parent_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
+                        $("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
 
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
                         $('#scoreboard_' + (i+1)).html(name_list[i]);

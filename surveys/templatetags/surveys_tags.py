@@ -1,5 +1,6 @@
 from django import template
 import pdb
+import math
 
 register = template.Library()
 
@@ -18,6 +19,11 @@ def percentage(answer_objects, index):
         return 0
 
     return (local_votes*100)//total_votes
+
+@register.filter
+def emotion_percentage(emotions):
+    #returns absolute value of  0<n<1 as an integer percentage
+    return (math.sqrt(.36)*100)//1
 
 @register.filter
 def count_votes(object_list):
