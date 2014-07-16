@@ -64,8 +64,16 @@ class SurveyList(generic.ListView):
         return super(SurveyList, self).get_context_data(**kwargs)
 
 def submit_survey(request):
+    global line
     choices = []
     temp = []
+
+    context_data = {
+        'npc_list':line,
+        'npc_count':len(line),
+    }
+
+
     for key, value in request.POST.iteritems():
         if(key=="csrfmiddlewaretoken"):
             continue
@@ -74,8 +82,19 @@ def submit_survey(request):
         try:
             choices.append(get_object_or_404(Answer, pk=value))
         except(KeyError, Answer.DoesNotExist):
-            return render(request, 'surveys/questions.html', 
-            { 'not_complete':"Please answer all questions",})
+            context_data['not_complete'] = 'Please answer all of the questions'
+            return render(request, 'surveys/questions.html', context_data)
+
+    #Restrict users to a single submission
+    #TODO
+    if (request.COOKIES.has_key('submitted')):
+        context_data['not_complete'] = 'You can only submit once.'
+        return render(request, 'surveys/questions.html', context_data)
+
+    else:
+        pdb.set_trace()
+        response = HttpResponse('Submission_Cookie')
+        response.set_cookie('submitted', 'yes')
 
     for answer_obj in choices:
         answer_obj.votes += 1
@@ -84,62 +103,21 @@ def submit_survey(request):
 
 
 def homepage_view(request):
-    #ajax for updating images
-    global line
     global initialized
-    #global stateOfNPCCounter
+    global line
 
-    #passing_people = []
-
-    # if not initialized:
-    #     initialize()
-    #     initialized = True
-    # else:
-    #     print "Has been initialized "
-    #     stateOfNPCCounter += 1
-    #     #print "\n\nThe counter is :", str(stateOfNPCCounter%3) , "And the counter is " , str(stateOfNPCCounter) ,  "\n"
-    #     if (stateOfNPCCounter%3)!=0:
-    #         for indx, person in enumerate(line):
-    #             print "\nName: " , person.name, " " , str(indx)
-    #             # print "Emotion: " , person.returnEmotion()
-    #             # print "Desired Action: " , person.bestAction()
-    #             # print "Protest Cost: " , person.protestCost()
-    #             # print "Wait Cost: " , person.waitCost()
-    #             # print "Pass Cost: " , person.passCost()
-    #             # print "Resources: " , person.getResources()
-    #             # print "Weight Vector" , person.getWeights()
-    #             # print "New Resources: " , person.newResourceVector
-    #             if person.bestAction() == "Pass":
-    #                 line[indx-1].beingPassed = True
-    #             if person.bestAction() == "Protest":
-    #                 #print "\nIndex is ", str(indx), "And the len is : ", str(len(line)), "\n"
-    #                 if indx < (len(line)-1):
-    #                     line[indx+1].beingProtested == True
-    #     elif (stateOfNPCCounter%3)==0:
-    #         for indx, person in enumerate(line):
-    #             if person.finalAction():
-    #                 passing_people.append(indx)
-
-    #         print "The people passing :" , passing_people
-    #         for indx in passing_people:
-    #             if indx != 0:
-    #                 line[indx], line[indx-1] = line[indx-1], line[indx]
-
-    #         for person in line:
-    #             if person.nextAction == "Protest":
-    #                 person.nextAction = "Wait"
-
-            #displayLine()
     if not initialized:
         initialize()
         initialized = True
 
-    npc_count = len(line)
-    #print line[1].returnEmotion()
     context_data = {
         'npc_list':line,
-        'npc_count':npc_count,
+        'npc_count':len(line),
     }
+
+    response = HttpResponse()
+
+
     return render(request, 'surveys/home.html', context_data)
 
 
@@ -179,7 +157,6 @@ def ajax_view_handler(request):
         ready_to_flip = True
 
 
-
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
@@ -187,7 +164,6 @@ def ajax_view_handler(request):
     npc_resources = get_npc_resources()
     npc_new_resources = get_npc_new_resources()
     npc_count = len(line)
-
     json_response = {
         'names':npc_names,
         'actions':npc_actions,

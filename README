@@ -1,14 +1,16 @@
 Matthew Fritze
-Updated June 16 2014
+
 
 You'll need python2.7 and django version 1.6.5
-Install with pip2.7
+Install with pip
 
-$pip2.7 install Django==1.6.5
+$pip install Django==1.6.5
 
+For all the required packages run:
+#pip install -r requirements.txt
 
 To see the site, from the root directory run the command:
-$python2.7 manage.py runserver
+$python manage.py runserver
 
 In a browser go to:
 127.0.0.1:8000/

@@ -10,9 +10,9 @@
 {% block page_content %} 
     <div class="col-sm-4">    
         <a href="javascript:history.go(0)">
-            <button class="btn btn-danger" type="button">Next Step (refresh) </button>
+            <button class="btn btn-danger" type="button"> Refresh Page </button>
         </a>
-        <button id="refresh_button" class="btn btn-success" type="button"> Next Step (AJAX) </button>
+        <button id="refresh_button" class="btn btn-success" type="button"> Next Step</button>
     </div>
     <div class="col-sm-4" id="npc_div" style='position:relative'></div>
     <div class="col-sm-4">
@@ -69,20 +69,31 @@
                 return 'alert alert-info'
             } 
         }
+        function formatEmotion(emotionList){
+            return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Fear [" + emotionList[2].substring(5) + "] Sorrow [" + emotionList[3].substring(7) +"]";
+        }
 
-        function set_npc_list(){
+        function formatSpaces(dataList){
+            if( typeof dataList[0] == 'undefined'){
+                return ''
+            }
+            return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
+        }
+
+
+        function initializeNPCs(){
             {% for npc in npc_list %}
 
                 $("<div id='npc_parent_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
                     <div class='panel-heading' style='text-align:center'> \
-                        <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}} __ {{forloop.counter}} </h4> \
+                        <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}}</h4> \
                     </div> \
                     <div class='panel-body' id='npc_{{npc.sayHello}}'> \
-                        <p id='emotion_{{npc.sayHello}}'> Emotion: {{npc.getEmotion}} </p> \
-                        <p id='action_{{npc.sayHello}}'> Action: {{npc.getAction}} </p> \
-                        <p id='weights_{{npc.sayHello}}'> Weights: {{npc.getWeights}} </p> \
-                        <p id='resources_{{npc.sayHello}}'> Resources: {{npc.getResources}} </p> \
-                        <p id='newresources_{{npc.sayHello}}'> New Resources: {{npc.getNewResources}} </p> \
+                        <p id='emotion_{{npc.sayHello}}'>Emotions: {{npc.getEmotion | format_emotions}}</p> \
+                        <p id='action_{{npc.sayHello}}'>Action: {{npc.getAction}}</p> \
+                        <p id='weights_{{npc.sayHello}}'>Weights: {{npc.getWeights | format_weights}} </p> \
+                        <p id='resources_{{npc.sayHello}}'>Resources: {{npc.getResources | format_weights }} </p> \
+                        <p id='newresources_{{npc.sayHello}}'>New Resources: {{npc.getNewResources | format_weights}} </p> \
                     </div> \
                 </div>").appendTo('#npc_div');
 
@@ -91,8 +102,7 @@
             {% endfor %}
         }
 
-
-        function updateNPCs(test){
+        function updateNPCs(){
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
             xmlhttp.onload=function(){
@@ -118,8 +128,8 @@
                                 var upHeight = movingUp.outerHeight() + marginDif;
                                 var downHeight = movingDown.outerHeight() + marginDif;
                                 $.when(
-                                    movingUp.animate({top: -upHeight}, 750),
-                                    movingDown.animate({top: downHeight},750)).then( 
+                                    movingUp.animate({top: -downHeight}, 750),
+                                    movingDown.animate({top: upHeight},750)).then( 
                                     function(){ 
                                         movingUp.insertBefore(movingDown);
                                         movingUp.css('top', '0px');
@@ -151,20 +161,12 @@
             xmlhttp.send();
         }
 
-        function formatEmotion(emotionList){
-            return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Fear [" + emotionList[2].substring(5) + "] Sorrow [" + emotionList[3].substring(7) +"]";
-        }
-
-        function formatSpaces(dataList){
-            return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
-        }
-
         $('document').ready(function(){
             $('#refresh_button').click(function(){
                 updateNPCs();
             });
 
-            set_npc_list();
+            initializeNPCs();
         });
     </script>
 {% endblock js %}
