@@ -113,6 +113,24 @@
             return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
         }
 
+        function getEmotionPercent(emotions, n){
+            switch(n){
+                case 0:
+                    //joy
+                    var joy = parseFloat(emotionList[0].substring(4));
+                    return (parseInt(joy*100)).toString()
+                case 1:
+                    var hope = parseFloat(emotionList[1].substring(5));
+                    return (parseInt(hope*100)).toString()
+                case 2:
+                    var fear = parseFloat(emotionList[2].substring(5));
+                    return (parseInt(fear*100)).toString()
+                case 3:
+                    var sorrow = parseFloat(emotionList[3].substring(7));
+                    return (parseInt(sorrow*100)).toString()
+            }
+        }
+
 
         function initializeNPCs(){
             {% for npc in npc_list %}
@@ -134,14 +152,14 @@
                     </div> \
                     <div class='col-sm-5'> \
                         <dl style='width:100%'> \
-                            <dt>Joy</dt> \
-                            <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | emotion_percentage}}%'> {{npc.getEmotion | emotion_percentage}}</div></dd> \
-                            <dt>Hope</dt> \
-                            <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: 80%'>CHANGE ME</div></dd> \
-                            <dt>Fear</dt> \
-                            <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: 64%'> CHANGE ME</div></dd> \
+                            <dt>Joy   </dt> \
+                            <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_joy_percent }}%'> {{npc.getEmotion | get_joy_percent }}%</div></dd> \
+                            <dt>Hope  </dt> \
+                            <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_hope_percent}}%'> {{npc.getEmotion | get_hope_percent}}%</div></dd> \
+                            <dt>Fear  </dt> \
+                            <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_fear_percent}}%'> {{npc.getEmotion | get_fear_percent}}%</div></dd> \
                             <dt>Sorrow</dt> \
-                            <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: 97%'>CHANGE ME</div></dd> \
+                            <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_sorrow_percent}}%'>{{npc.getEmotion | get_sorrow_percent}}%</div></dd> \
                         </dl> \
                     </div> \
                 </div>").appendTo('#npc_div');
@@ -205,7 +223,16 @@
                         $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
                         $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
                         $("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
-
+                        //graph stuff
+                        //$('#joybar_' + name_list[i]).text(getEmotionPercent(emotion_list[i], 0));
+                        //$('#joybar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 0) + '%');
+                        //$('#hopebar_' + name_list[i]).text(getEmotionPercent(emotion_list[i], 1));
+                        //$('#hopebar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 1) +'%');
+                        //$('#fearbar_' + name_list[i]).text(getEmotionPercent(emotion_list[i], 2));
+                        //$('#fearbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 2) + '%');                        
+                        $('#sorrowbar_' + name_list[i]).text(getEmotionPercent(emotion_list[i], 3));
+                        $('#sorrowbar_'+name_list[i]).width('40' + '%');
+                        //side view stuff
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
                         $('#scoreboard_' + (i+1)).html(name_list[i]);
                     }

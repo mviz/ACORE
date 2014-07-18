@@ -21,11 +21,6 @@ def percentage(answer_objects, index):
     return (local_votes*100)//total_votes
 
 @register.filter
-def emotion_percentage(emotions):
-    #returns absolute value of  0<n<1 as an integer percentage
-    return (math.sqrt(.36)*100)//1
-
-@register.filter
 def count_votes(object_list):
     count = 0
     for obj in object_list:
@@ -84,3 +79,29 @@ def progress_color(index):
         return 'progress-bar-warning'
     elif(index%4 == 3):
         return 'progress-bar-danger'
+
+@register.filter
+def get_joy_percent(emotions):
+    joy  = emotions[0][4:]
+    joy = float(joy)
+    return int(joy*100//1)
+
+@register.filter
+def get_hope_percent(emotions):
+    hope = emotions[1][5:]
+    hope = float(hope)
+    return int(hope*100//1)
+
+@register.filter
+def get_fear_percent(emotions):
+    fear = emotions[2][5:]
+    fear = float(fear)
+    return int(fear*100//1)
+
+@register.filter
+def get_sorrow_percent(emotions):
+    sorrow = emotions[3][7:]
+    sorrow = float(sorrow)
+    #return int(sorrow*100//1)
+    return 20
+
