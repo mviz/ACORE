@@ -84,24 +84,24 @@ def progress_color(index):
 def get_joy_percent(emotions):
     joy  = emotions[0][4:]
     joy = float(joy)
-    return int(joy*100//1)
+    return int(math.fabs(joy)*100//1)
 
 @register.filter
 def get_hope_percent(emotions):
     hope = emotions[1][5:]
     hope = float(hope)
-    return int(hope*100//1)
+    return int(math.fabs(hope)*100//1)
 
 @register.filter
 def get_fear_percent(emotions):
     fear = emotions[2][5:]
     fear = float(fear)
-    return int(fear*100//1)
+    return int(math.fabs(fear)*100//1)
 
 @register.filter
 def get_sorrow_percent(emotions):
     sorrow = emotions[3][7:]
     sorrow = float(sorrow)
-    #return int(sorrow*100//1)
-    return 20
+    return int(math.fabs(sorrow)*100//1)
+
 
