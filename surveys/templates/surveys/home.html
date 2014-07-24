@@ -33,7 +33,6 @@
     .graph_bar {
         margin-bottom: 10px;
         color: #fff;
-        padding: 4px;
         text-align: center;
         border-radius: 2px;
         height: 30px;
@@ -115,55 +114,48 @@
         }
 
         function getEmotionPercent(emotions, n){
-            //TODO the issue here is that the the values are less than 0, and this is passing the front half of the string, rather htan teh back half
-            // when it sees teh period, it should send the next non- zero end of teh subsgtring. as in -- if the number is -0.06, after it sees the
-            // '.' it should send teh rest of the substring. confirm they can never be longer than 2 decimals
             switch(n){
                 case 0:
                     var joy_string = emotions[0].substring(4);
                     for(var i = 0; i < joy_string.length ; i ++){
-                        $('<p> JoyString:' + joy_string +' currentChar: ' + joy_string.charAt(i) + '</p>').prependTo('#npc_div');
                         if(joy_string.charAt(i) == '.'){
-                            if(joy_string.charAt(0) == '-'){
-                                return joy_string.substring(1,i);
+                            if((joy_string.charAt(i+1) == '0') && (joy_string.substring(i+1).length > 1)){
+                                return joy_string.substring(i+2);
                             }
-                            return joy_string.substring(0,i);
+                            return joy_string.substring(i+1);
                         }
                     }
                     break;
                 case 1:
-                    var hope_string = emotions[0].substring(5);
+                    var hope_string = emotions[1].substring(5);
                     for(var i = 0; i < hope_string.length ; i ++){
-                        $('<p> hopestring: ' + hope_string +'currentChar: ' + hope_string.charAt(i) + '</p>').prependTo('#npc_div');
                         if(hope_string.charAt(i) == '.'){
-                            if(hope_string.charAt(0) == '-'){
-                                return hope_string.substring(1,i);
+                            if((hope_string.charAt(i+1) == '0') && (hope_string.substring(i+1).length > 1)){
+                                return hope_string.substring(i+2);
                             }
-                            return hope_string.substring(0,i);
+                            return hope_string.substring(i+1);
                         }
                     }
                     break;
                 case 2:
-                    var fear_string = emotions[0].substring(5);
+                    var fear_string = emotions[2].substring(5);
                     for(var i = 0; i < fear_string.length ; i ++){
-                        $('<p> fear_string:' + fear_string + 'cur char:' + fear_string.charAt(i) +'</p>').prependTo('#npc_div');
                         if(fear_string.charAt(i) == '.'){
-                            if(fear_string.charAt(0) == '-'){
-                                return fear_string.substring(1,i);
+                            if((fear_string.charAt(i+1) == '0') && (fear_string.substring(i+1).length > 1)){
+                                return fear_string.substring(i+2);
                             }
-                            return fear_string.substring(0,i);
+                            return fear_string.substring(i+1);
                         }
                     }
                     break;
                 case 3:
-                    var sorrow_string = emotions[0].substring(7);
+                    var sorrow_string = emotions[3].substring(7);
                     for(var i = 0; i < sorrow_string.length ; i ++){
-                        $('<p> sorrow_string' + sorrow_string + 'cur char:' +  sorrow_string.charAt(i) + '</p>').prependTo('#npc_div');
                         if(sorrow_string.charAt(i) == '.'){
-                            if(sorrow_string.charAt(0) == '-'){
-                                return sorrow_string.substring(1,i);
+                            if((sorrow_string.charAt(i+1) == '0')  && (sorrow_string.substring(i+1).length > 1)){
+                                return sorrow_string.substring(i+2);
                             }
-                            return sorrow_string.substring(0,i);
+                            return sorrow_string.substring(i+1);
                         }
                     }
                     break;
