@@ -13,6 +13,7 @@ from npc import human
 import time
 from random import random, randint
 
+###                  The Global Variables           ###
 counter = 0
 line = []
 stateOfNPCCounter = 0
@@ -20,6 +21,9 @@ nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris",
 "Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam",
 "Ahmed", "Merriam"]
 initialized = False
+gameStatus = 'initial'
+###                 End of Global Variables          ###
+
 
 def makeNPC():
     global counter
@@ -29,23 +33,24 @@ def makeNPC():
     counter += 1
     return npc
 
-def initialize():
+def initialize(numInLine):
     global line
     count = 0
-    for count in range(6):
+    for count in range(numInLine):
         line.append(makeNPC())
         count += 1
 
 def displayLine():
     for person in line:
         print "\nName: " , person.name
-        print "Emotion: " , person.emotion
-        print "Desired Action: " , person.bestAction()
-        print "Protest Cost: " , person.protestCost()
-        print "Wait Cost: " , person.waitCost()
-        print "Pass Cost: " , person.passCost()
-        print "Resources: " , person.resourceVector
-        print "New Resources: " , person.newResourceVector
+        print "Emotion: " , person.getEmotion()
+        print "Desired Action: " , person.nextAction
+        #print "Protest Cost: " , round(person.protestCost(), 2)
+        #print "Wait Cost: " , round(person.waitCost(), 2)
+        #print "Pass Cost: " , round(person.passCost(), 2)
+        #print "Resources: " , person.resourceVector
+        #print "Weight Vector" , [round(Weight, 2) for Weight in person.resourceWeights]
+        #print "New Resources: " , person.newResourceVector
 
 
 
@@ -103,11 +108,16 @@ def submit_survey(request):
 
 
 def homepage_view(request):
-    global initialized
-    global line
+    global stateOfNPCCounter, gameStatus, initialized
+    #raw_input("\nNext Step?\n:")
 
-    if not initialized:
-        initialize()
+
+    if initialized:
+        if len(line) == 0:
+            gameStatus = 'Over'
+            print '\n ----------Game Over!------------ \n'
+    else:
+        initialize(numInLine = 6)  #The parameter tells the number of elements
         initialized = True
 
     context_data = {
@@ -122,38 +132,88 @@ def homepage_view(request):
 
 
 def ajax_view_handler(request):
-    global line
-    global stateOfNPCCounter
+    global line, gameStatus
 
     passing_people = []
     ready_to_flip = False
 
-    stateOfNPCCounter += 1
-
-    if (stateOfNPCCounter%3)!=0:
+    if gameStatus == 'initial':
+        print 'The game status is ' , gameStatus
         for indx, person in enumerate(line):
-            print "\nName: " , person.name, " " , str(indx)
+            person.decidePass(indx)
 
-            if person.bestAction() == "Pass":
-                line[indx-1].beingPassed = True
-            if person.bestAction() == "Protest":
-                #print "\nIndex is ", str(indx), "And the len is : ", str(len(line)), "\n"
-                if indx < (len(line)-1):
-                    line[indx+1].beingProtested == True
-    elif (stateOfNPCCounter%3)==0:
         for indx, person in enumerate(line):
-            if person.finalAction():
-                passing_people.append(indx)
+            if person.nextAction == 'Pass':
+                person.newResourceVector = [1, 0.5, person.resourceVector[2]+0.3]
+                person.computeEmotion(0.95)
 
-        print "The people passing :" , passing_people
-        for indx in passing_people:
+        displayLine()
+        gameStatus = 'protest?'
+
+    elif gameStatus == 'protest?':
+        print 'The game status is ' , gameStatus
+        for indx, person in enumerate(line):
+            if indx < (len(line)-1):
+                person.decideProtest(beingPassed = (line[indx+1].nextAction == "Pass"))
+
+        for indx, person in enumerate(line):
+            if indx < (len(line)-1):
+                person.sanityCheck(indx, notbeingPassed = (line[indx+1].nextAction != 'Pass'))
+
+        for indx, person in enumerate(line):
+            if person.nextAction == 'Protest':
+                person.newResourceVector = [1, 0.85, person.resourceVector[2]]
+                person.resourceVector[2] =- 0.3
+                person.computeEmotion(0.95)
+
+
+        displayLine()
+        gameStatus = 'penultimate'
+
+    elif gameStatus == 'penultimate':
+        print 'The game status is ' , gameStatus
+        for indx, person in enumerate(line):
             if indx != 0:
-                line[indx], line[indx-1] = line[indx-1], line[indx]
+                if person.nextAction == 'Pass' and line[indx-1].nextAction == 'Protest':
+                    if random() < 0.50:
+                        print 'Being protested'
+                        person.nextAction = 'Pass_Success'
+                        person.computeEmotion(1)
+                        line[indx-1].nextAction = 'Wait'
+                        line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx-1].resourceVector[2]-0.3]
+                        line[indx-1].computeEmotion(1)
+                        line[indx-1].resourceVector = line[indx-1].newResourceVector
+                        line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
+                    else:
+                        person.nextAction = 'Pass_Fail'
+                        person.newResourceVector = [1, 0.5, person.resourceVector[2]]
+                        person.computeEmotion(1)
+                elif person.nextAction == 'Pass' and line[indx-1].nextAction == 'Wait':
+                    if random() < 0.95:
+                        print 'Not being protested'
+                        person.nextAction = 'Pass_Success'
+                        person.computeEmotion(1)
+                        line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx-1].resourceVector[2]-0.3]
+                        line[indx-1].computeEmotion(1)
+                        line[indx-1].resourceVector = line[indx-1].newResourceVector
+                        line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
+                    else:
+                        person.nextAction = 'Pass_Fail'
+                        person.newResourceVector = [1, 0.5, person.resourceVector[2]]
+                        person.computeEmotion(1)
 
+        displayLine()
+        gameStatus = 'final'
+
+    elif gameStatus == 'final':
+        print '\nThe game status is ' , gameStatus
+        print str(line[0].name) , 'gets the Occulus Rift'
+        line.pop(0)
         for person in line:
-            if person.nextAction == "Protest":
-                person.nextAction = "Wait"
+            person.nextAction = 'Wait'
 
+        displayLine()
+        gameStatus = 'initial'
         ready_to_flip = True
 
 

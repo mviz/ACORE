@@ -93,15 +93,15 @@ def get_hope_percent(emotions):
     return int(math.fabs(hope)*100//1)
 
 @register.filter
-def get_fear_percent(emotions):
-    fear = emotions[2][5:]
-    fear = float(fear)
-    return int(math.fabs(fear)*100//1)
-
-@register.filter
 def get_sorrow_percent(emotions):
-    sorrow = emotions[3][7:]
+    sorrow = emotions[2][7:]
     sorrow = float(sorrow)
     return int(math.fabs(sorrow)*100//1)
+
+@register.filter
+def get_fear_percent(emotions):
+    fear = emotions[3][5:]
+    fear = float(fear)
+    return int(math.fabs(fear)*100//1)
 
 
