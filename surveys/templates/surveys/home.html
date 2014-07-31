@@ -19,7 +19,7 @@
 {% endblock page_content %}
 
 
-    {% block css %}
+{% block css %}
 <style>
     * { 
         font-family: Helvetica, Arial;
@@ -94,16 +94,16 @@
                 return 'alert alert-info';
             } else if (action == 'Pass'){
                 return 'alert alert-warning';
-            } else if (action == 'Passed_Successfully'){
+            } else if (action == 'Pass_Success'){
                 return 'alert alert-success';
             } else if (action == 'Protest'){
                 return 'alert alert-danger';
-            } else if (action == 'Pass_Failed'){
+            } else if (action == 'Pass_Fail'){
                 return 'alert alert-info'
             } 
         }
         function formatEmotion(emotionList){
-            return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Fear [" + emotionList[2].substring(5) + "] Sorrow [" + emotionList[3].substring(7) +"]";
+            return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Sorrow [" + emotionList[2].substring(7) + "] Fear [" + emotionList[3].substring(5) +"]";
         }
 
         function formatSpaces(dataList){
@@ -138,24 +138,24 @@
                     }
                     break;
                 case 2:
-                    var fear_string = emotions[2].substring(5);
-                    for(var i = 0; i < fear_string.length ; i ++){
-                        if(fear_string.charAt(i) == '.'){
-                            if((fear_string.charAt(i+1) == '0') && (fear_string.substring(i+1).length > 1)){
-                                return fear_string.substring(i+2);
-                            }
-                            return fear_string.substring(i+1);
-                        }
-                    }
-                    break;
-                case 3:
-                    var sorrow_string = emotions[3].substring(7);
+                    var sorrow_string = emotions[2].substring(7);
                     for(var i = 0; i < sorrow_string.length ; i ++){
                         if(sorrow_string.charAt(i) == '.'){
                             if((sorrow_string.charAt(i+1) == '0')  && (sorrow_string.substring(i+1).length > 1)){
                                 return sorrow_string.substring(i+2);
                             }
                             return sorrow_string.substring(i+1);
+                        }
+                    }
+                    break;
+                case 3:
+                    var fear_string = emotions[3].substring(5);
+                    for(var i = 0; i < fear_string.length ; i ++){
+                        if(fear_string.charAt(i) == '.'){
+                            if((fear_string.charAt(i+1) == '0') && (fear_string.substring(i+1).length > 1)){
+                                return fear_string.substring(i+2);
+                            }
+                            return fear_string.substring(i+1);
                         }
                     }
                     break;
@@ -187,10 +187,10 @@
                             <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_joy_percent }}%'> &nbsp</div></dd> \
                             <dt id='hopetext_{{npc.sayHello}}'> Hope  {{npc.getEmotion | get_hope_percent}}%</dt> \
                             <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_hope_percent}}%'> &nbsp</div></dd> \
-                            <dt id='feartext_{{npc.sayHello}}'> Fear {{npc.getEmotion | get_fear_percent}}%</dt> \
-                            <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_fear_percent}}%'> &nbsp </div></dd> \
                             <dt id='sorrowtext_{{npc.sayHello}}'>Sorrow {{npc.getEmotion | get_sorrow_percent}}%</dt> \
                             <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_sorrow_percent}}%'> &nbsp </div></dd> \
+                            <dt id='feartext_{{npc.sayHello}}'> Fear {{npc.getEmotion | get_fear_percent}}%</dt> \
+                            <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_fear_percent}}%'> &nbsp </div></dd> \
                         </dl> \
                     </div> \
                 </div>").appendTo('#npc_div');
@@ -218,31 +218,28 @@
 
                     if(finalAction){
                         for(var i=0; i < passingNPCs.length; i ++){
-                            if(passingNPCs[i] != 0){
-
-                                var movingUp = $('#npc_parent_'+ (passingNPCs[i] + 1));
-                                var movingDown = $('#npc_parent_' + passingNPCs[i]);
-                                var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
-                                var upHeight = movingUp.outerHeight() + marginDif;
-                                var downHeight = movingDown.outerHeight() + marginDif;
-                                $.when(
-                                    movingUp.animate({top: -downHeight}, 750),
-                                    movingDown.animate({top: upHeight},750)).then( 
-                                    function(){ 
-                                        movingUp.insertBefore(movingDown);
-                                        movingUp.css('top', '0px');
-                                        movingDown.css('top', '0px');
-                                });
+                            var movingUp = $('#npc_parent_'+ (passingNPCs[i] + 1));
+                            var movingDown = $('#npc_parent_' + passingNPCs[i]);
+                            var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
+                            var upHeight = movingUp.outerHeight() + marginDif;
+                            var downHeight = movingDown.outerHeight() + marginDif;
+                            $.when(
+                                movingUp.animate({top: -downHeight}, 750),
+                                movingDown.animate({top: upHeight},750)).then( 
+                                function(){ 
+                                    movingUp.insertBefore(movingDown);
+                                    movingUp.css('top', '0px');
+                                    movingDown.css('top', '0px');
+                            });
 
 
-                                $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'ptemp');
-                                $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));                                
-                                $('#ptemp').attr('id', 'npc_parent_' + passingNPCs[i]);
+                            $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'ptemp');
+                            $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));                                
+                            $('#ptemp').attr('id', 'npc_parent_' + passingNPCs[i]);
 
-                                $('#npc_child_' + (passingNPCs[i]+1)).attr('id', 'ctemp');
-                                $('#npc_child_'+ passingNPCs[i]).attr('id', 'npc_child_'+ (passingNPCs[i] + 1));                                
-                                $('#ctemp').attr('id', 'npc_child_' + passingNPCs[i]);                                                                    
-                            }
+                            $('#npc_child_' + (passingNPCs[i]+1)).attr('id', 'ctemp');
+                            $('#npc_child_'+ passingNPCs[i]).attr('id', 'npc_child_'+ (passingNPCs[i] + 1));                                
+                            $('#ctemp').attr('id', 'npc_child_' + passingNPCs[i]);                                                                    
                         }
                     }
 
@@ -263,11 +260,10 @@
                         $('#joybar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 0) + '%');
                         $('#hopetext_' + name_list[i]).text('Hope ' + getEmotionPercent(emotion_list[i], 1) + '%');
                         $('#hopebar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 1) +'%');
-                        $('#feartext_' + name_list[i]).text('Fear ' + getEmotionPercent(emotion_list[i], 2) + '%');
-                        $('#fearbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 2) + '%');                        
-                        $('#sorrowtext_' + name_list[i]).text('Sorrow ' + getEmotionPercent(emotion_list[i], 3) + '%');
-                        $('#sorrowbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 3) + '%');
-
+                        $('#sorrowtext_' + name_list[i]).text('Sorrow ' + getEmotionPercent(emotion_list[i], 2) + '%');
+                        $('#sorrowbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 2) + '%');
+                        $('#feartext_' + name_list[i]).text('Fear ' + getEmotionPercent(emotion_list[i], 3) + '%');
+                        $('#fearbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 3) + '%');                        
                     }
 
             }

@@ -209,8 +209,13 @@ def ajax_view_handler(request):
         print '\nThe game status is ' , gameStatus
         print str(line[0].name) , 'gets the Occulus Rift'
         line.pop(0)
-        for person in line:
+        pdb.set_trace()
+        for index, person in enumerate(line):
+            if(person.nextAction == 'Pass_Success'):
+                passing_people.append(index)
             person.nextAction = 'Wait'
+
+        pdb.set_trace()
 
         displayLine()
         gameStatus = 'initial'
