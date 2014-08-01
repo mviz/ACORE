@@ -80,11 +80,11 @@
                 return 'panel panel-primary';
             } else if (action == 'Pass'){
                 return 'panel panel-warning';
-            } else if (action == 'Passed_Successfully'){
+            } else if (action == 'Pass_Success'){
                 return 'panel panel-success';
             } else if (action == 'Protest'){
                 return 'panel panel-danger';
-            } else if (action == 'Pass_Failed'){
+            } else if (action == 'Fail'){
                 return 'panel panel-default'
             } 
         }
@@ -207,16 +207,19 @@
                     var npc_data = JSON.parse(xmlhttp.response);
 
                     //TODO at some point this should be changed to camelCase since it's javascript
+                    var npc_count = npc_data["npc_count"];
                     var name_list = npc_data["names"];
                     var action_list = npc_data["actions"];
                     var emotion_list = npc_data["emotions"];
                     var weight_list = npc_data["weights"];
                     var resource_list = npc_data["resources"];
                     var newresource_list = npc_data["newresources"];
-                    var finalAction = npc_data["finalAction"];
+                    var gameStatus = npc_data["gameStatus"];
                     var passingNPCs = npc_data["passing_list"];
+                    //$('<p>' + gameStatus + ' </p>').appendTo('#scoreboard')
+                    //$('<p> ' + passingNPCs.length +' </p>').appendTo('#scoreboard')
 
-                    if(finalAction){
+                    if(gameStatus == 'penultimate'){ 
                         for(var i=0; i < passingNPCs.length; i ++){
                             var movingUp = $('#npc_parent_'+ (passingNPCs[i] + 1));
                             var movingDown = $('#npc_parent_' + passingNPCs[i]);
@@ -241,9 +244,48 @@
                             $('#npc_child_'+ passingNPCs[i]).attr('id', 'npc_child_'+ (passingNPCs[i] + 1));                                
                             $('#ctemp').attr('id', 'npc_child_' + passingNPCs[i]);                                                                    
                         }
+                    } else if (gameStatus == 'final'){
+                        //$('<p> About to delete </p>').appendTo('#scoreboard');
+                        var npcPanel = document.getElementById('npc_parent_1');
+                        var npcName = document.getElementById('scoreboard_1');
+                        //var panelHeight = npcPanel.outerHeight();
+                        npcPanel.parentNode.removeChild(npcPanel);
+                        npcName.parentNode.removeChild(npcName);
+
+                        for(var i = 1; i < npc_count + 1; i ++){
+                            //var npcName = name_list[i-1];
+                            // npc_parent_ npc_child_ 
+                            $('#npc_parent_' + (i+1)).attr('id', 'npc_parent_' + i);
+                            $('#npc_child_' + (i+1)).attr('id', 'npc_parent_' + i);
+                            $('#scoreboard_' + (i+1)).attr('id', 'scoreboard_' + i);
+                        }
+                        // $.when(
+                        //     npcPanel.animate({opacity: -1}, 500)
+                        //     // , function(){ 
+                        //     //     for(var i = 0; i < npc_count; i ++){ 
+                        //     //         var temp_npc = document.getElementById('npc_parent_' + (i + 1));
+                        //     //         temp_npc.animate({top: panelHeight}, 500); 
+                        //     //     } 
+                        //     // }
+                        // ).then( 
+                        //     function(){ 
+                        //         npcPanel.parentNode.removeChild(npcPanel);
+                        //         npcName.parentNode.removeChild(npcName);
+                        //         // code here for renaming all the IDs, panels & scoreboards. set css top value for each of them to 0 first.
+                        //         //movingDown.css('top', '0px');
+                        // });
+
+                        //$('<p> done deleting </p>').appendTo('#scoreboard');
+
+                        // TODO change the top part such that you fade the PANEL out whilst moving the other panels
+                        // up the height of that panel
+                        // also needs to change the IDs of each element or the naming can't be fixed
+                        // ORder of thigns: (fade npc_1 and delte) - (Shift all other npcs up {height of npc_1})
+                        // - (rename all npc_x to npc_x-1)
+
                     }
 
-                    for(var i = 0; i < npc_data["npc_count"]; i++){
+                    for(var i = 0; i < npc_count; i++){
                         $('#name_' + name_list[i]).text(name_list[i]);
                         $('#emotion_'+ name_list[i]).text("Emotions: " + formatEmotion(emotion_list[i]));  
                         $('#action_'+ name_list[i]).text("Action: " + action_list[i]);

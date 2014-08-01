@@ -14,7 +14,6 @@ TODO
 
     - ON page reresh, if someone failed a pass the name on the side is smaller
     - When the step is "the switch", you need to check whoever's getting popped, and delete their html. We now have the issue that the person in front has the ID of 2, instead of 1. Is this an issue though? Investigate.
-    - No passing will actually happen since teh list of passing NPCs is always empty. Need to update that list and pass it on. -- FIx the deletion first though, since if you don't the IDs will be screwed up.
     - graphs are out of order
     - side names don't get deleted
     - Does Yathi want absolute value shown in a different way? Like if it's negative, should be bar maybe change colors? Maybe a graph like:
@@ -23,3 +22,8 @@ TODO
               [-20%]----| 
 
     - Make an animation signifying that the person is getting the oculus rift. 
+
+
+
+
+    Need a button which resets the game entirely.

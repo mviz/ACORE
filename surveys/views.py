@@ -202,6 +202,9 @@ def ajax_view_handler(request):
                         person.newResourceVector = [1, 0.5, person.resourceVector[2]]
                         person.computeEmotion(1)
 
+        for index, person in enumerate(line):
+            if(person.getAction() == 'Pass_Success'):
+                passing_people.append(index + 1) # +2 because they already made the pass, and the css is indexed from 1
         displayLine()
         gameStatus = 'final'
 
@@ -209,18 +212,11 @@ def ajax_view_handler(request):
         print '\nThe game status is ' , gameStatus
         print str(line[0].name) , 'gets the Occulus Rift'
         line.pop(0)
-        pdb.set_trace()
-        for index, person in enumerate(line):
-            if(person.nextAction == 'Pass_Success'):
-                passing_people.append(index)
+        for person in line:
             person.nextAction = 'Wait'
-
-        pdb.set_trace()
 
         displayLine()
         gameStatus = 'initial'
-        ready_to_flip = True
-
 
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
@@ -238,9 +234,20 @@ def ajax_view_handler(request):
         'newresources':npc_new_resources, 
         "npc_count":npc_count,
         "passing_list": passing_people,
-        "finalAction": ready_to_flip,
+        "gameStatus": convert_game_status(gameStatus),
     }
+
     return HttpResponse(json.dumps(json_response), content_type='application/json')
+
+def convert_game_status(status):
+    if(status == 'protest?'):
+        return 'initial'
+    elif(status == 'penultimate'):
+        return 'protest?'
+    elif(status=='final'):
+        return 'penultimate'
+    else:
+        return 'final'
 
 # TODO figure out how to pass a method from another file & inside a class to a function
 def get_npc_names():
