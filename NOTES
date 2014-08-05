@@ -19,9 +19,13 @@ TODO
                         | --- [14%]
               [-20%]----| 
 
-    - Make an animation signifying that the person is getting the oculus rift. 
-
-
+    - graph values can go much farther than 100%, extending past the thingy
+    - on page refresh, if the npc had a pass fail, the outline is clear
 
 
     Need a button which resets the game entirely.
+
+    -- WEDNESDAY MORNING*****
+    Bascially, the scoreboard on the right is slow to update. Don't know why. There must be some pending operation slowing it down.
+    Also, occaisionally, not all of the elements are actually going to move. This may alos ahve to do with some pending animation.
+    Maybe check if there is a way of testing "Is ongoing animation?"

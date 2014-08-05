@@ -166,7 +166,7 @@
         function initializeNPCs(){
             {% for npc in npc_list %}
 
-                $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12'> \
+                $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12 npc-container'> \
                     <div class='col-sm-7'> \
                         <div id='npc_child_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
                             <div class='panel-heading' style='text-align:center'> \
@@ -200,6 +200,23 @@
             {% endfor %}
         }
 
+        // function shiftLineAnimation(npcCount, height){
+        //     return $.Deferred(function(){
+        //         var self = this;
+
+        //         setTimeout(function() {   // <-- example of some async operation
+        //             $('<p> animating all panels </p>').appendTo('#scoreboard');
+
+        //             for(var i = 2; i <= npcCount + 1; i++){
+        //                 $('#npc_parent_' + i).animate({top: height}, {duration:3000, queue:false});
+        //             }                    
+        //             self.resolve();       // <-- call resolve method once async is done
+        //         }, 3000);
+
+        //         $('<p> done animating all panels </p>').appendTo('#scoreboard'); 
+        //     });
+        // }
+
         function updateNPCs(){
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
@@ -221,8 +238,9 @@
 
                     if(gameStatus == 'penultimate'){ 
                         for(var i=0; i < passingNPCs.length; i ++){
-                            var movingUp = $('#npc_parent_'+ (passingNPCs[i] + 1));
-                            var movingDown = $('#npc_parent_' + passingNPCs[i]);
+                            var passingIndex = passingNPCs[i]
+                            var movingUp = $('#npc_parent_'+ (passingIndex + 1));
+                            var movingDown = $('#npc_parent_' + passingIndex);
                             var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
                             var upHeight = movingUp.outerHeight() + marginDif;
                             var downHeight = movingDown.outerHeight() + marginDif;
@@ -236,40 +254,37 @@
                             });
 
 
-                            $('#npc_parent_'+ (passingNPCs[i]+1)).attr('id', 'ptemp');
-                            $('#npc_parent_'+ passingNPCs[i]).attr('id', 'npc_parent_'+ (passingNPCs[i] + 1));                                
-                            $('#ptemp').attr('id', 'npc_parent_' + passingNPCs[i]);
+                            $('#npc_parent_'+ (passingIndex+1)).attr('id', 'ptemp');
+                            $('#npc_parent_'+ passingIndex).attr('id', 'npc_parent_'+ (passingIndex + 1));                                
+                            $('#ptemp').attr('id', 'npc_parent_' + passingIndex);
 
-                            $('#npc_child_' + (passingNPCs[i]+1)).attr('id', 'ctemp');
-                            $('#npc_child_'+ passingNPCs[i]).attr('id', 'npc_child_'+ (passingNPCs[i] + 1));                                
-                            $('#ctemp').attr('id', 'npc_child_' + passingNPCs[i]);                                                                    
+                            $('#npc_child_' + (passingIndex+1)).attr('id', 'ctemp');
+                            $('#npc_child_'+ passingIndex).attr('id', 'npc_child_'+ (passingIndex + 1));                                
+                            $('#ctemp').attr('id', 'npc_child_' + passingIndex);
+
+                            $('#scoreboard_' + (passingIndex)).html(name_list[passingIndex-1]);
+                            $('#scoreboard_' + (passingIndex + 1)).html(name_list[passingIndex]);
                         }
                     } else if (gameStatus == 'final'){
-                        var npcPanel = document.getElementById('npc_parent_1');
-                        var npcName = document.getElementById('scoreboard_1');
                         var panelHeight = $('#npc_parent_1').outerHeight();
+
                         $.when(
-                            $('#npc_parent_1').fadeOut(500),
-                            function(){
-                                for(var i = 2; i <= npc_count; i++){
-                                    $('#npc_parent_' + i).animate({top: -panelHeight}, 500);
-                                }
-                            }.then(
-                                function(){
-                                    $('#npc_parent_1').parentNode.removeChild('#npc_parent_1');
-                                    $('#scoreboard_1').parentNode.removeChild('#scoreboard_1');
+                            $('#npc_parent_1').animate({opacity: 0}, 750),
+                            $('.npc-container').not('#test1').animate({top: -panelHeight}, 750)).then(
 
-                                    for(var i = 2; i <=npc_count; i++){
-                                        $('#npc_parent_' + i).css('top', '0px');
+                        function () {
+                            var npcPanel = document.getElementById('npc_parent_1');
+                            var npcName = document.getElementById('scoreboard_1');
+                            npcPanel.parentNode.removeChild(npcPanel);
+                            npcName.parentNode.removeChild(npcName);
+                            $('.npc-container').css('top', '0px');
 
-                                        $('#npc_parent_' + i).attr('id', 'npc_parent_' + (i-1));
-                                        $('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
-                                        $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
-
-                                    }
-                                }
-                            )
-                        );
+                            for(var i = 2; i <=npc_count + 1; i++){
+                                $('#npc_parent_' + i).attr('id', 'npc_parent_' + (i-1));
+                                $('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
+                                $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
+                            }
+                        });
 
                         //$('<p> About to delete </p>').appendTo('#scoreboard');
                         // var npcPanel = document.getElementById('npc_parent_1');
@@ -304,9 +319,9 @@
                         $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
                         $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
                         $("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
-                        
+    
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
-                        $('#scoreboard_' + (i+1)).html(name_list[i]);
+
 
                         //graph stuff
                         $('#joytext_' + name_list[i]).text('Joy ' + getEmotionPercent(emotion_list[i], 0) + '%');
