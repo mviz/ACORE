@@ -13,9 +13,7 @@ TODO
 
 
     - ON page reresh, if someone failed a pass the name on the side is smaller
-    - When the step is "the switch", you need to check whoever's getting popped, and delete their html. We now have the issue that the person in front has the ID of 2, instead of 1. Is this an issue though? Investigate.
-    - graphs are out of order
-    - side names don't get deleted
+
     - Does Yathi want absolute value shown in a different way? Like if it's negative, should be bar maybe change colors? Maybe a graph like:
                         | ------- [40%]
                         | --- [14%]

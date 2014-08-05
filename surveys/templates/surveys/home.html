@@ -245,43 +245,54 @@
                             $('#ctemp').attr('id', 'npc_child_' + passingNPCs[i]);                                                                    
                         }
                     } else if (gameStatus == 'final'){
-                        //$('<p> About to delete </p>').appendTo('#scoreboard');
                         var npcPanel = document.getElementById('npc_parent_1');
                         var npcName = document.getElementById('scoreboard_1');
-                        //var panelHeight = npcPanel.outerHeight();
-                        npcPanel.parentNode.removeChild(npcPanel);
-                        npcName.parentNode.removeChild(npcName);
+                        var panelHeight = $('#npc_parent_1').outerHeight();
+                        $.when(
+                            $('#npc_parent_1').fadeOut(500),
+                            function(){
+                                for(var i = 2; i <= npc_count; i++){
+                                    $('#npc_parent_' + i).animate({top: -panelHeight}, 500);
+                                }
+                            }.then(
+                                function(){
+                                    $('#npc_parent_1').parentNode.removeChild('#npc_parent_1');
+                                    $('#scoreboard_1').parentNode.removeChild('#scoreboard_1');
 
-                        for(var i = 1; i < npc_count + 1; i ++){
-                            //var npcName = name_list[i-1];
-                            // npc_parent_ npc_child_ 
-                            $('#npc_parent_' + (i+1)).attr('id', 'npc_parent_' + i);
-                            $('#npc_child_' + (i+1)).attr('id', 'npc_parent_' + i);
-                            $('#scoreboard_' + (i+1)).attr('id', 'scoreboard_' + i);
-                        }
-                        // $.when(
-                        //     npcPanel.animate({opacity: -1}, 500)
-                        //     // , function(){ 
-                        //     //     for(var i = 0; i < npc_count; i ++){ 
-                        //     //         var temp_npc = document.getElementById('npc_parent_' + (i + 1));
-                        //     //         temp_npc.animate({top: panelHeight}, 500); 
-                        //     //     } 
-                        //     // }
-                        // ).then( 
-                        //     function(){ 
-                        //         npcPanel.parentNode.removeChild(npcPanel);
-                        //         npcName.parentNode.removeChild(npcName);
-                        //         // code here for renaming all the IDs, panels & scoreboards. set css top value for each of them to 0 first.
-                        //         //movingDown.css('top', '0px');
+                                    for(var i = 2; i <=npc_count; i++){
+                                        $('#npc_parent_' + i).css('top', '0px');
+
+                                        $('#npc_parent_' + i).attr('id', 'npc_parent_' + (i-1));
+                                        $('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
+                                        $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
+
+                                    }
+                                }
+                            )
+                        );
+
+                        //$('<p> About to delete </p>').appendTo('#scoreboard');
+                        // var npcPanel = document.getElementById('npc_parent_1');
+                        // var npcName = document.getElementById('scoreboard_1');
+                        // var panelHeight = $('#npc_parent_1').outerHeight();
+                        // $('#npc_parent_1').fadeOut(500, function(){
+                        //     npcPanel.parentNode.removeChild(npcPanel);
+                        //     npcName.parentNode.removeChild(npcName);
+
+                        //     for(var i = 2; i <= npc_count; i++){
+                        //         $('#npc_parent_' + i).attr('top', '0px');
+                        //     }
+
+                        //     for(var i = 1; i <= npc_count; i ++){
+                        //         $('#npc_parent_' + (i+1)).attr('id', 'npc_parent_' + i);
+                        //         $('#npc_child_' + (i+1)).attr('id', 'npc_child_' + i);
+                        //         $('#scoreboard_' + (i+1)).attr('id', 'scoreboard_' + i);
+                        //     }
                         // });
 
-                        //$('<p> done deleting </p>').appendTo('#scoreboard');
-
-                        // TODO change the top part such that you fade the PANEL out whilst moving the other panels
-                        // up the height of that panel
-                        // also needs to change the IDs of each element or the naming can't be fixed
-                        // ORder of thigns: (fade npc_1 and delte) - (Shift all other npcs up {height of npc_1})
-                        // - (rename all npc_x to npc_x-1)
+                        // for(var i = 2; i <= npc_count; i++){
+                        //     $('#npc_parent_' + i).animate({top: -panelHeight}, 400);
+                        // }
 
                     }
 
