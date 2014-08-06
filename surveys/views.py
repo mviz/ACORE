@@ -29,7 +29,7 @@ def makeNPC():
     global counter
     name = nameList.pop(randint(0, (len(nameList))-1))
     npc = human(name)
-    npc.resourceVector[2] += counter*0.3
+    npc.resourceVector = [1.0, 1.0, 1.0/(counter+1)]
     counter += 1
     return npc
 
@@ -138,20 +138,21 @@ def ajax_view_handler(request):
     ready_to_flip = False
 
     if gameStatus == 'initial':
-        print 'The game status is ' , gameStatus
+        print 'Game status: ' , gameStatus
         for indx, person in enumerate(line):
-            person.decidePass(indx)
-
-        for indx, person in enumerate(line):
-            if person.nextAction == 'Pass':
-                person.newResourceVector = [1, 0.5, person.resourceVector[2]+0.3]
-                person.computeEmotion(0.95)
+            if indx != 0:
+                person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.4, line[indx-1].resourceVector[2]]
+                print 'Action cost: ' , str(person.actionCost())
+                if person.actionCost() > 0:
+                    person.nextAction = 'Pass'
+                    person.computeEmotion(0.95)
 
         displayLine()
         gameStatus = 'protest?'
 
+
     elif gameStatus == 'protest?':
-        print 'The game status is ' , gameStatus
+        print 'Game status: ' , gameStatus
         for indx, person in enumerate(line):
             if indx < (len(line)-1):
                 person.decideProtest(beingPassed = (line[indx+1].nextAction == "Pass"))
@@ -162,8 +163,7 @@ def ajax_view_handler(request):
 
         for indx, person in enumerate(line):
             if person.nextAction == 'Protest':
-                person.newResourceVector = [1, 0.85, person.resourceVector[2]]
-                person.resourceVector[2] =- 0.3
+                person.newResourceVector = [person.resourceVector[0], person.resourceVector[1]-0.10, line[indx+1].resourceVector[2]]
                 person.computeEmotion(0.95)
 
 
@@ -180,8 +180,9 @@ def ajax_view_handler(request):
                         person.nextAction = 'Pass_Success'
                         person.computeEmotion(1)
                         line[indx-1].nextAction = 'Wait'
-                        line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx-1].resourceVector[2]-0.3]
+                        line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx].resourceVector[2]]
                         line[indx-1].computeEmotion(1)
+                        person.resourceVector = person.newResourceVector
                         line[indx-1].resourceVector = line[indx-1].newResourceVector
                         line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
                     else:
@@ -212,8 +213,9 @@ def ajax_view_handler(request):
         print '\nThe game status is ' , gameStatus
         print str(line[0].name) , 'gets the Occulus Rift'
         line.pop(0)
-        for person in line:
+        for indx, person in enumerate(line):
             person.nextAction = 'Wait'
+            person.resourceVector[2] = 1.0/(indx+1)
 
         displayLine()
         gameStatus = 'initial'
