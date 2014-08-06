@@ -14,11 +14,6 @@ TODO
 
     - ON page reresh, if someone failed a pass the name on the side is smaller
 
-    - Does Yathi want absolute value shown in a different way? Like if it's negative, should be bar maybe change colors? Maybe a graph like:
-                        | ------- [40%]
-                        | --- [14%]
-              [-20%]----| 
-
     - graph values can go much farther than 100%, extending past the thingy
     - on page refresh, if the npc had a pass fail, the outline is clear
 
@@ -29,3 +24,8 @@ TODO
     Bascially, the scoreboard on the right is slow to update. Don't know why. There must be some pending operation slowing it down.
     Also, occaisionally, not all of the elements are actually going to move. This may alos ahve to do with some pending animation.
     Maybe check if there is a way of testing "Is ongoing animation?"
+
+
+    -when 0.4 translates to 4%
+    -Grey out the 'next step' button on finish and make it green againnnnn
+    -disable the button listener whenever you are playing an animation

@@ -286,29 +286,6 @@
                             }
                         });
 
-                        //$('<p> About to delete </p>').appendTo('#scoreboard');
-                        // var npcPanel = document.getElementById('npc_parent_1');
-                        // var npcName = document.getElementById('scoreboard_1');
-                        // var panelHeight = $('#npc_parent_1').outerHeight();
-                        // $('#npc_parent_1').fadeOut(500, function(){
-                        //     npcPanel.parentNode.removeChild(npcPanel);
-                        //     npcName.parentNode.removeChild(npcName);
-
-                        //     for(var i = 2; i <= npc_count; i++){
-                        //         $('#npc_parent_' + i).attr('top', '0px');
-                        //     }
-
-                        //     for(var i = 1; i <= npc_count; i ++){
-                        //         $('#npc_parent_' + (i+1)).attr('id', 'npc_parent_' + i);
-                        //         $('#npc_child_' + (i+1)).attr('id', 'npc_child_' + i);
-                        //         $('#scoreboard_' + (i+1)).attr('id', 'scoreboard_' + i);
-                        //     }
-                        // });
-
-                        // for(var i = 2; i <= npc_count; i++){
-                        //     $('#npc_parent_' + i).animate({top: -panelHeight}, 400);
-                        // }
-
                     }
 
                     for(var i = 0; i < npc_count; i++){
@@ -332,6 +309,13 @@
                         $('#sorrowbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 2) + '%');
                         $('#feartext_' + name_list[i]).text('Fear ' + getEmotionPercent(emotion_list[i], 3) + '%');
                         $('#fearbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 3) + '%');                        
+                    }
+
+                    if(npc_count == 0){
+                        $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#npc_div");
+                        $("<div style='text-align:center'><button class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npc_div");
+                        $('#refresh_button').css('background-color', '#eee');
+                        $('#refresh_button').css('border-color', '#eee');
                     }
 
             }
