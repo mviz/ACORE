@@ -21,7 +21,7 @@ class NPC(object):
 		self.name = name
 		self.A = [] #The actions
 		self.resourceName = ["Health", "Reputation", "Proximity"]
-		self.resourceVector = [1.0, 1.0, 0.3]
+		self.resourceVector = []
 		self.newResourceVector = []
 		self.resourceWeights = [random(), random(), random()]
 		self.emoName = ["Joy", "Hope", "Sorrow", "Fear"]
@@ -44,6 +44,14 @@ class NPC(object):
 	def getNewResources(self):
 		return self.newResourceVector
 
+	def showResource(self):
+		#To show the resources combined with the name
+		return [':'.join(reso) for reso in zip(self.resourceName, [str(round(resoval, 2)) for resoval in self.resourceVector])]
+
+	def showNR(self):
+		#To show the new resources with the names
+		return [':'.join(reso) for reso in zip(self.resourceName, [str(round(resoval, 2)) for resoval in self.newResourceVector])]		
+
 	def getEmotion(self):
 		return [':'.join(emo) for emo in zip(self.emoName, [str(round(emoval,2)) for emoval in self.emotion])]
 
@@ -58,6 +66,11 @@ class NPC(object):
 	def protestCost(self):
 		return ((1-self.resourceVector[0])*self.resourceWeights[0] +
 			(0.85 - self.resourceVector[1])*self.resourceWeights[1])
+
+	def actionCost(self):
+		return ((self.newResourceVector[0]-self.resourceVector[0])*self.resourceWeights[0] +
+			(self.newResourceVector[1] - self.resourceVector[1])*self.resourceWeights[1] +
+			(self.newResourceVector[2]- self.resourceVector[2])*self.resourceWeights[2])
 
 	def decidePass(self, position):
 		if self.passCost() > 0:
