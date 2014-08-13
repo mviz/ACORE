@@ -75,6 +75,37 @@
             return s;
         };
 
+        function getEmotionInt(emotionString){
+            for(var i = 0; i < emotionString.length; i++){
+                if(emotionString.charAt(i)=='.'){
+                    return parseInt(emotionString.substring(i +1));
+                }
+            }
+        }
+
+        function getHighestEmotion(emotionList){
+            console.log(emotionList);
+            var joyEmo = getEmotionInt(emotionList[0]);
+            var hopeEmo = getEmotionInt(emotionList[1]);
+            var sorrowEmo = getEmotionInt(emotionList[2]);
+            var fearEmo = getEmotionInt(emotionList[3]);
+            var maxEmo = joyEmo;
+            var emoURL = "http://i61.tinypic.com/33c0ygh.jpg"; //joy
+            if(maxEmo < hopeEmo){
+                maxEmo = hopeEmo;
+                emoURL = "http://i60.tinypic.com/t8sxo4.jpg"  //actually angry face
+            } 
+            if(maxEmo < sorrowEmo){
+                maxEmo = sorrowEmo;
+                emoURL = "http://i61.tinypic.com/156ddtc.jpg"; // sad face
+            }
+            if(maxEmo < fearEmo){
+                emoURL = "http://i59.tinypic.com/245budt.jpg"; //fear face
+            }
+            //console.log(emoURL);
+            return emoURL;
+        }
+
         function getPanelClass(action){
             if(action == 'Wait'){
                 return 'panel panel-primary';
@@ -162,24 +193,26 @@
             }
         }
 
+                        //         <div id='npc_child_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
+                        //     <div class='panel-heading' style='text-align:center'> \
+                        //         <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}}</h4> \
+                        //     </div> \
+                        //     <div class='panel-body' id='npc_{{npc.sayHello}}'> \
+                        //         <p id='emotion_{{npc.sayHello}}'>Emotions: {{npc.getEmotion | format_emotions}}</p> \
+                        //         <p id='action_{{npc.sayHello}}'>Action: {{npc.getAction}}</p> \
+                        //         <p id='weights_{{npc.sayHello}}'>Weights: {{npc.getWeights | format_weights}} </p> \
+                        //         <p id='resources_{{npc.sayHello}}'>Resources: {{npc.getResources | format_weights }} </p> \
+                        //         <p id='newresources_{{npc.sayHello}}'>New Resources: {{npc.getNewResources | format_weights}} </p> \
+                        //     </div> \
+                        // </div> \
+
 
         function initializeNPCs(){
             {% for npc in npc_list %}
 
                 $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12 npc-container'> \
                     <div class='col-sm-7'> \
-                        <div id='npc_child_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
-                            <div class='panel-heading' style='text-align:center'> \
-                                <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}}</h4> \
-                            </div> \
-                            <div class='panel-body' id='npc_{{npc.sayHello}}'> \
-                                <p id='emotion_{{npc.sayHello}}'>Emotions: {{npc.getEmotion | format_emotions}}</p> \
-                                <p id='action_{{npc.sayHello}}'>Action: {{npc.getAction}}</p> \
-                                <p id='weights_{{npc.sayHello}}'>Weights: {{npc.getWeights | format_weights}} </p> \
-                                <p id='resources_{{npc.sayHello}}'>Resources: {{npc.getResources | format_weights }} </p> \
-                                <p id='newresources_{{npc.sayHello}}'>New Resources: {{npc.getNewResources | format_weights}} </p> \
-                            </div> \
-                        </div> \
+                        <img id='npc_face_{{npc.sayHello}}' src='{{npc.getEmotion | getHighestEmotion}}' border='0' alt='happy' style='width:100%; height:100%;' /> \
                     </div> \
                     <div class='col-sm-5'> \
                         <dl style='width:100%'> \
@@ -228,9 +261,9 @@
                     var name_list = npc_data["names"];
                     var action_list = npc_data["actions"];
                     var emotion_list = npc_data["emotions"];
-                    var weight_list = npc_data["weights"];
-                    var resource_list = npc_data["resources"];
-                    var newresource_list = npc_data["newresources"];
+                    //var weight_list = npc_data["weights"];
+                    //var resource_list = npc_data["resources"];
+                    //var newresource_list = npc_data["newresources"];
                     var gameStatus = npc_data["gameStatus"];
                     var passingNPCs = npc_data["passing_list"];
                     //$('<p>' + gameStatus + ' </p>').appendTo('#scoreboard')
@@ -258,9 +291,9 @@
                             $('#npc_parent_'+ passingIndex).attr('id', 'npc_parent_'+ (passingIndex + 1));                                
                             $('#ptemp').attr('id', 'npc_parent_' + passingIndex);
 
-                            $('#npc_child_' + (passingIndex+1)).attr('id', 'ctemp');
-                            $('#npc_child_'+ passingIndex).attr('id', 'npc_child_'+ (passingIndex + 1));                                
-                            $('#ctemp').attr('id', 'npc_child_' + passingIndex);
+                            //$('#npc_child_' + (passingIndex+1)).attr('id', 'ctemp');
+                            //$('#npc_child_'+ passingIndex).attr('id', 'npc_child_'+ (passingIndex + 1));                                
+                            //$('#ctemp').attr('id', 'npc_child_' + passingIndex);
 
                             $('#scoreboard_' + (passingIndex)).html(name_list[passingIndex-1]);
                             $('#scoreboard_' + (passingIndex + 1)).html(name_list[passingIndex]);
@@ -281,7 +314,7 @@
 
                             for(var i = 2; i <=npc_count + 1; i++){
                                 $('#npc_parent_' + i).attr('id', 'npc_parent_' + (i-1));
-                                $('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
+                                //$('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
                                 $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
                             }
                         });
@@ -289,14 +322,19 @@
                     }
 
                     for(var i = 0; i < npc_count; i++){
-                        $('#name_' + name_list[i]).text(name_list[i]);
-                        $('#emotion_'+ name_list[i]).text("Emotions: " + formatEmotion(emotion_list[i]));  
-                        $('#action_'+ name_list[i]).text("Action: " + action_list[i]);
-                        $('#weights_'+ name_list[i]).text("Weights: " + formatSpaces(weight_list[i]));
-                        $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
-                        $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
-                        $("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
-    
+                        // $('#name_' + name_list[i]).text(name_list[i]);
+                        // $('#emotion_'+ name_list[i]).text("Emotions: " + formatEmotion(emotion_list[i]));  
+                        // $('#action_'+ name_list[i]).text("Action: " + action_list[i]);
+                        // $('#weights_'+ name_list[i]).text("Weights: " + formatSpaces(weight_list[i]));
+                        // $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
+                        // $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
+                        //$("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
+
+                        var dominentEmotionURL = getHighestEmotion(emotion_list[i]);
+                        console.log(dominentEmotionURL);
+                        //$('#npc_face_' + name_list[i]).src = dominentEmotionURL;
+                        document.getElementById('npc_face_' + name_list[i]).src = dominentEmotionURL;
+
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
 
 

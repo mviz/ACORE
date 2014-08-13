@@ -223,17 +223,17 @@ def ajax_view_handler(request):
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
-    npc_weights = get_npc_weights()
-    npc_resources = get_npc_resources()
-    npc_new_resources = get_npc_new_resources()
+    #npc_weights = get_npc_weights()
+    #npc_resources = get_npc_resources()
+    #npc_new_resources = get_npc_new_resources()
     npc_count = len(line)
     json_response = {
         'names':npc_names,
         'actions':npc_actions,
         'emotions':npc_emotions,
-        'weights':npc_weights,
-        'resources':npc_resources,
-        'newresources':npc_new_resources, 
+        #'weights':npc_weights,
+        #'resources':npc_resources,
+        #'newresources':npc_new_resources, 
         "npc_count":npc_count,
         "passing_list": passing_people,
         "gameStatus": convert_game_status(gameStatus),
