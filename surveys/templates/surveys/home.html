@@ -9,7 +9,7 @@
     <div class="col-sm-2">    
         <button id="refresh_button" class="btn btn-success" type="button"> Next Step</button>
     </div>
-    <div class="col-sm-7" id="npc_div" style='position:relative'></div>
+    <div class="col-sm-7" id="npcDiv" style='position:relative'></div>
     <div class="col-sm-3">
         <div class="col-sm-2"> </div>
         <div id='scoreboard' class="col-sm-8"> </div>
@@ -56,26 +56,13 @@
     }
 
 
-
 </style>
 {% endblock css %}
 
-
 {% block js %}
     <script>
-
-
-        String.prototype.format = String.prototype.f = function() {
-            var s = this,
-                i = arguments.length;
-
-            while (i--) {
-                s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-            }
-            return s;
-        };
-
         function getEmotionInt(emotionString){
+            //console.log(emotionString)
             for(var i = 0; i < emotionString.length; i++){
                 if(emotionString.charAt(i)=='.'){
                     return parseInt(emotionString.substring(i +1));
@@ -84,7 +71,6 @@
         }
 
         function getHighestEmotion(emotionList){
-            console.log(emotionList);
             var joyEmo = getEmotionInt(emotionList[0]);
             var hopeEmo = getEmotionInt(emotionList[1]);
             var sorrowEmo = getEmotionInt(emotionList[2]);
@@ -144,130 +130,112 @@
             return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
         }
 
-        function getEmotionPercent(emotions, n){
-            switch(n){
-                case 0:
-                    var joy_string = emotions[0].substring(4);
-                    for(var i = 0; i < joy_string.length ; i ++){
-                        if(joy_string.charAt(i) == '.'){
-                            if((joy_string.charAt(i+1) == '0') && (joy_string.substring(i+1).length > 1)){
-                                return joy_string.substring(i+2);
-                            }
-                            return joy_string.substring(i+1);
-                        }
+        function getEmotionPercent(emotionString){ //TODO this function is WAY too long. send the arguments as emotions[0] and leave one for loop. easy.
+            //console.log(emotionString)
+            for(var i = 0; i < emotionString.length ; i ++){
+                if(emotionString.charAt(i) == '.'){
+                    if((emotionString.charAt(i+1) == '0') && (emotionString.substring(i+1).length > 1)){ //this sends 4% instead of 04%
+                        return emotionString.substring(i+2);
                     }
-                    break;
-                case 1:
-                    var hope_string = emotions[1].substring(5);
-                    for(var i = 0; i < hope_string.length ; i ++){
-                        if(hope_string.charAt(i) == '.'){
-                            if((hope_string.charAt(i+1) == '0') && (hope_string.substring(i+1).length > 1)){
-                                return hope_string.substring(i+2);
-                            }
-                            return hope_string.substring(i+1);
-                        }
+                    if((emotionString.charAt(i+1) != '0') && (emotionString.substring(i+1).length == 1)){
+                        return emotionString.charAt(i+1) + '0'
                     }
-                    break;
-                case 2:
-                    var sorrow_string = emotions[2].substring(7);
-                    for(var i = 0; i < sorrow_string.length ; i ++){
-                        if(sorrow_string.charAt(i) == '.'){
-                            if((sorrow_string.charAt(i+1) == '0')  && (sorrow_string.substring(i+1).length > 1)){
-                                return sorrow_string.substring(i+2);
-                            }
-                            return sorrow_string.substring(i+1);
-                        }
-                    }
-                    break;
-                case 3:
-                    var fear_string = emotions[3].substring(5);
-                    for(var i = 0; i < fear_string.length ; i ++){
-                        if(fear_string.charAt(i) == '.'){
-                            if((fear_string.charAt(i+1) == '0') && (fear_string.substring(i+1).length > 1)){
-                                return fear_string.substring(i+2);
-                            }
-                            return fear_string.substring(i+1);
-                        }
-                    }
-                    break;
+                    return emotionString.substring(i+1);
+                }
             }
         }
 
-                        //         <div id='npc_child_{{forloop.counter}}' style='position:relative' class='" + getPanelClass("{{npc.getAction}}") +"'> \
-                        //     <div class='panel-heading' style='text-align:center'> \
-                        //         <h4 id='name_{{npc.sayHello}}' class='panel-title'> {{npc.sayHello}}</h4> \
-                        //     </div> \
-                        //     <div class='panel-body' id='npc_{{npc.sayHello}}'> \
-                        //         <p id='emotion_{{npc.sayHello}}'>Emotions: {{npc.getEmotion | format_emotions}}</p> \
-                        //         <p id='action_{{npc.sayHello}}'>Action: {{npc.getAction}}</p> \
-                        //         <p id='weights_{{npc.sayHello}}'>Weights: {{npc.getWeights | format_weights}} </p> \
-                        //         <p id='resources_{{npc.sayHello}}'>Resources: {{npc.getResources | format_weights }} </p> \
-                        //         <p id='newresources_{{npc.sayHello}}'>New Resources: {{npc.getNewResources | format_weights}} </p> \
-                        //     </div> \
-                        // </div> \
+        // function initializeNPCs(){ //TODO
+        //     {% for npc in npc_list %}
 
+        //         $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12 npc-container'> \
+        //             <div class='col-sm-7'> \
+        //                 <h4 style='text-align:center'><strong> {{npc.sayHello}} </strong></h4> \
+        //                 <img id='npc_face_{{npc.sayHello}}' src='{{npc.getEmotion | getHighestEmotion}}' border='0' alt='happy' style='width:100%; height:100%;' /> \
+        //             </div> \
+        //             <div class='col-sm-5'> \
+        //                 <h4></h4> \
+        //                 <dl style='width:100%'> \
+        //                     <dt id='joytext_{{npc.sayHello}}'> Joy {{npc.getEmotion | get_joy_percent }}%</dt> \
+        //                     <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_joy_percent }}%'> &nbsp</div></dd> \
+        //                     <dt id='hopetext_{{npc.sayHello}}'> Hope  {{npc.getEmotion | get_hope_percent}}%</dt> \
+        //                     <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_hope_percent}}%'> &nbsp</div></dd> \
+        //                     <dt id='sorrowtext_{{npc.sayHello}}'>Sorrow {{npc.getEmotion | get_sorrow_percent}}%</dt> \
+        //                     <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_sorrow_percent}}%'> &nbsp </div></dd> \
+        //                     <dt id='feartext_{{npc.sayHello}}'> Fear {{npc.getEmotion | get_fear_percent}}%</dt> \
+        //                     <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_fear_percent}}%'> &nbsp </div></dd> \
+        //                 </dl> \
+        //             </div> \
+        //         </div>").appendTo('#npcDiv');
+
+        //         //$("<li class='list-group-item' style='text-align:center; background-color:#ff00ff'> {{npc.sayHello}} </p>").appendTo('.list-group');
+        //         $("<div  id='scoreboard_{{forloop.counter}}' class='" + getAlertClass("{{npc.getAction}}") + "' style='margin:0; text-align:center;'> {{npc.sayHello}}</div>").appendTo('#scoreboard');
+        //     {% endfor %}
+        // }
 
         function initializeNPCs(){
-            {% for npc in npc_list %}
+            var xmlhttpReq = new XMLHttpRequest();
+            xmlhttpReq.open("GET", "surveys/initialize", true);
+            xmlhttpReq.onload=function(){
+                var npcData = JSON.parse(xmlhttpReq.response);
+                var npcCount = npcData["npc_count"];
+                var nameList = npcData["names"];
+                var actionList = npcData["actions"];
+                var emotionList = npcData["emotions"];
+                var gameStatus = npcData["gameStatus"];
+                var passingNPCs = npcData["passing_list"];
 
-                $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12 npc-container'> \
-                    <div class='col-sm-7'> \
-                        <h4 style='text-align:center'><strong> {{npc.sayHello}} </strong></h4> \
-                        <img id='npc_face_{{npc.sayHello}}' src='{{npc.getEmotion | getHighestEmotion}}' border='0' alt='happy' style='width:100%; height:100%;' /> \
-                    </div> \
-                    <div class='col-sm-5'> \
-                        <h4></h4> \
-                        <dl style='width:100%'> \
-                            <dt id='joytext_{{npc.sayHello}}'> Joy {{npc.getEmotion | get_joy_percent }}%</dt> \
-                            <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_joy_percent }}%'> &nbsp</div></dd> \
-                            <dt id='hopetext_{{npc.sayHello}}'> Hope  {{npc.getEmotion | get_hope_percent}}%</dt> \
-                            <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_hope_percent}}%'> &nbsp</div></dd> \
-                            <dt id='sorrowtext_{{npc.sayHello}}'>Sorrow {{npc.getEmotion | get_sorrow_percent}}%</dt> \
-                            <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_sorrow_percent}}%'> &nbsp </div></dd> \
-                            <dt id='feartext_{{npc.sayHello}}'> Fear {{npc.getEmotion | get_fear_percent}}%</dt> \
-                            <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_fear_percent}}%'> &nbsp </div></dd> \
-                        </dl> \
-                    </div> \
-                </div>").appendTo('#npc_div');
+                for(var i = 0; i < npcCount; i++){
+                    $("<div id='npc_parent_" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
-                //$("<li class='list-group-item' style='text-align:center; background-color:#ff00ff'> {{npc.sayHello}} </p>").appendTo('.list-group');
-                $("<div  id='scoreboard_{{forloop.counter}}' class='" + getAlertClass("{{npc.getAction}}") + "' style='margin:0; text-align:center;'> {{npc.sayHello}}</div>").appendTo('#scoreboard');
-            {% endfor %}
+                    $("<div id='npc_child_" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npc_parent_' + (i+1));
+                    $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npc_child_" + (i+1));
+                    $("<img id='npc_face_"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npc_child_" + (i+1));
+
+                    $("<div id='npc_child_bar_" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npc_parent_" + (i+1));
+                    $("<dl style='width:100%' id='npc_chart_"+ (i+1) + "' > </dl>").appendTo("#npc_child_bar_" + (i+1));
+                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
+                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
+                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
+                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
+                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
+                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
+                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
+                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
+
+                    $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
+                }
+            }
+            xmlhttpReq.send();
         }
 
-        // function shiftLineAnimation(npcCount, height){
-        //     return $.Deferred(function(){
-        //         var self = this;
 
-        //         setTimeout(function() {   // <-- example of some async operation
-        //             $('<p> animating all panels </p>').appendTo('#scoreboard');
+        function reinitializeNPCs(){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", "surveys/reinitialize", true);
+            xmlhttp.onload=function(){
+                var npcData = JSON.parse(xmlhttp.response);
+                var npcCount = npcData["lineLength"];
+            }
+            xmlhttp.send();                  
+        }
 
-        //             for(var i = 2; i <= npcCount + 1; i++){
-        //                 $('#npc_parent_' + i).animate({top: height}, {duration:3000, queue:false});
-        //             }                    
-        //             self.resolve();       // <-- call resolve method once async is done
-        //         }, 3000);
-
-        //         $('<p> done animating all panels </p>').appendTo('#scoreboard'); 
-        //     });
-        // }
 
         function updateNPCs(){
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
             xmlhttp.onload=function(){
-                    var npc_data = JSON.parse(xmlhttp.response);
+                    var npcData = JSON.parse(xmlhttp.response);
 
-                    //TODO at some point this should be changed to camelCase since it's javascript
-                    var npc_count = npc_data["npc_count"];
-                    var name_list = npc_data["names"];
-                    var action_list = npc_data["actions"];
-                    var emotion_list = npc_data["emotions"];
+                    var npcCount = npcData["npc_count"];
+                    var nameList = npcData["names"];
+                    var actionList = npcData["actions"];
+                    var emotionList = npcData["emotions"];
                     //var weight_list = npc_data["weights"];
                     //var resource_list = npc_data["resources"];
                     //var newresource_list = npc_data["newresources"];
-                    var gameStatus = npc_data["gameStatus"];
-                    var passingNPCs = npc_data["passing_list"];
+                    var gameStatus = npcData["gameStatus"];
+                    var passingNPCs = npcData["passing_list"];
                     //$('<p>' + gameStatus + ' </p>').appendTo('#scoreboard')
                     //$('<p> ' + passingNPCs.length +' </p>').appendTo('#scoreboard')
 
@@ -288,7 +256,6 @@
                                     movingDown.css('top', '0px');
                             });
 
-
                             $('#npc_parent_'+ (passingIndex+1)).attr('id', 'ptemp');
                             $('#npc_parent_'+ passingIndex).attr('id', 'npc_parent_'+ (passingIndex + 1));                                
                             $('#ptemp').attr('id', 'npc_parent_' + passingIndex);
@@ -297,8 +264,8 @@
                             //$('#npc_child_'+ passingIndex).attr('id', 'npc_child_'+ (passingIndex + 1));                                
                             //$('#ctemp').attr('id', 'npc_child_' + passingIndex);
 
-                            $('#scoreboard_' + (passingIndex)).html(name_list[passingIndex-1]);
-                            $('#scoreboard_' + (passingIndex + 1)).html(name_list[passingIndex]);
+                            $('#scoreboard_' + (passingIndex)).html(nameList[passingIndex-1]);
+                            $('#scoreboard_' + (passingIndex + 1)).html(nameList[passingIndex]);
                         }
                     } else if (gameStatus == 'final'){
                         var panelHeight = $('#npc_parent_1').outerHeight();
@@ -314,16 +281,15 @@
                             npcName.parentNode.removeChild(npcName);
                             $('.npc-container').css('top', '0px');
 
-                            for(var i = 2; i <=npc_count + 1; i++){
+                            for(var i = 2; i <=npcCount + 1; i++){
                                 $('#npc_parent_' + i).attr('id', 'npc_parent_' + (i-1));
                                 //$('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
                                 $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
                             }
                         });
-
                     }
 
-                    for(var i = 0; i < npc_count; i++){
+                    for(var i = 0; i < npcCount; i++){
                         // $('#name_' + name_list[i]).text(name_list[i]);
                         // $('#emotion_'+ name_list[i]).text("Emotions: " + formatEmotion(emotion_list[i]));  
                         // $('#action_'+ name_list[i]).text("Action: " + action_list[i]);
@@ -332,28 +298,32 @@
                         // $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
                         //$("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
 
-                        var dominentEmotionURL = getHighestEmotion(emotion_list[i]);
-                        console.log(dominentEmotionURL);
+                        var dominentEmotionURL = getHighestEmotion(emotionList[i]);
+                        //console.log(dominentEmotionURL);
                         //$('#npc_face_' + name_list[i]).src = dominentEmotionURL;
-                        document.getElementById('npc_face_' + name_list[i]).src = dominentEmotionURL;
+                        document.getElementById('npc_face_' + nameList[i]).src = dominentEmotionURL;
 
-                        $('#scoreboard_' + (i+1)).attr('class', getAlertClass(action_list[i]));
-
+                        $('#scoreboard_' + (i+1)).attr('class', getAlertClass(actionList[i]));
 
                         //graph stuff
-                        $('#joytext_' + name_list[i]).text('Joy ' + getEmotionPercent(emotion_list[i], 0) + '%');
-                        $('#joybar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 0) + '%');
-                        $('#hopetext_' + name_list[i]).text('Hope ' + getEmotionPercent(emotion_list[i], 1) + '%');
-                        $('#hopebar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 1) +'%');
-                        $('#sorrowtext_' + name_list[i]).text('Sorrow ' + getEmotionPercent(emotion_list[i], 2) + '%');
-                        $('#sorrowbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 2) + '%');
-                        $('#feartext_' + name_list[i]).text('Fear ' + getEmotionPercent(emotion_list[i], 3) + '%');
-                        $('#fearbar_'+name_list[i]).width(getEmotionPercent(emotion_list[i], 3) + '%');                        
+                        $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
+                        $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
+                        $('#hopetext_' + nameList[i]).text('Hope ' + getEmotionPercent(emotionList[i][1]) + '%');
+                        $('#hopebar_'+nameList[i]).width(getEmotionPercent(emotionList[i][1]) +'%');
+                        $('#sorrowtext_' + nameList[i]).text('Sorrow ' + getEmotionPercent(emotionList[i][2]) + '%');
+                        $('#sorrowbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][2]) + '%');
+                        $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
+                        $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
+                    console.log("npc count: " + npcCount);
+                    if(npcCount == 0){
+                        console.log("here we go");
+                        $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
+                        $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
+                        $('#playAgain').click(function(){
+                            reinitializeNPCs()
+                        });
 
-                    if(npc_count == 0){
-                        $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#npc_div");
-                        $("<div style='text-align:center'><button class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npc_div");
                         $('#refresh_button').css('background-color', '#eee');
                         $('#refresh_button').css('border-color', '#eee');
                     }
@@ -366,7 +336,9 @@
             $('#refresh_button').click(function(){
                 updateNPCs();
             });
-
+            $('#playAgain').click(function(){
+                reinitializeNPCs()
+            });
             initializeNPCs();
         });
     </script>

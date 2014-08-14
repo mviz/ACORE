@@ -108,7 +108,7 @@ def submit_survey(request):
 
 
 def homepage_view(request):
-    global stateOfNPCCounter, gameStatus, initialized
+    global stateOfNPCCounter, gameStatus, initialized, line
     #raw_input("\nNext Step?\n:")
 
 
@@ -117,7 +117,7 @@ def homepage_view(request):
             gameStatus = 'Over'
             print '\n ----------Game Over!------------ \n'
     else:
-        initialize(numInLine = 6)  #The parameter tells the number of elements
+        initialize(numInLine = 2)  #The parameter tells the number of elements
         initialized = True
 
     context_data = {
@@ -130,12 +130,41 @@ def homepage_view(request):
 
     return render(request, 'surveys/home.html', context_data)
 
+def reinitialize_data(request):
+    global line, counter
+    counter = 0 #yathi
+    initialze(numInLine = 2) #TODO name list will eventually run out
+    pdb.set_trace()
+    line_length = 2
+    json_response = {
+        "lineLength":line_length,
+    } 
+    pdb.set_trace()
+    return HttpResponse(json.dumps(json_response), content_type='application/json')
+
+
+def initialize_data(request):
+    global line, gameStatus
+    npc_names = get_npc_names()
+    npc_actions = get_npc_actions()
+    npc_emotions = get_npc_emotions()
+    npc_count = len(line)
+    json_response = {
+        'names':npc_names,
+        'actions':npc_actions,
+        'emotions':npc_emotions,
+        "npc_count":npc_count,
+        "gameStatus": convert_game_status(gameStatus),
+    }
+    return HttpResponse(json.dumps(json_response), content_type='application/json')
+
 
 def ajax_view_handler(request):
     global line, gameStatus
 
     passing_people = []
     ready_to_flip = False
+
 
     if gameStatus == 'initial':
         print 'Game status: ' , gameStatus
