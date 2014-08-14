@@ -212,9 +212,11 @@
 
                 $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12 npc-container'> \
                     <div class='col-sm-7'> \
+                        <h4 style='text-align:center'><strong> {{npc.sayHello}} </strong></h4> \
                         <img id='npc_face_{{npc.sayHello}}' src='{{npc.getEmotion | getHighestEmotion}}' border='0' alt='happy' style='width:100%; height:100%;' /> \
                     </div> \
                     <div class='col-sm-5'> \
+                        <h4></h4> \
                         <dl style='width:100%'> \
                             <dt id='joytext_{{npc.sayHello}}'> Joy {{npc.getEmotion | get_joy_percent }}%</dt> \
                             <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_joy_percent }}%'> &nbsp</div></dd> \
