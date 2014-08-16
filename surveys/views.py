@@ -14,7 +14,6 @@ import time
 from random import random, randint
 
 ###                  The Global Variables           ###
-counter = 0
 line = []
 stateOfNPCCounter = 0
 nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
@@ -25,19 +24,17 @@ gameStatus = 'initial'
 ###                 End of Global Variables          ###
 
 
-def makeNPC():
-    global counter
+def makeNPC(position):
     name = nameList.pop(randint(0, (len(nameList))-1))
     npc = human(name)
-    npc.resourceVector = [1.0, 1.0, 1.0/(counter+1)]
-    counter += 1
+    npc.resourceVector = [1.0, 1.0, 1.0/(position+1)]
     return npc
 
 def initialize(numInLine):
     global line
     count = 0
     for count in range(numInLine):
-        line.append(makeNPC())
+        line.append(makeNPC(count))
         count += 1
 
 def displayLine():
@@ -131,8 +128,7 @@ def homepage_view(request):
     return render(request, 'surveys/home.html', context_data)
 
 def reinitialize_data(request):
-    global line, counter
-    counter = 0 #yathi
+    global line
     initialze(numInLine = 2) #TODO name list will eventually run out
     pdb.set_trace()
     line_length = 2
