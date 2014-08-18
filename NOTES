@@ -17,12 +17,9 @@ TODO
     Need a button which resets the game entirely.
 
 
-    - fix slow update on scoreboard
     -when 0.4 translates to 4%
-    -Grey out the 'next step' button on finish and make it green againnnnn
     -disable the button listener whenever you are playing an animation
-    -Stop sending extra info from the view
-
+    - modularize the updateNPCs function into smaller functions
 
 
 

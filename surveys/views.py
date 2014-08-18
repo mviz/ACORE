@@ -38,7 +38,7 @@ def initialize(numInLine):
     count = 0
     for count in range(numInLine):
         line.append(makeNPC())
-        count += 1
+        count += 1 #TODO unless I'm missing something, isn't this redundant?
 
 def displayLine():
     for person in line:
@@ -117,7 +117,7 @@ def homepage_view(request):
             gameStatus = 'Over'
             print '\n ----------Game Over!------------ \n'
     else:
-        initialize(numInLine = 2)  #The parameter tells the number of elements
+        initialize(numInLine = 6)  #The parameter tells the number of elements
         initialized = True
 
     context_data = {
@@ -133,9 +133,8 @@ def homepage_view(request):
 def reinitialize_data(request):
     global line, counter
     counter = 0 #yathi
-    initialze(numInLine = 2) #TODO name list will eventually run out
-    pdb.set_trace()
-    line_length = 2
+    initialize(numInLine = 6) #TODO name list will eventually run out
+    line_length = 6
     json_response = {
         "lineLength":line_length,
     } 

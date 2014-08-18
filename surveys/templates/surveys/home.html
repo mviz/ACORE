@@ -7,7 +7,7 @@
 
 {% block page_content %} 
     <div class="col-sm-2">    
-        <button id="refresh_button" class="btn btn-success" type="button"> Next Step</button>
+        <button id="nextStep" class="btn btn-success" type="button"> Next Step </button>
     </div>
     <div class="col-sm-7" id="npcDiv" style='position:relative'></div>
     <div class="col-sm-3">
@@ -92,19 +92,20 @@
             return emoURL;
         }
 
-        function getPanelClass(action){
-            if(action == 'Wait'){
-                return 'panel panel-primary';
-            } else if (action == 'Pass'){
-                return 'panel panel-warning';
-            } else if (action == 'Pass_Success'){
-                return 'panel panel-success';
-            } else if (action == 'Protest'){
-                return 'panel panel-danger';
-            } else if (action == 'Fail'){
-                return 'panel panel-default'
-            } 
-        }
+        // Function is no longer used
+        // function getPanelClass(action){
+        //     if(action == 'Wait'){
+        //         return 'panel panel-primary';
+        //     } else if (action == 'Pass'){
+        //         return 'panel panel-warning';
+        //     } else if (action == 'Pass_Success'){
+        //         return 'panel panel-success';
+        //     } else if (action == 'Protest'){
+        //         return 'panel panel-danger';
+        //     } else if (action == 'Fail'){
+        //         return 'panel panel-default'
+        //     } 
+        // }
 
         function getAlertClass(action){
             if(action == 'Wait'){
@@ -119,16 +120,18 @@
                 return 'alert alert-info'
             } 
         }
-        function formatEmotion(emotionList){
-            return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Sorrow [" + emotionList[2].substring(7) + "] Fear [" + emotionList[3].substring(5) +"]";
-        }
+        // Function is no longer used
+        // function formatEmotion(emotionList){
+        //     return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Sorrow [" + emotionList[2].substring(7) + "] Fear [" + emotionList[3].substring(5) +"]";
+        // }
 
-        function formatSpaces(dataList){
-            if( typeof dataList[0] == 'undefined'){
-                return ''
-            }
-            return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
-        }
+        // Function is no longer used
+        // function formatSpaces(dataList){
+        //     if( typeof dataList[0] == 'undefined'){
+        //         return ''
+        //     }
+        //     return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
+        // }
 
         function getEmotionPercent(emotionString){ //TODO this function is WAY too long. send the arguments as emotions[0] and leave one for loop. easy.
             //console.log(emotionString)
@@ -145,34 +148,6 @@
             }
         }
 
-        // function initializeNPCs(){ //TODO
-        //     {% for npc in npc_list %}
-
-        //         $("<div id='npc_parent_{{forloop.counter}}' class='col-sm-12 npc-container'> \
-        //             <div class='col-sm-7'> \
-        //                 <h4 style='text-align:center'><strong> {{npc.sayHello}} </strong></h4> \
-        //                 <img id='npc_face_{{npc.sayHello}}' src='{{npc.getEmotion | getHighestEmotion}}' border='0' alt='happy' style='width:100%; height:100%;' /> \
-        //             </div> \
-        //             <div class='col-sm-5'> \
-        //                 <h4></h4> \
-        //                 <dl style='width:100%'> \
-        //                     <dt id='joytext_{{npc.sayHello}}'> Joy {{npc.getEmotion | get_joy_percent }}%</dt> \
-        //                     <dd><div id='joybar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_joy_percent }}%'> &nbsp</div></dd> \
-        //                     <dt id='hopetext_{{npc.sayHello}}'> Hope  {{npc.getEmotion | get_hope_percent}}%</dt> \
-        //                     <dd><div id='hopebar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_hope_percent}}%'> &nbsp</div></dd> \
-        //                     <dt id='sorrowtext_{{npc.sayHello}}'>Sorrow {{npc.getEmotion | get_sorrow_percent}}%</dt> \
-        //                     <dd><div id='sorrowbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_sorrow_percent}}%'> &nbsp </div></dd> \
-        //                     <dt id='feartext_{{npc.sayHello}}'> Fear {{npc.getEmotion | get_fear_percent}}%</dt> \
-        //                     <dd><div id='fearbar_{{npc.sayHello}}' class='graph_bar neutral_bar' style='width: {{npc.getEmotion | get_fear_percent}}%'> &nbsp </div></dd> \
-        //                 </dl> \
-        //             </div> \
-        //         </div>").appendTo('#npcDiv');
-
-        //         //$("<li class='list-group-item' style='text-align:center; background-color:#ff00ff'> {{npc.sayHello}} </p>").appendTo('.list-group');
-        //         $("<div  id='scoreboard_{{forloop.counter}}' class='" + getAlertClass("{{npc.getAction}}") + "' style='margin:0; text-align:center;'> {{npc.sayHello}}</div>").appendTo('#scoreboard');
-        //     {% endfor %}
-        // }
-
         function initializeNPCs(){
             var xmlhttpReq = new XMLHttpRequest();
             xmlhttpReq.open("GET", "surveys/initialize", true);
@@ -186,24 +161,35 @@
                 var passingNPCs = npcData["passing_list"];
 
                 for(var i = 0; i < npcCount; i++){
-                    $("<div id='npc_parent_" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
+                    $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
-                    $("<div id='npc_child_" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npc_parent_' + (i+1));
-                    $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npc_child_" + (i+1));
-                    $("<img id='npc_face_"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npc_child_" + (i+1));
+                    $("<div id='npcChild" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npcParent' + (i+1));
+                    $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
+                    $("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
 
-                    $("<div id='npc_child_bar_" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npc_parent_" + (i+1));
-                    $("<dl style='width:100%' id='npc_chart_"+ (i+1) + "' > </dl>").appendTo("#npc_child_bar_" + (i+1));
-                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
-                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
-                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
-                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
-                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
-                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
-                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npc_chart_"+ (i+1));
-                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npc_chart_" + (i+1));
+                    $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
+                    $("<dl style='width:100%' id='npcChart"+ (i+1) + "' > </dl>").appendTo("#npcChildBar" + (i+1));
+                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npcChart"+ (i+1));
+                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npcChart"+ (i+1));
+                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npcChart" + (i+1));
+                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npcChart" + (i+1));
+                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
 
                     $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
+                }
+                if(npcCount == 0){
+                    $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
+                    $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
+                    document.getElementById('nextStep').disabled = true;
+                    $('#playAgain').click(function(){ 
+                        reinitializeNPCs(); 
+                        document.getElementById('nextStep').disabled = false;
+                    });
+                    // $('#nextStep').css('background-color', '#eee');
+                    // $('#nextStep').css('border-color', '#eee');                    
                 }
             }
             xmlhttpReq.send();
@@ -217,7 +203,14 @@
                 var npcData = JSON.parse(xmlhttp.response);
                 var npcCount = npcData["lineLength"];
             }
-            xmlhttp.send();                  
+            xmlhttp.send();              
+
+            // delete the text and button here
+            var goText = document.getElementById('gameOverText');
+            var goButton = document.getElementById('playAgain');
+            goText.parentNode.removeChild(goText);
+            goButton.parentNode.removeChild(goButton);
+            initializeNPCs();
         }
 
 
@@ -239,54 +232,69 @@
                     //$('<p>' + gameStatus + ' </p>').appendTo('#scoreboard')
                     //$('<p> ' + passingNPCs.length +' </p>').appendTo('#scoreboard')
 
-                    if(gameStatus == 'penultimate'){ 
+                    if(gameStatus == 'penultimate'){
+                        document.getElementById('nextStep').disabled = true; 
                         for(var i=0; i < passingNPCs.length; i ++){
+                            
                             var passingIndex = passingNPCs[i]
-                            var movingUp = $('#npc_parent_'+ (passingIndex + 1));
-                            var movingDown = $('#npc_parent_' + passingIndex);
+                            var movingUp = $('#npcParent'+ (passingIndex + 1));
+                            var movingDown = $('#npcParent' + passingIndex);
                             var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
                             var upHeight = movingUp.outerHeight() + marginDif;
                             var downHeight = movingDown.outerHeight() + marginDif;
                             $.when(
                                 movingUp.animate({top: -downHeight}, 750),
                                 movingDown.animate({top: upHeight},750)).then( 
-                                function(){ 
-                                    movingUp.insertBefore(movingDown);
-                                    movingUp.css('top', '0px');
-                                    movingDown.css('top', '0px');
+                            function(){ 
+                                movingUp.insertBefore(movingDown);
+                                movingUp.css('top', '0px');
+                                movingDown.css('top', '0px');
                             });
 
-                            $('#npc_parent_'+ (passingIndex+1)).attr('id', 'ptemp');
-                            $('#npc_parent_'+ passingIndex).attr('id', 'npc_parent_'+ (passingIndex + 1));                                
-                            $('#ptemp').attr('id', 'npc_parent_' + passingIndex);
+                            $('#npcParent'+ (passingIndex+1)).attr('id', 'ptemp');
+                            $('#npcParent'+ passingIndex).attr('id', 'npcParent'+ (passingIndex + 1));                                
+                            $('#ptemp').attr('id', 'npcParent' + passingIndex);
 
-                            //$('#npc_child_' + (passingIndex+1)).attr('id', 'ctemp');
-                            //$('#npc_child_'+ passingIndex).attr('id', 'npc_child_'+ (passingIndex + 1));                                
-                            //$('#ctemp').attr('id', 'npc_child_' + passingIndex);
+                            //$('#npcChild' + (passingIndex+1)).attr('id', 'ctemp');
+                            //$('#npcChild'+ passingIndex).attr('id', 'npcChild'+ (passingIndex + 1));                                
+                            //$('#ctemp').attr('id', 'npcChild' + passingIndex);
 
                             $('#scoreboard_' + (passingIndex)).html(nameList[passingIndex-1]);
                             $('#scoreboard_' + (passingIndex + 1)).html(nameList[passingIndex]);
                         }
+                        document.getElementById('nextStep').disabled = false;
+
                     } else if (gameStatus == 'final'){
-                        var panelHeight = $('#npc_parent_1').outerHeight();
-
+                        var panelHeight = $('#npcParent1').outerHeight();
+                        var npcName = document.getElementById('scoreboard_1');
+                        npcName.parentNode.removeChild(npcName);
                         $.when(
-                            $('#npc_parent_1').animate({opacity: 0}, 750),
-                            $('.npc-container').not('#test1').animate({top: -panelHeight}, 750)).then(
-
+                            $('#npcParent1').animate({opacity: 0}, 750),
+                            $('.npc-container').not('#npcParent1').animate({top: -panelHeight}, 750)).then(
                         function () {
-                            var npcPanel = document.getElementById('npc_parent_1');
-                            var npcName = document.getElementById('scoreboard_1');
-                            npcPanel.parentNode.removeChild(npcPanel);
-                            npcName.parentNode.removeChild(npcName);
+                            var npcPanel = document.getElementById('npcParent1');
+                            npcPanel.parentNode.removeChild(npcPanel);                                    
                             $('.npc-container').css('top', '0px');
 
                             for(var i = 2; i <=npcCount + 1; i++){
-                                $('#npc_parent_' + i).attr('id', 'npc_parent_' + (i-1));
-                                //$('#npc_child_' + i).attr('id', 'npc_child_' + (i-1));
+                                $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
+                                //$('#npcChild' + i).attr('id', 'npcChild' + (i-1));
                                 $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
                             }
+                            if(npcCount == 0){
+                                $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
+                                $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
+                                document.getElementById('nextStep').disabled = true;
+
+                                $('#playAgain').click(function(){
+                                    reinitializeNPCs() 
+                                    document.getElementById('nextStep').disabled = false;
+                                });
+                                // $('#nextStep').css('background-color', '#eee');
+                                // $('#nextStep').css('border-color', '#eee');
+                            }
                         });
+                        
                     }
 
                     for(var i = 0; i < npcCount; i++){
@@ -296,12 +304,12 @@
                         // $('#weights_'+ name_list[i]).text("Weights: " + formatSpaces(weight_list[i]));
                         // $('#resources_'+ name_list[i]).text("Resources: " + formatSpaces(resource_list[i]));
                         // $('#newresources_'+ name_list[i]).text("New Resources: " + formatSpaces(newresource_list[i]));
-                        //$("#npc_child_"+ (i+1)).attr('class', getPanelClass(action_list[i]));
+                        //$("#npcChild"+ (i+1)).attr('class', getPanelClass(action_list[i]));
 
                         var dominentEmotionURL = getHighestEmotion(emotionList[i]);
                         //console.log(dominentEmotionURL);
-                        //$('#npc_face_' + name_list[i]).src = dominentEmotionURL;
-                        document.getElementById('npc_face_' + nameList[i]).src = dominentEmotionURL;
+                        //$('#npcFace' + name_list[i]).src = dominentEmotionURL;
+                        document.getElementById('npcFace' + nameList[i]).src = dominentEmotionURL;
 
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(actionList[i]));
 
@@ -315,25 +323,14 @@
                         $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
-                    console.log("npc count: " + npcCount);
-                    if(npcCount == 0){
-                        console.log("here we go");
-                        $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
-                        $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
-                        $('#playAgain').click(function(){
-                            reinitializeNPCs()
-                        });
 
-                        $('#refresh_button').css('background-color', '#eee');
-                        $('#refresh_button').css('border-color', '#eee');
-                    }
 
             }
             xmlhttp.send();
         }
 
         $('document').ready(function(){
-            $('#refresh_button').click(function(){
+            $('#nextStep').click(function(){
                 updateNPCs();
             });
             $('#playAgain').click(function(){

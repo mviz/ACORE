@@ -80,29 +80,30 @@ def progress_color(index):
     elif(index%4 == 3):
         return 'progress-bar-danger'
 
-@register.filter
-def get_joy_percent(emotions):
-    joy  = emotions[0][4:]
-    joy = float(joy)
-    return int(math.fabs(joy)*100//1)
+# FUNCTIONS ARE NO LONGER USED
+# @register.filter
+# def get_joy_percent(emotions):
+#     joy  = emotions[0][4:]
+#     joy = float(joy)
+#     return int(math.fabs(joy)*100//1)
 
-@register.filter
-def get_hope_percent(emotions):
-    hope = emotions[1][5:]
-    hope = float(hope)
-    return int(math.fabs(hope)*100//1)
+# @register.filter
+# def get_hope_percent(emotions):
+#     hope = emotions[1][5:]
+#     hope = float(hope)
+#     return int(math.fabs(hope)*100//1)
 
-@register.filter
-def get_sorrow_percent(emotions):
-    sorrow = emotions[2][7:]
-    sorrow = float(sorrow)
-    return int(math.fabs(sorrow)*100//1)
+# @register.filter
+# def get_sorrow_percent(emotions):
+#     sorrow = emotions[2][7:]
+#     sorrow = float(sorrow)
+#     return int(math.fabs(sorrow)*100//1)
 
-@register.filter
-def get_fear_percent(emotions):
-    fear = emotions[3][5:]
-    fear = float(fear)
-    return int(math.fabs(fear)*100//1)
+# @register.filter
+# def get_fear_percent(emotions):
+#     fear = emotions[3][5:]
+#     fear = float(fear)
+#     return int(math.fabs(fear)*100//1)
 
 
 @register.filter
@@ -127,33 +128,8 @@ def getHighestEmotion(emotion_list):
     #pdb.set_trace()
     return emoURL
 
-
-def getEmotionInt(emotion):
-    for indx, c in enumerate(emotion):
-        if(c == '.'):
-            return int(emotion[(indx+1):])
-
-
-
-        # function getHighestEmotion(emotionList){
-        #     console.log(emotionList);
-        #     var joyEmo = getEmotionInt(emotionList[0]);
-        #     var hopeEmo = getEmotionInt(emotionList[1]);
-        #     var sorrowEmo = getEmotionInt(emotionList[2]);
-        #     var fearEmo = getEmotionInt(emotionList[3]);
-        #     var maxEmo = joyEmo;
-        #     var emoURL = "http://i61.tinypic.com/33c0ygh.jpg"; //joy
-        #     if(maxEmo < hopeEmo){
-        #         maxEmo = hopeEmo;
-        #         emoURL = "http://i60.tinypic.com/t8sxo4.jpg"  //actually angry face
-        #     } 
-        #     if(maxEmo < sorrowEmo){
-        #         maxEmo = sorrowEmo;
-        #         emoURL = "http://i61.tinypic.com/156ddtc.jpg"; // sad face
-        #     }
-        #     if(maxEmo < fearEmo){
-        #         emoURL = "http://i59.tinypic.com/245budt.jpg"; //fear face
-        #     }
-        #     //console.log(emoURL);
-        #     return emoURL;
-        # }
+# FUNCTION NO LONGER USED
+# def getEmotionInt(emotion):
+#     for indx, c in enumerate(emotion):
+#         if(c == '.'):
+#             return int(emotion[(indx+1):])
