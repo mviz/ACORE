@@ -131,6 +131,8 @@ def homepage_view(request):
     return render(request, 'surveys/home.html', context_data)
 
 def reinitialize_data(request):
+    # Resets the NPC data so that the model can be played more than once.  
+    # Currently doesn't always work, for some unknown reason. TODO.
     global line, counter
     counter = 0 #yathi
     initialize(numInLine = 6) #TODO name list will eventually run out
@@ -138,7 +140,6 @@ def reinitialize_data(request):
     json_response = {
         "lineLength":line_length,
     } 
-    pdb.set_trace()
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
 
@@ -158,7 +159,9 @@ def initialize_data(request):
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
 
-def ajax_view_handler(request):
+def acore_next_step(request):
+    # Executes ACORE code.
+    # Also returns important NPC information to be used in the javascript.
     global line, gameStatus
 
     passing_people = []
@@ -270,6 +273,8 @@ def ajax_view_handler(request):
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
 def convert_game_status(status):
+    #Although not a necessary function, it's used for clarity in the javacsript side, because the
+    #game status will change to the subsequent status before the data is sent through JSON.
     if(status == 'protest?'):
         return 'initial'
     elif(status == 'penultimate'):

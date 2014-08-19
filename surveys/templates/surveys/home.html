@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 
-{% block page_title %} <h2>The Game</h2> {% endblock page_title %}
+{% block title %}The Game{% endblock title %}
 
 {% block page_content %} 
     <div class="col-sm-2">    
@@ -61,20 +61,31 @@
 
 {% block js %}
     <script>
-        function getEmotionInt(emotionString){
-            //console.log(emotionString)
-            for(var i = 0; i < emotionString.length; i++){
-                if(emotionString.charAt(i)=='.'){
-                    return parseInt(emotionString.substring(i +1));
+
+        function getEmotionPercent(emotionString){ 
+            for(var i = 0; i < emotionString.length ; i ++){
+                if(emotionString.charAt(i) == '.'){
+                    if((emotionString.charAt(i+1) == '0') && (emotionString.substring(i+1).length > 1)){ //this sends 4% instead of 04%
+                        return emotionString.substring(i+2);
+                    }
+                    if((emotionString.charAt(i+1) != '0') && (emotionString.substring(i+1).length == 1)){ //for 0.4, it returns 40% instead of 4%
+                        return emotionString.charAt(i+1) + '0'
+                    }
+                    return emotionString.substring(i+1);
                 }
             }
         }
 
         function getHighestEmotion(emotionList){
-            var joyEmo = getEmotionInt(emotionList[0]);
-            var hopeEmo = getEmotionInt(emotionList[1]);
-            var sorrowEmo = getEmotionInt(emotionList[2]);
-            var fearEmo = getEmotionInt(emotionList[3]);
+            /* Takes input as a list of strings indicating the levels of emotions of the NPCs. 
+            It finds the emotion with the highest aboslute value and returns
+            the corresponding image to represent the NPCs dominent emotion.
+            It will change in the future by returning the face of the specific NPC rather than
+            returning a generic face, for a female. */
+            var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
+            var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
+            var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
+            var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
             var maxEmo = joyEmo;
             var emoURL = "http://i61.tinypic.com/33c0ygh.jpg"; //joy
             if(maxEmo < hopeEmo){
@@ -108,6 +119,7 @@
         // }
 
         function getAlertClass(action){
+            // Returns the appropriate css bootstrap class for an alert element for name side bar.
             if(action == 'Wait'){
                 return 'alert alert-info';
             } else if (action == 'Pass'){
@@ -133,26 +145,15 @@
         //     return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
         // }
 
-        function getEmotionPercent(emotionString){ //TODO this function is WAY too long. send the arguments as emotions[0] and leave one for loop. easy.
-            //console.log(emotionString)
-            for(var i = 0; i < emotionString.length ; i ++){
-                if(emotionString.charAt(i) == '.'){
-                    if((emotionString.charAt(i+1) == '0') && (emotionString.substring(i+1).length > 1)){ //this sends 4% instead of 04%
-                        return emotionString.substring(i+2);
-                    }
-                    if((emotionString.charAt(i+1) != '0') && (emotionString.substring(i+1).length == 1)){
-                        return emotionString.charAt(i+1) + '0'
-                    }
-                    return emotionString.substring(i+1);
-                }
-            }
-        }
 
         function initializeNPCs(){
-            var xmlhttpReq = new XMLHttpRequest();
-            xmlhttpReq.open("GET", "surveys/initialize", true);
-            xmlhttpReq.onload=function(){
-                var npcData = JSON.parse(xmlhttpReq.response);
+            /* Function is called everytime the page is loaded. It retrives data about the NPCs through a JSON call.
+            Creates a div hirearcy for each NPC such that the elements can be modified and adapted as they move through the line.
+            If the game is over, it will create a button to restart the game. */
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", "surveys/initialize", true);
+            xmlhttp.onload=function(){
+                var npcData = JSON.parse(xmlhttp.response);
                 var npcCount = npcData["npc_count"];
                 var nameList = npcData["names"];
                 var actionList = npcData["actions"];
@@ -168,6 +169,7 @@
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
 
                     $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
+                    $("<h4> &nbsp </h4>").appendTo("#npcChildBar" + (i+1));
                     $("<dl style='width:100%' id='npcChart"+ (i+1) + "' > </dl>").appendTo("#npcChildBar" + (i+1));
                     $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npcChart"+ (i+1));
                     $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
@@ -183,7 +185,7 @@
                 if(npcCount == 0){
                     $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
                     $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
-                    document.getElementById('nextStep').disabled = true;
+                    document.getElementById('nextStep').disabled = true; // Prevents the user from changing the game state when the game is over
                     $('#playAgain').click(function(){ 
                         reinitializeNPCs(); 
                         document.getElementById('nextStep').disabled = false;
@@ -192,11 +194,14 @@
                     // $('#nextStep').css('border-color', '#eee');                    
                 }
             }
-            xmlhttpReq.send();
+            xmlhttp.send();
         }
 
 
         function reinitializeNPCs(){
+            /* The JSON request resets the game on the python side, reinitializing the NPCs.
+            The game over text and button are removed and replaced with the NPC divs created
+            in the initializeNPC function. */
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/reinitialize", true);
             xmlhttp.onload=function(){
@@ -205,7 +210,6 @@
             }
             xmlhttp.send();              
 
-            // delete the text and button here
             var goText = document.getElementById('gameOverText');
             var goButton = document.getElementById('playAgain');
             goText.parentNode.removeChild(goText);
@@ -213,8 +217,12 @@
             initializeNPCs();
         }
 
-
         function updateNPCs(){
+            /* Called everytime the nextStep button is pressed, which represents the change in the game state
+            in the model. All of the npc information that needs to be changed in the UI is fetched from a JSON call.
+            The next step button is disabled such that the user cannot ruin the animations by spamming the button.
+            The changes made in the specific steps are in their respective functions as a matter of organization. */
+            document.getElementById('nextStep').disabled = true; 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
             xmlhttp.onload=function(){
@@ -224,80 +232,18 @@
                     var nameList = npcData["names"];
                     var actionList = npcData["actions"];
                     var emotionList = npcData["emotions"];
-                    //var weight_list = npc_data["weights"];
-                    //var resource_list = npc_data["resources"];
-                    //var newresource_list = npc_data["newresources"];
                     var gameStatus = npcData["gameStatus"];
                     var passingNPCs = npcData["passing_list"];
-                    //$('<p>' + gameStatus + ' </p>').appendTo('#scoreboard')
-                    //$('<p> ' + passingNPCs.length +' </p>').appendTo('#scoreboard')
 
                     if(gameStatus == 'penultimate'){
-                        document.getElementById('nextStep').disabled = true; 
-                        for(var i=0; i < passingNPCs.length; i ++){
-                            
-                            var passingIndex = passingNPCs[i]
-                            var movingUp = $('#npcParent'+ (passingIndex + 1));
-                            var movingDown = $('#npcParent' + passingIndex);
-                            var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
-                            var upHeight = movingUp.outerHeight() + marginDif;
-                            var downHeight = movingDown.outerHeight() + marginDif;
-                            $.when(
-                                movingUp.animate({top: -downHeight}, 750),
-                                movingDown.animate({top: upHeight},750)).then( 
-                            function(){ 
-                                movingUp.insertBefore(movingDown);
-                                movingUp.css('top', '0px');
-                                movingDown.css('top', '0px');
-                            });
-
-                            $('#npcParent'+ (passingIndex+1)).attr('id', 'ptemp');
-                            $('#npcParent'+ passingIndex).attr('id', 'npcParent'+ (passingIndex + 1));                                
-                            $('#ptemp').attr('id', 'npcParent' + passingIndex);
-
-                            //$('#npcChild' + (passingIndex+1)).attr('id', 'ctemp');
-                            //$('#npcChild'+ passingIndex).attr('id', 'npcChild'+ (passingIndex + 1));                                
-                            //$('#ctemp').attr('id', 'npcChild' + passingIndex);
-
-                            $('#scoreboard_' + (passingIndex)).html(nameList[passingIndex-1]);
-                            $('#scoreboard_' + (passingIndex + 1)).html(nameList[passingIndex]);
-                        }
-                        document.getElementById('nextStep').disabled = false;
-
+                        penultimateUpdate(passingNPCs, nameList);
                     } else if (gameStatus == 'final'){
-                        var panelHeight = $('#npcParent1').outerHeight();
-                        var npcName = document.getElementById('scoreboard_1');
-                        npcName.parentNode.removeChild(npcName);
-                        $.when(
-                            $('#npcParent1').animate({opacity: 0}, 750),
-                            $('.npc-container').not('#npcParent1').animate({top: -panelHeight}, 750)).then(
-                        function () {
-                            var npcPanel = document.getElementById('npcParent1');
-                            npcPanel.parentNode.removeChild(npcPanel);                                    
-                            $('.npc-container').css('top', '0px');
-
-                            for(var i = 2; i <=npcCount + 1; i++){
-                                $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
-                                //$('#npcChild' + i).attr('id', 'npcChild' + (i-1));
-                                $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
-                            }
-                            if(npcCount == 0){
-                                $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
-                                $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
-                                document.getElementById('nextStep').disabled = true;
-
-                                $('#playAgain').click(function(){
-                                    reinitializeNPCs() 
-                                    document.getElementById('nextStep').disabled = false;
-                                });
-                                // $('#nextStep').css('background-color', '#eee');
-                                // $('#nextStep').css('border-color', '#eee');
-                            }
-                        });
-                        
+                        finalUpdate(npcCount);
+                    } else {
+                        document.getElementById('nextStep').disabled = false;
                     }
-
                     for(var i = 0; i < npcCount; i++){
+                        // These calls are kept here as comments for debugging purposes.
                         // $('#name_' + name_list[i]).text(name_list[i]);
                         // $('#emotion_'+ name_list[i]).text("Emotions: " + formatEmotion(emotion_list[i]));  
                         // $('#action_'+ name_list[i]).text("Action: " + action_list[i]);
@@ -307,13 +253,9 @@
                         //$("#npcChild"+ (i+1)).attr('class', getPanelClass(action_list[i]));
 
                         var dominentEmotionURL = getHighestEmotion(emotionList[i]);
-                        //console.log(dominentEmotionURL);
-                        //$('#npcFace' + name_list[i]).src = dominentEmotionURL;
                         document.getElementById('npcFace' + nameList[i]).src = dominentEmotionURL;
 
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(actionList[i]));
-
-                        //graph stuff
                         $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
                         $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
                         $('#hopetext_' + nameList[i]).text('Hope ' + getEmotionPercent(emotionList[i][1]) + '%');
@@ -323,10 +265,80 @@
                         $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
-
-
             }
             xmlhttp.send();
+        }
+
+        function penultimateUpdate(passingNPCs, nameList){
+            /* For each NPC that is made a successful pass, it wil animate the swap in line
+            as well as switch the names on the side bar. The nextStep button is only 
+            reactivated after the animation is finished to prevent overlapping animations. */
+            for(var i=0; i < passingNPCs.length; i ++){
+                
+                var passingIndex = passingNPCs[i]
+                var movingUp = $('#npcParent'+ (passingIndex + 1));
+                var movingDown = $('#npcParent' + passingIndex);
+                var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
+                var upHeight = movingUp.outerHeight() + marginDif;
+                var downHeight = movingDown.outerHeight() + marginDif;
+                $.when(
+                    movingUp.animate({top: -downHeight}, 750),
+                    movingDown.animate({top: upHeight},750)).then( 
+                function(){
+                    document.getElementById('nextStep').disabled = false;
+                    movingUp.insertBefore(movingDown);
+                    movingUp.css('top', '0px');
+                    movingDown.css('top', '0px');
+                });
+
+                $('#npcParent'+ (passingIndex+1)).attr('id', 'ptemp');
+                $('#npcParent'+ passingIndex).attr('id', 'npcParent'+ (passingIndex + 1));                                
+                $('#ptemp').attr('id', 'npcParent' + passingIndex);
+
+                $('#scoreboard_' + (passingIndex)).html(nameList[passingIndex-1]);
+                $('#scoreboard_' + (passingIndex + 1)).html(nameList[passingIndex]);
+            }
+            if(passingNPCs.length == 0){
+                document.getElementById('nextStep').disabled = false;
+            }
+        }
+
+        function finalUpdate(npcCount){
+            /* When it's time for the NPC in first place to receive their item, they are no longer included in teh list of
+            npcs, so they are removed from the layout by a fade out, and all of the NPCs underneath are moved upward to 
+            take the higher positions.  In the case that the line is now empty, the game over text and button will appear so that
+            the user can start a new game. Currently, the new game button doesn't always work, and I have no idea what it's 
+            successful execution is dependant on. */
+            var panelHeight = $('#npcParent1').outerHeight();
+            var npcName = document.getElementById('scoreboard_1');
+            npcName.parentNode.removeChild(npcName);
+            $.when(
+                $('#npcParent1').animate({opacity: 0}, 750),
+                $('.npc-container').not('#npcParent1').animate({top: -panelHeight}, 750)).then(
+            function () {
+                var npcPanel = document.getElementById('npcParent1');
+                npcPanel.parentNode.removeChild(npcPanel);                                    
+                $('.npc-container').css('top', '0px');
+
+                for(var i = 2; i <=npcCount + 1; i++){
+                    $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
+                    //$('#npcChild' + i).attr('id', 'npcChild' + (i-1));
+                    $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
+                    document.getElementById('nextStep').disabled = false;
+                }
+                if(npcCount == 0){
+                    $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
+                    $("<div style='text-align:center'><button id='playAgain' class='btn btn-primary' type='button'> Play Again? </button></div> ").appendTo("#npcDiv");
+                    document.getElementById('nextStep').disabled = true;
+
+                    $('#playAgain').click(function(){
+                        reinitializeNPCs() 
+                        document.getElementById('nextStep').disabled = false;
+                    });
+                    // $('#nextStep').css('background-color', '#eee');
+                    // $('#nextStep').css('border-color', '#eee');
+                }
+            });
         }
 
         $('document').ready(function(){

@@ -3,24 +3,8 @@ TODO
     -Fix that navbar nonesense
     -Finalize deployment details
     -Possibly remove db side of site
-    
-    -Eventually make a button which reinitializes the server
 
-
-
-
-    - ON page reresh, if someone failed a pass the name on the side is smaller
-
-    - on page refresh, if the npc had a pass fail, the outline is clear
-
-
-    Need a button which resets the game entirely.
-
-
-    -when 0.4 translates to 4%
-    -disable the button listener whenever you are playing an animation
-    - modularize the updateNPCs function into smaller functions
-
+    - Does the button actually work to reset the game?
 
 
     Link to happy: "http://i61.tinypic.com/33c0ygh.jpg" 
