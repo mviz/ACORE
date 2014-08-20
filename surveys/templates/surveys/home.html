@@ -15,7 +15,8 @@
         <div class="col-sm-4" > 
             <div display='inline' style='background-color:#d9edf7; border-radius:50%; border-style:solid; border-color:#bce8f1; height:1em; width:1em; float:left;'></div> <p> <strong> Waiting </strong> </p> 
             <div display='inline' style='background-color:#fcf8e3; border-radius:50%; border-style:solid; border-color:#faebcc; height:1em; width:1em; float:left;'></div> <p> <strong> Trying to pass </strong> </p> 
-            <div display='inline' style='background-color:#dff0d8; border-radius:50%; border-style:solid; border-color:#d6e9c6; height:1em; width:1em; float:left;'></div> <p> <strong> Successfully Passed </strong> </p> 
+            <div display='inline' style='background-color:#dff0d8; border-radius:50%; border-style:solid; border-color:#d6e9c6; height:1em; width:1em; float:left;'></div> <p> <strong> Successfully Passed </strong> </p>
+            <div display='inline' style='background-color:#ccc; border-radius:50%; border-style:solid; border-color:#aaa; height:1em; width:1em; float:left;'></div> <p> <strong> Failed to Pass </strong> </p>  
             <div display='inline' style='background-color:#f2dede; border-radius:50%; border-style:solid; border-color:#ebccd1; height:1em; width:1em; float:left;'></div> <p> <strong> Protesting </strong> </p> 
         </div>
     </div>
@@ -60,6 +61,19 @@
     }
     .sorrow_bar { 
         background: -webkit-gradient(linear, left top, left bottom, from(#b92c28), to(#6e1b18));
+    }
+
+    .pass_fail-alert {
+        background-color:#ccc;
+        border-radius:4px;
+        border-width:1px;
+        border-style:solid;
+        border-color:#aaa;
+        display:block;
+        font-family: Helvetica, Arial;
+        margin:0;
+        padding:15px;
+        text-align:center;
     }
 
 
@@ -110,20 +124,20 @@
             return emoURL;
         }
 
-        // Function is no longer used
-        // function getPanelClass(action){
-        //     if(action == 'Wait'){
-        //         return 'panel panel-primary';
-        //     } else if (action == 'Pass'){
-        //         return 'panel panel-warning';
-        //     } else if (action == 'Pass_Success'){
-        //         return 'panel panel-success';
-        //     } else if (action == 'Protest'){
-        //         return 'panel panel-danger';
-        //     } else if (action == 'Fail'){
-        //         return 'panel panel-default'
-        //     } 
-        // }
+        function getLabelClass(action){
+            // Returns the appropriate css bootstrap class for an alert element for name side bar.
+            if(action == 'Wait'){
+                return 'label label-info';
+            } else if (action == 'Pass'){
+                return 'label label-warning';
+            } else if (action == 'Pass_Success'){
+                return 'label label-success';
+            } else if (action == 'Protest'){
+                return 'label label-danger';
+            } else if (action == 'Pass_Fail'){
+                return 'label label-default'
+            } 
+        }
 
         function getAlertClass(action){
             // Returns the appropriate css bootstrap class for an alert element for name side bar.
@@ -136,22 +150,22 @@
             } else if (action == 'Protest'){
                 return 'alert alert-danger';
             } else if (action == 'Pass_Fail'){
-                return 'alert alert-info'
+                return 'pass_fail-alert'
             } 
         }
-        // Function is no longer used
-        // function formatEmotion(emotionList){
-        //     return "Joy  [" + emotionList[0].substring(4) +  "] Hope [" + emotionList[1].substring(5) + "] Sorrow [" + emotionList[2].substring(7) + "] Fear [" + emotionList[3].substring(5) +"]";
-        // }
 
-        // Function is no longer used
-        // function formatSpaces(dataList){
-        //     if( typeof dataList[0] == 'undefined'){
-        //         return ''
-        //     }
-        //     return "[" + dataList[0] + "] -- [" + dataList[1] + "] -- [" + dataList[2] +"]";
-        // }
 
+        function getGameStatusTitle(gameStatus){
+            if(gameStatus == 'initial'){
+                return 'Planning';
+            }else if (gameStatus == 'protest?'){
+                return 'Protesting';
+            }else if (gameStatus == 'penultimate'){
+                return 'Passing';
+            }else{
+                return 'Rest';
+            }
+        }
 
         function initializeNPCs(){
             /* Function is called everytime the page is loaded. It retrives data about the NPCs through a JSON call.
@@ -168,19 +182,8 @@
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
 
-                var gameStatusTitle;
-                if(gameStatus == 'initial'){
-                    gameStatusTitle = 'Planning';
-                }else if (gameStatus == 'protest?'){
-                    gameStatusTitle = 'Protesting';
-                }else if (gameStatus == 'penultimate'){
-                    gameStatusTitle = 'Passing';
-                }else{
-                    gameStatusTitle = 'Rest';
-                }
-                $('#gameStatus').html(gameStatusTitle);
+                $('#gameStatus').html(getGameStatusTitle(gameStatus));
 
-                $('#gameStatus').html(gameStatusTitle);
                 for(var i = 0; i < npcCount; i++){
                     $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
@@ -201,6 +204,7 @@
                     $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
 
                     $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
+                    //$("<span id='scoreboard_" + (i+1) + "' class='" + getLabelClass(actionList[i]) + "'style='margin:0; text-align:center;'>" + nameList[i] + "</span>").appendTo("#scoreboard");
                 }
                 if(npcCount == 0){
                     $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#npcDiv");
@@ -286,17 +290,7 @@
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
 
-                    var gameStatusTitle;
-                    if(gameStatus == 'initial'){
-                        gameStatusTitle = 'Planning';
-                    }else if (gameStatus == 'protest?'){
-                        gameStatusTitle = 'Protesting';
-                    }else if (gameStatus == 'penultimate'){
-                        gameStatusTitle = 'Passing';
-                    }else{
-                        gameStatusTitle = 'Rest';
-                    }
-                    $('#gameStatus').html(gameStatusTitle);
+                    $('#gameStatus').html(getGameStatusTitle(gameStatus));
             }
             xmlhttp.send();
         }
