@@ -9,7 +9,7 @@
     {% block css %}{% endblock css %}
     {% block js %}{% endblock js %}
 </head>
-<body>
+<body style='background-color:#eee;'>
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -31,9 +31,9 @@
         </div>
       </div>
     </nav>
-    <div class='jumbotron'> </div>
+    <div style='height:4em'> </div>
 
-    <div class="container">
+    <div class="container" style='background-color:#ffffff; height:100%; padding-left:0px; padding-right:0px;'>
         {% block page_content %}{% endblock page_content %}
     </div>
 

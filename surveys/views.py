@@ -133,8 +133,9 @@ def homepage_view(request):
 def reinitialize_data(request):
     # Resets the NPC data so that the model can be played more than once.  
     # Currently doesn't always work, for some unknown reason. TODO.
-    global line, counter
+    global line, counter, nameList
     counter = 0 #yathi
+    nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward", "Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam", "Ahmed", "Merriam"]
     initialize(numInLine = 6) #TODO name list will eventually run out
     line_length = 6
     json_response = {

@@ -6,14 +6,18 @@
 {% block title %}The Game{% endblock title %}
 
 {% block page_content %} 
-    <div class="col-sm-2">    
-        <button id="nextStep" class="btn btn-success" type="button"> Next Step </button>
-    </div>
+    <div style='height:4em; width:100%; background-color:#333; margin-bottom:1.5cm;'> <h3 id='gameStatus' style='color:#ffffff; text-align:center; padding-top:0.5em; padding-left:0px; padding-right:0px; font-family:Helvetica, Arial;'> </h3> </div>
     <div class="col-sm-7" id="npcDiv" style='position:relative'></div>
-    <div class="col-sm-3">
-        <div class="col-sm-2"> </div>
+    <div class="col-sm-5" style='height:75vh;'>
+        <div class='center-block'> <button id="nextStep" class="btn btn-success center-block" type="button" style='width:40%; height:3em; margin:auto;'><strong> Next Step </strong> </button> </div>
+        <div class='page-header'> </div>
         <div id='scoreboard' class="col-sm-8"> </div>
-        <div class="col-sm-2"> </div>
+        <div class="col-sm-4" > 
+            <div display='inline' style='background-color:#d9edf7; border-radius:50%; border-style:solid; border-color:#bce8f1; height:1em; width:1em; float:left;'></div> <p> <strong> Waiting </strong> </p> 
+            <div display='inline' style='background-color:#fcf8e3; border-radius:50%; border-style:solid; border-color:#faebcc; height:1em; width:1em; float:left;'></div> <p> <strong> Trying to pass </strong> </p> 
+            <div display='inline' style='background-color:#dff0d8; border-radius:50%; border-style:solid; border-color:#d6e9c6; height:1em; width:1em; float:left;'></div> <p> <strong> Successfully Passed </strong> </p> 
+            <div display='inline' style='background-color:#f2dede; border-radius:50%; border-style:solid; border-color:#ebccd1; height:1em; width:1em; float:left;'></div> <p> <strong> Protesting </strong> </p> 
+        </div>
     </div>
 
 {% endblock page_content %}
@@ -21,6 +25,9 @@
 
 {% block css %}
 <style>
+    body{
+        background-color:#ffffff;
+    }
     * { 
         font-family: Helvetica, Arial;
     }
@@ -161,6 +168,19 @@
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
 
+                var gameStatusTitle;
+                if(gameStatus == 'initial'){
+                    gameStatusTitle = 'Planning';
+                }else if (gameStatus == 'protest?'){
+                    gameStatusTitle = 'Protesting';
+                }else if (gameStatus == 'penultimate'){
+                    gameStatusTitle = 'Passing';
+                }else{
+                    gameStatusTitle = 'Rest';
+                }
+                $('#gameStatus').html(gameStatusTitle);
+
+                $('#gameStatus').html(gameStatusTitle);
                 for(var i = 0; i < npcCount; i++){
                     $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
@@ -265,6 +285,18 @@
                         $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
+
+                    var gameStatusTitle;
+                    if(gameStatus == 'initial'){
+                        gameStatusTitle = 'Planning';
+                    }else if (gameStatus == 'protest?'){
+                        gameStatusTitle = 'Protesting';
+                    }else if (gameStatus == 'penultimate'){
+                        gameStatusTitle = 'Passing';
+                    }else{
+                        gameStatusTitle = 'Rest';
+                    }
+                    $('#gameStatus').html(gameStatusTitle);
             }
             xmlhttp.send();
         }
