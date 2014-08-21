@@ -22,6 +22,7 @@ nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris",
 "Ahmed", "Merriam"]
 initialized = False
 gameStatus = 'initial'
+newGame = True
 ###                 End of Global Variables          ###
 
 
@@ -68,6 +69,9 @@ class SurveyList(generic.ListView):
     def get_context_data(self, **kwargs): 
         return super(SurveyList, self).get_context_data(**kwargs)
 
+def acoreInfoPopup(request):
+    return render(request, 'surveys/infoPopup.html')
+
 def submit_survey(request):
     global line
     choices = []
@@ -97,7 +101,6 @@ def submit_survey(request):
         return render(request, 'surveys/questions.html', context_data)
 
     else:
-        pdb.set_trace()
         response = HttpResponse('Submission_Cookie')
         response.set_cookie('submitted', 'yes')
 
@@ -125,9 +128,6 @@ def homepage_view(request):
         'npc_count':len(line),
     }
 
-    response = HttpResponse()
-
-
     return render(request, 'surveys/home.html', context_data)
 
 def reinitialize_data(request):
@@ -145,7 +145,7 @@ def reinitialize_data(request):
 
 
 def initialize_data(request):
-    global line, gameStatus
+    global line, gameStatus, newGame
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
@@ -156,6 +156,15 @@ def initialize_data(request):
         'emotions':npc_emotions,
         "npc_count":npc_count,
         "gameStatus": convert_game_status(gameStatus),
+        "newGame": newGame,
+    }
+    return HttpResponse(json.dumps(json_response), content_type='application/json')
+
+def flagFirstGame(request):
+    global newGame
+    newGame = False
+    json_response = {
+        "newGame": newGame,
     }
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
@@ -255,17 +264,12 @@ def acore_next_step(request):
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
-    #npc_weights = get_npc_weights()
-    #npc_resources = get_npc_resources()
-    #npc_new_resources = get_npc_new_resources()
     npc_count = len(line)
+
     json_response = {
         'names':npc_names,
         'actions':npc_actions,
         'emotions':npc_emotions,
-        #'weights':npc_weights,
-        #'resources':npc_resources,
-        #'newresources':npc_new_resources, 
         "npc_count":npc_count,
         "passing_list": passing_people,
         "gameStatus": convert_game_status(gameStatus),
