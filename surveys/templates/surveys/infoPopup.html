@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title> ACORE Information </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+
+    <style>
+        .title{
+            /*text-align:center;*/
+        }
+        .breaks{
+            margin-top:0px;
+        }
+    </style>
+
+    <script>
+        $('document').ready(function(){
+            $('#closeWindow').click(function(){
+                window:close();
+            });
+            $('#moreInfo').click(function(){
+                window:close();
+                window.location.href = '/acore'; //TODO basically ma
+            });
+        });
+    </script>
+</head>
+
+<body style='backgrond-color:#aaa'>
+    <div class='container'>
+        <h3 class='title'> What's going on here? </h3>
+        <div class='page-header breaks' ></div>
+        <p> This is an emotional simulation of a group of people waiting in line to get a video game. Every round, each of the 
+            people will have a chance to chose to pass the person in front of them. If they do, the person in front will decide if they
+            want to try and stop them by protesting. After each round, the person at the front of the line will get the video game.
+        </p>
+
+        <h3 class='title'> How are these decisions made? </h3>
+        <div class='page-header breaks'></div>
+        <p> Each person values their health, reputation and position the line at different levels. The more they like each specific resource,
+            the more they'll try to protect it. You can see how their emotions change in the graphs next to their pictures.</p>
+
+        <h3 class='title'> What do I have to do? </h3>
+        <div class='page-header breaks'> </div>
+        <p> Click the green Next Step button until the line is empty.</p>
+
+        <div class='page-header breaks'> </div>
+        <div class='col-sm-12' style='text-align:center'>
+            <h4> Ready to go?</h4>
+            <button type='button'  id='closeWindow' class='btn btn-success' style='margin-left:auto'> Close </button>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

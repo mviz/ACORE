@@ -12,4 +12,6 @@ urlpatterns = patterns(
     url(r'^ajax/$', views.acore_next_step, name="ajax"),
     url(r'^reinitialize/$', views.reinitialize_data, name='reinitialize'),
     url(r'^initialize/$', views.initialize_data, name='initialize'),
+    url(r'^firstGame/$', views.flagFirstGame, name='firstGame'),
+    url(r'^infoPopup/$', views.acoreInfoPopup, name='infoPopup'),
 )
