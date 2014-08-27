@@ -5,10 +5,12 @@
 
 
 {% block page_content %}
-<div class="row">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-6">
+<div class="row" style='padding:2cm'>
 
+    <div class="col-sm-8">
+        <h2 style='margin-top:0px'> The Survey </h2>
+        <div class='page-header' style='margin-top:0px'></div>
+        
         {% if not_complete %} <div class="alert alert-danger"> {{not_complete}}</div> {% endif %}
 
         <form method="post" action={% url 'surveys:submitting' %}>
@@ -34,7 +36,7 @@
         </form>
 
     </div>
-    <div class="col-sm-5"></div>
+    <div class="col-sm-4"></div>
 </div>
 
 {% endblock page_content %}

@@ -1,22 +1,6 @@
 TODO
-	-Add Lorem Ipsum for the Extra pages
     -Fix that navbar nonesense
     -Finalize deployment details
-    -Possibly remove db side of site
-
-    - Does the button actually work to reset the game?
-
-
-    Link to happy: "http://i61.tinypic.com/33c0ygh.jpg" 
-    to Sad: http://i61.tinypic.com/156ddtc.jpg
-    Angry: http://i60.tinypic.com/t8sxo4.jpg
-    afraid: http://i59.tinypic.com/245budt.jpg
-
-
-    get local copies of the emotional images
-        Define a local class with an assigned path to a local image, then just change the class of the images.
-
-    fix the magic button
 
     Fix teh new game button, which after pressing it seems to want to only let you use the last phase of the game. FIX THAT SHIT.
     
