@@ -24,18 +24,19 @@
     <div class='col-sm-12' id='central-div'>
         <div class="col-sm-7" id="npcDiv" style='position:relative'></div>
         <div id='referenceDiv' class="col-sm-5" style='height:75vh;'>
-            <div class='center-block'> 
-                <button id="nextStep" class="btn btn-success center-block" type="button" style='width:40%; height:3em;'><strong> Next Step </strong> </button> 
-                <button id='info' type='button' class='btn btn-warning info-button'> Info </button>
+            <div> 
+                <button id="nextStep" class="btn btn-success " type="button" style='width:40%; height:3em;'><strong> Next Step </strong> </button> 
+                
             </div>
-            <div class='page-header'> </div>
+            <div class='page-header' style='margin-top:10px'> </div>
             <div id='scoreboard' class="col-sm-7" style='padding-left:0px; padding-right:0px;'> </div>
             <div class="col-sm-5" > 
-                <span class='scoreboard-color-legend' style='background-color:#d9edf7; border-color:#bce8f1;'></span> <p> <strong> &nbsp Waiting </strong> </p> 
-                <span class='scoreboard-color-legend' style='background-color:#fcf8e3; border-color:#faebcc;'></span> <p> <strong> &nbsp Trying to pass </strong> </p> 
-                <span class='scoreboard-color-legend' style='background-color:#dff0d8; border-color:#d6e9c6;'></span> <p> <strong> &nbsp Successfully Passed </strong> </p>
-                <span class='scoreboard-color-legend' style='background-color:#ccc; border-color:#aaa;'></span> <p> <strong> &nbsp Failed to Pass </strong> </p>  
-                <span class='scoreboard-color-legend' style='background-color:#f2dede; border-color:#ebccd1;'></span> <p> <strong> &nbsp Protesting </strong> </p> 
+                <span class='scoreboard-color-legend' style='background-color:#d9edf7; border-color:#bce8f1;'></span> <p class='one-line'> <strong> &nbsp Waiting </strong> </p> 
+                <span class='scoreboard-color-legend' style='background-color:#fcf8e3; border-color:#faebcc;'></span> <p class='one-line'> <strong> &nbsp Trying to pass </strong> </p> 
+                <span class='scoreboard-color-legend' style='background-color:#dff0d8; border-color:#d6e9c6;'></span> <p class='one-line'> <strong> &nbsp Successfully Passed </strong> </p>
+                <span class='scoreboard-color-legend' style='background-color:#ccc; border-color:#aaa;'></span> <p class='one-line'> <strong> &nbsp Failed to Pass </strong> </p>  
+                <span class='scoreboard-color-legend' style='background-color:#f2dede; border-color:#ebccd1;'></span> <p class='one-line'> <strong> &nbsp Protesting </strong> </p> 
+                <button id='info' type='button' style='margin-left:2em; float:left' class='btn btn-warning info-button'> Info </button>
             </div>
         </div>
     </div>
@@ -129,11 +130,30 @@
 
     .info-button{
         margin-left:1em; 
-        float:right; 
-        vertical-align: center;
-        
+    }
+    .joy{
+        background: url("http://i61.tinypic.com/33c0ygh.jpg");
+        background-repeat: no-repeat;
+        height:0px;
+        width: 0px;
+        padding: 60px 90px;
     }
 
+    .hope{
+        background-image: url(/Content/pictures/ajax-loader.gif);
+    }
+
+    .sorrow{
+        background-image: url(/Content/pictures/ajax-loader.gif);
+    }
+
+    .fear{
+        background-image: url(/Content/pictures/ajax-loader.gif);
+    }
+
+    .one-line{
+        white-space:nowrap;
+    }
 
 </style>
 {% endblock css %}
@@ -177,6 +197,28 @@
             }
             if(maxEmo < fearEmo){
                 emoURL = "http://i59.tinypic.com/245budt.jpg"; //fear face
+            }
+            //console.log(emoURL);
+            return emoURL;
+        }
+
+        function getImageClass(emotionList){
+            var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
+            var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
+            var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
+            var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
+            var maxEmo = joyEmo;
+            var emoURL = "joy"; //joy
+            if(maxEmo < hopeEmo){
+                maxEmo = hopeEmo;
+                emoURL = "hope"  //actually angry face
+            } 
+            if(maxEmo < sorrowEmo){
+                maxEmo = sorrowEmo;
+                emoURL = "sorrow";
+            }
+            if(maxEmo < fearEmo){
+                emoURL = "fear"; //fear face
             }
             //console.log(emoURL);
             return emoURL;
@@ -271,7 +313,7 @@
                         $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
                         $("<div id='npcChild" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npcParent' + (i+1));
-                        $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
+                        $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
                         $("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
 
                         $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
