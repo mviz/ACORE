@@ -106,28 +106,6 @@ def progress_color(index):
 #     return int(math.fabs(fear)*100//1)
 
 
-@register.filter
-def getHighestEmotion(emotion_list):
-    #pdb.set_trace()
-    joyEmo = getEmotionInt(emotion_list[0])
-    hopeEmo = getEmotionInt(emotion_list[1])
-    sorrowEmo = getEmotionInt(emotion_list[2])
-    fearEmo = getEmotionInt(emotion_list[3])
-    #pdb.set_trace()
-    maxEmo = joyEmo
-    emoURL = "http://i61.tinypic.com/33c0ygh.jpg" #joy
-    if(maxEmo < hopeEmo):
-        maxEmo = hopeEmo
-        emoURL = "http://i60.tinypic.com/t8sxo4.jpg"  #actually angry face
-    if(maxEmo < sorrowEmo):
-        maxEmo = sorrowEmo
-        emoURL = "http://i61.tinypic.com/156ddtc.jpg" #sad face
-    if(maxEmo < fearEmo):
-        emoURL = "http://i59.tinypic.com/245budt.jpg" #fear face
-
-    #pdb.set_trace()
-    return emoURL
-
 # FUNCTION NO LONGER USED
 # def getEmotionInt(emotion):
 #     for indx, c in enumerate(emotion):
