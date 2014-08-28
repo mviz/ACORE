@@ -22,7 +22,6 @@ nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris",
 "Ahmed", "Merriam"]
 initialized = False
 gameStatus = 'initial'
-newGame = True
 ###                 End of Global Variables          ###
 
 
@@ -64,7 +63,7 @@ class Results(generic.ListView):
 
 class SurveyList(generic.ListView):
     model = Question
-    template_name = "surveys/survey_list.html"
+    template_name = "surveys/survey_google.html"
 
     def get_context_data(self, **kwargs): 
         return super(SurveyList, self).get_context_data(**kwargs)
@@ -134,18 +133,19 @@ def reinitialize_data(request):
     # Resets the NPC data so that the model can be played more than once.  
     # Currently doesn't always work, for some unknown reason. TODO.
     global line, counter, nameList
-    counter = 0 #yathi
-    nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward", "Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam", "Ahmed", "Merriam"]
-    initialize(numInLine = 6) #TODO name list will eventually run out
-    line_length = 6
+    if(len(line) == 0):
+        counter = 0 #yathi
+        nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward", "Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam", "Ahmed", "Merriam"]
+        initialize(numInLine = 6) #TODO name list will eventually run out
+
     json_response = {
-        "lineLength":line_length,
+        "lineLength":len(line),
     } 
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
 
 def initialize_data(request):
-    global line, gameStatus, newGame
+    global line, gameStatus
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
@@ -156,18 +156,8 @@ def initialize_data(request):
         'emotions':npc_emotions,
         "npc_count":npc_count,
         "gameStatus": convert_game_status(gameStatus),
-        "newGame": newGame,
     }
     return HttpResponse(json.dumps(json_response), content_type='application/json')
-
-def flagFirstGame(request):
-    global newGame
-    newGame = False
-    json_response = {
-        "newGame": newGame,
-    }
-    return HttpResponse(json.dumps(json_response), content_type='application/json')
-
 
 def acore_next_step(request):
     # Executes ACORE code.

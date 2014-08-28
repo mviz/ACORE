@@ -22,7 +22,19 @@
     </div>
 
     <div class='col-sm-12' id='central-div'>
-        <div class="col-sm-7" id="npcDiv" style='position:relative'></div>
+        <div class="col-sm-7" id="npcDiv" style='position:relative'>
+            <div id='newGameDiv' style='display:none'>
+                <div> 
+                    <h2 style='text-align:left'> Game Over! </h2>
+                    <button class='btn btn-danger' id='playAgain' style='float:right;'> Play Again </button>
+                </div>
+                <div class='page-header'></div>
+                <div>
+                    <h2 style='text-align:left'> Ready for the survey? </h2>
+                    <a href='/surveys/questions'> <button class='btn btn-primary' style='float:right'> Survey </button> </a>
+                </div>
+            </div>
+        </div>
         <div id='referenceDiv' class="col-sm-5" style='height:75vh;'>
             <div> 
                 <button id="nextStep" class="btn btn-success " type="button" style='position:relative; min-width:100%'> Next Step </button>
@@ -197,7 +209,7 @@
                 ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/sad1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
                 ['{% static "surveys/fear2.jpg" %}', '{% static "surveys/fear1.jpg" %}', '{% static "surveys/hope1.jpg" %}', '{% static "surveys/hope3.jpg" %}', '{% static "surveys/hope2.jpg" %}'],
                 ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TMEP.jpg" %}', '{% static "surveys/happy3.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy3.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
             ]
 
             console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
@@ -336,53 +348,37 @@
                 var emotionList = npcData["emotions"];
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
-                var newGame = npcData['newGame']
 
                 //$('#gameStatus').html(getGameStatusTitle(gameStatus));
-                if(! newGame){
-                    highlightGameStatus(gameStatus);
-                    document.getElementById('nextStep').disabled = false;
+                highlightGameStatus(gameStatus);
+                document.getElementById('nextStep').disabled = false;
 
-                    for(var i = 0; i < npcCount; i++){
-                        $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
+                for(var i = 0; i < npcCount; i++){
+                    $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
-                        $("<div id='npcChild" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npcParent' + (i+1));
-                        $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
-                        //$("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
-                        $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
-                        $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
-                        $("<h4> &nbsp </h4>").appendTo("#npcChildBar" + (i+1));
-                        $("<dl style='width:100%' id='npcChart"+ (i+1) + "' > </dl>").appendTo("#npcChildBar" + (i+1));
-                        $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npcChart"+ (i+1));
-                        $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
-                        $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npcChart"+ (i+1));
-                        $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
-                        $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npcChart" + (i+1));
-                        $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
-                        $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npcChart" + (i+1));
-                        $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<div id='npcChild" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npcParent' + (i+1));
+                    $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
+                    //$("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
+                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
+                    $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
+                    $("<h4> &nbsp </h4>").appendTo("#npcChildBar" + (i+1));
+                    $("<dl style='width:100%' id='npcChart"+ (i+1) + "' > </dl>").appendTo("#npcChildBar" + (i+1));
+                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npcChart"+ (i+1));
+                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npcChart"+ (i+1));
+                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npcChart" + (i+1));
+                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npcChart" + (i+1));
+                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
 
-                        $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
-                        //$("<span id='scoreboard_" + (i+1) + "' class='" + getLabelClass(actionList[i]) + "'style='margin:0; text-align:center;'>" + nameList[i] + "</span>").appendTo("#scoreboard");
-                    }
-                    if(npcCount == 0){
-                        setUpEndGame();                  
-                    }
-                } else {
-                    //$("#referenceDiv").css('visibility', 'hidden');
-                    document.getElementById('nextStep').disabled = true;
-                    document.getElementById('info').disabled = true;
-                    $('#referenceDiv').css('opacity', '0.3');
-                    $("<div id='newGameDiv' height:100%; width:100%;> </div>").appendTo("#npcDiv");
-                    $("<div class='center-block' style='text-align:center; height:12em; width:50%; padding-bottom:1em;'><button id='startNewGame' class='btn btn-primary center-block' type='button' style='height:100%; width:100%;'> <h1> New Game </h1> </button></div> ").appendTo("#newGameDiv");
-                    $("<div class='center-block' style='text-align:center; height:4em; width:50%;'> <button id='howToPlay' class='btn btn-warning center-block' type='button' style='height:100%; width:100%;'> <h4> First time? </h4> </button></div> ").appendTo("#newGameDiv");
-                    $('#startNewGame').click(function(){
-                        firstGame();
-                    });
-                    $('#howToPlay').click(function(){
-                        infoPopup();
-                    })
+                    $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
+                    //$("<span id='scoreboard_" + (i+1) + "' class='" + getLabelClass(actionList[i]) + "'style='margin:0; text-align:center;'>" + nameList[i] + "</span>").appendTo("#scoreboard");
                 }
+                if(npcCount == 0){
+                    setUpEndGame();                  
+                }
+                
             }
             xmlhttp.send();
         }
@@ -392,6 +388,8 @@
             /* The JSON request resets the game on the python side, reinitializing the NPCs.
             The game over text and button are removed and replaced with the NPC divs created
             in the initializeNPC function. */
+            
+
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/reinitialize", true);
             xmlhttp.onload=function(){
@@ -400,8 +398,8 @@
             }
             xmlhttp.send();              
 
-            var endDiv = document.getElementById('endGameDiv');
-            endDiv.parentNode.removeChild(endDiv);
+            $('#newGameDiv').css('display', 'none')
+            
             initializeNPCs();
         }
 
@@ -503,30 +501,26 @@
 
                 for(var i = 2; i <=npcCount + 1; i++){
                     $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
-                    //$('#npcChild' + i).attr('id', 'npcChild' + (i-1));
                     $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
                     document.getElementById('nextStep').disabled = false;
                 }
-                if(npcCount == 0){
-                    setUpEndGame();
-                }
             });
+            if(npcCount == 0){
+                setUpEndGame();
+            }
         }
 
         function setUpEndGame(){
             document.getElementById('nextStep').disabled = true; // Prevents the user from changing the game state when the game is over
 
-            $("<div style='text-align:center' id='endGameDiv'></div>").appendTo("#npcDiv");
-            $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#endGameDiv");
-            $("<div style='text-align:center'><button id='playAgain' class='btn btn-danger' type='button'> Play Again? </button></div> ").appendTo("#endGameDiv");
+            // $("<div style='text-align:center' id='endGameDiv'></div>").appendTo("#npcDiv");
+            // $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#endGameDiv");
+            // $("<div style='text-align:center'><button id='playAgain' class='btn btn-danger' type='button'> Play Again? </button></div> ").appendTo("#endGameDiv");
 
-            $("<div class='page-header'></div>").appendTo("#endGameDiv");
-            $("<h1 style='text-align:center'> Ready for the survey? </h1>").appendTo("#endGameDiv");
-            $("<div style='text-align:center'> <a href='surveys/questions'> <button type='button' class='btn btn-primary' style='text-align:center'> Survey </button> </a> </div>").appendTo("#endGameDiv");
-
-            $('#playAgain').click(function(){ 
-                reinitializeNPCs(); 
-            });
+            // $("<div class='page-header'></div>").appendTo("#endGameDiv");
+            // $("<h1 style='text-align:center'> Ready for the survey? </h1>").appendTo("#endGameDiv");
+            // $("<div style='text-align:center'> <a href='surveys/questions'> <button type='button' class='btn btn-primary' style='text-align:center'> Survey </button> </a> </div>").appendTo("#endGameDiv");
+            $('#newGameDiv').css('display', 'inline');
         }
 
         $('document').ready(function(){
@@ -535,6 +529,9 @@
             });
             $('#info').click(function(){
                 infoPopup();
+            })
+            $('#playAgain').click(function(){
+                reinitializeNPCs();
             })
             initializeNPCs();
         });
