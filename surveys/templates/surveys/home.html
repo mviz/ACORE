@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 
-{% block title %}The Game{% endblock title %}
+{% block title %}ACORE{% endblock title %}
 
 {% block page_content %} 
     <div style='height:4em; width:100%; margin-bottom:1.5cm; background-color:#eee;'>
@@ -22,10 +22,21 @@
     </div>
 
     <div class='col-sm-12' id='central-div'>
-        <div class="col-sm-7" id="npcDiv" style='position:relative'></div>
+        <div class="col-sm-7" id="npcDiv" style='position:relative'>
+            <div id='newGameDiv' style='display:none'>
+                <div> 
+                    <h2 style='text-align:left'> Game Over! </h2>
+                    <button class='btn btn-danger' id='playAgain' style='float:right;'> Play Again </button>
+                </div>
+                <div class='page-header'></div>
+                <div>
+                    <h2 style='text-align:left'> Ready for the survey? </h2>
+                    <a href='/surveys/questions'> <button class='btn btn-primary' style='float:right'> Survey </button> </a>
+                </div>
+            </div>
+        </div>
         <div id='referenceDiv' class="col-sm-5" style='height:75vh;'>
             <div> 
-                <!-- <button id="nextStep" class="btn btn-success " type="button" style='width:40%; height:3em;'> Next Step </button> --> 
                 <button id="nextStep" class="btn btn-success " type="button" style='position:relative; min-width:100%'> Next Step </button>
             </div>
             <div class='page-header' style='margin-top:10px'> </div>
@@ -125,30 +136,12 @@
         text-align:center;
         padding-left:0px; 
         padding-right:0px;
+        padding-top:0.25cm;
         font-family:Helvetica, Arial;
     }
 
     .info-button{
         margin-left:1em; 
-    }
-    .joy{
-        background: url("http://i61.tinypic.com/33c0ygh.jpg");
-        background-repeat: no-repeat;
-        height:0px;
-        width: 0px;
-        padding: 60px 90px;
-    }
-
-    .hope{
-        background-image: url(/Content/pictures/ajax-loader.gif);
-    }
-
-    .sorrow{
-        background-image: url(/Content/pictures/ajax-loader.gif);
-    }
-
-    .fear{
-        background-image: url(/Content/pictures/ajax-loader.gif);
     }
 
     .one-line{
@@ -185,21 +178,73 @@
             var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
             var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
             var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
-            var maxEmo = joyEmo;
-            var emoURL = '{% static "surveys/happy1.jpg" %}' //http://i61.tinypic.com/33c0ygh.jpg;
+            var maxEmo = 1;
+            var emoURL = '{% static "surveys/hope1.jpg" %}' 
+            if(maxEmo < joyEmo){
+                maxEmo = joyEmo;
+                emoURL = '{% static "surveys/happy3.jpg" %}' 
+            } 
             if(maxEmo < hopeEmo){
                 maxEmo = hopeEmo;
-                emoURL = '{% static "surveys/afraid.jpg" %}' //"http://i60.tinypic.com/t8sxo4.jpg"  
+                emoURL = '{% static "surveys/hope3.jpg" %}' 
             } 
             if(maxEmo < sorrowEmo){
                 maxEmo = sorrowEmo;
-                emoURL = '{% static "surveys/sad2.jpg" %}' //"http://i61.tinypic.com/156ddtc.jpg";
+                emoURL = '{% static "surveys/sad1.jpg" %}' 
             }
             if(maxEmo < fearEmo){
-                emoURL = '{%  static "surveys/anger.jpg" %}' //"http://i59.tinypic.com/245budt.jpg";
+                emoURL = '{%  static "surveys/fear2.jpg" %}' 
             }
-            //console.log(emoURL);
             return emoURL;
+        }
+
+        function getDynamicFace(emotionList){
+            var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
+            var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
+            var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
+            var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
+            
+            var emotionalTable = [
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress2.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/sad1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/fear2.jpg" %}', '{% static "surveys/fear1.jpg" %}', '{% static "surveys/hope1.jpg" %}', '{% static "surveys/hope3.jpg" %}', '{% static "surveys/hope2.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy3.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
+            ]
+
+            console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
+
+            var x = 0;
+            var y = 0;
+            var deltaX = hopeEmo - fearEmo;
+            var deltaY = joyEmo - sorrowEmo;
+
+            if(deltaX > 30){
+                x = 4;
+            }else if (deltaX > 0){
+                x = 3;
+            } else if (deltaX == 0){
+                x = 2;
+            }else if (deltaX > -30){
+                x = 1
+            }else{
+                x = 0;
+            }
+
+            if(deltaY > 30){
+                y = 4;
+            }else if (deltaY > 0){
+                y = 3;
+            } else if (deltaY == 0){
+                y = 2;
+            }else if (deltaY > -30){
+                y = 1
+            }else{
+                y = 0;
+            }
+            console.log("deltaX:" + deltaX + "deltaY" + deltaY);
+            console.log("x: " + x + " y: " + y + "emTab[x,y]: " + emotionalTable[x][y]);
+            return emotionalTable[x][y];
         }
 
         function getImageClass(emotionList){
@@ -240,7 +285,6 @@
         }
 
         function highlightGameStatus(gameStatus){
-            console.log("highlight game status");
             if(gameStatus == 'initial'){
                 $('#status1').attr('class', 'game-status nonactive-status');
                 $('#status2').attr('class', 'game-status active-status');
@@ -304,53 +348,37 @@
                 var emotionList = npcData["emotions"];
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
-                var newGame = npcData['newGame']
 
                 //$('#gameStatus').html(getGameStatusTitle(gameStatus));
-                if(! newGame){
-                    highlightGameStatus(gameStatus);
-                    document.getElementById('nextStep').disabled = false;
+                highlightGameStatus(gameStatus);
+                document.getElementById('nextStep').disabled = false;
 
-                    for(var i = 0; i < npcCount; i++){
-                        $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
+                for(var i = 0; i < npcCount; i++){
+                    $("<div id='npcParent" + (i+1) + "' class='col-sm-12 npc-container'> </div>").appendTo("#npcDiv");
 
-                        $("<div id='npcChild" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npcParent' + (i+1));
-                        $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
-                        $("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
-                        //$("<img id='npcFace"+ nameList[i] + "' src='{% static "surveys/happy1.jpg" %}' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
-                        $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
-                        $("<h4> &nbsp </h4>").appendTo("#npcChildBar" + (i+1));
-                        $("<dl style='width:100%' id='npcChart"+ (i+1) + "' > </dl>").appendTo("#npcChildBar" + (i+1));
-                        $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npcChart"+ (i+1));
-                        $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
-                        $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npcChart"+ (i+1));
-                        $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
-                        $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npcChart" + (i+1));
-                        $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
-                        $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npcChart" + (i+1));
-                        $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<div id='npcChild" + (i+1) + "' class='col-sm-7'></div>").appendTo('#npcParent' + (i+1));
+                    $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcChild" + (i+1));
+                    //$("<img id='npcFace"+ nameList[i] + "' src='" + getHighestEmotion(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
+                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' border='0' alt='happy' style='width:100%; height:100%;' />").appendTo("#npcChild" + (i+1));
+                    $("<div id='npcChildBar" + (i+1) + "' class='col-sm-5'> </div>").appendTo("#npcParent" + (i+1));
+                    $("<h4> &nbsp </h4>").appendTo("#npcChildBar" + (i+1));
+                    $("<dl style='width:100%' id='npcChart"+ (i+1) + "' > </dl>").appendTo("#npcChildBar" + (i+1));
+                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#npcChart"+ (i+1));
+                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#npcChart"+ (i+1));
+                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#npcChart" + (i+1));
+                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
+                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#npcChart" + (i+1));
+                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#npcChart" + (i+1));
 
-                        $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
-                        //$("<span id='scoreboard_" + (i+1) + "' class='" + getLabelClass(actionList[i]) + "'style='margin:0; text-align:center;'>" + nameList[i] + "</span>").appendTo("#scoreboard");
-                    }
-                    if(npcCount == 0){
-                        setUpEndGame();                  
-                    }
-                } else {
-                    //$("#referenceDiv").css('visibility', 'hidden');
-                    document.getElementById('nextStep').disabled = true;
-                    document.getElementById('info').disabled = true;
-                    $('#referenceDiv').css('opacity', '0.3');
-                    $("<div id='newGameDiv' height:100%; width:100%;> </div>").appendTo("#npcDiv");
-                    $("<div class='center-block' style='text-align:center; height:12em; width:50%; padding-bottom:1em;'><button id='startNewGame' class='btn btn-primary center-block' type='button' style='height:100%; width:100%;'> <h1> New Game </h1> </button></div> ").appendTo("#newGameDiv");
-                    $("<div class='center-block' style='text-align:center; height:4em; width:50%;'> <button id='howToPlay' class='btn btn-warning center-block' type='button' style='height:100%; width:100%;'> <h4> First time? </h4> </button></div> ").appendTo("#newGameDiv");
-                    $('#startNewGame').click(function(){
-                        firstGame();
-                    });
-                    $('#howToPlay').click(function(){
-                        infoPopup();
-                    })
+                    $("<div  id='scoreboard_" + (i+1) + "' class='" + getAlertClass(actionList[i]) + "' style='margin:0; text-align:center;'>" + nameList[i] + "</div>").appendTo('#scoreboard');
+                    //$("<span id='scoreboard_" + (i+1) + "' class='" + getLabelClass(actionList[i]) + "'style='margin:0; text-align:center;'>" + nameList[i] + "</span>").appendTo("#scoreboard");
                 }
+                if(npcCount == 0){
+                    setUpEndGame();                  
+                }
+                
             }
             xmlhttp.send();
         }
@@ -360,6 +388,8 @@
             /* The JSON request resets the game on the python side, reinitializing the NPCs.
             The game over text and button are removed and replaced with the NPC divs created
             in the initializeNPC function. */
+            
+
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/reinitialize", true);
             xmlhttp.onload=function(){
@@ -368,8 +398,8 @@
             }
             xmlhttp.send();              
 
-            var endDiv = document.getElementById('endGameDiv');
-            endDiv.parentNode.removeChild(endDiv);
+            $('#newGameDiv').css('display', 'none')
+            
             initializeNPCs();
         }
 
@@ -378,7 +408,6 @@
             in the model. All of the npc information that needs to be changed in the UI is fetched from a JSON call.
             The next step button is disabled such that the user cannot ruin the animations by spamming the button.
             The changes made in the specific steps are in their respective functions as a matter of organization. */
-            console.log("update npcs");
             document.getElementById('nextStep').disabled = true; 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
@@ -392,8 +421,6 @@
                     var gameStatus = npcData["gameStatus"];
                     var passingNPCs = npcData["passing_list"];
 
-                    console.log("Game status: " + gameStatus);
-
                     if(gameStatus == 'penultimate'){
                         penultimateUpdate(passingNPCs, nameList);
                     } else if (gameStatus == 'final'){
@@ -402,8 +429,7 @@
                         document.getElementById('nextStep').disabled = false;
                     }
                     for(var i = 0; i < npcCount; i++){
-                        var dominentEmotionURL = getHighestEmotion(emotionList[i]);
-                        document.getElementById('npcFace' + nameList[i]).src = dominentEmotionURL;
+                        document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
 
                         $('#scoreboard_' + (i+1)).attr('class', getAlertClass(actionList[i]));
                         $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
@@ -426,7 +452,6 @@
             /* For each NPC that is made a successful pass, it wil animate the swap in line
             as well as switch the names on the side bar. The nextStep button is only 
             reactivated after the animation is finished to prevent overlapping animations. */
-            console.log("penultimateUpdate");
             for(var i=0; i < passingNPCs.length; i ++){
                 
                 var passingIndex = passingNPCs[i]
@@ -463,7 +488,6 @@
             take the higher positions.  In the case that the line is now empty, the game over text and button will appear so that
             the user can start a new game. Currently, the new game button doesn't always work, and I have no idea what it's 
             successful execution is dependant on. */
-            console.log("final update");
             var panelHeight = $('#npcParent1').outerHeight();
             var npcName = document.getElementById('scoreboard_1');
             npcName.parentNode.removeChild(npcName);
@@ -477,30 +501,26 @@
 
                 for(var i = 2; i <=npcCount + 1; i++){
                     $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
-                    //$('#npcChild' + i).attr('id', 'npcChild' + (i-1));
                     $('#scoreboard_' + i).attr('id', 'scoreboard_' + (i-1));
                     document.getElementById('nextStep').disabled = false;
                 }
-                if(npcCount == 0){
-                    setUpEndGame();
-                }
             });
+            if(npcCount == 0){
+                setUpEndGame();
+            }
         }
 
         function setUpEndGame(){
             document.getElementById('nextStep').disabled = true; // Prevents the user from changing the game state when the game is over
 
-            $("<div style='text-align:center' id='endGameDiv'></div>").appendTo("#npcDiv");
-            $("<h1 id='gameOverText' style='text-align:center'> Game Over! </h1>").appendTo("#endGameDiv");
-            $("<div style='text-align:center'><button id='playAgain' class='btn btn-danger' type='button'> Play Again? </button></div> ").appendTo("#endGameDiv");
+            // $("<div style='text-align:center' id='endGameDiv'></div>").appendTo("#npcDiv");
+            // $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#endGameDiv");
+            // $("<div style='text-align:center'><button id='playAgain' class='btn btn-danger' type='button'> Play Again? </button></div> ").appendTo("#endGameDiv");
 
-            $("<div class='page-header'></div>").appendTo("#endGameDiv");
-            $("<h1 style='text-align:center'> Ready for the survey? </h1>").appendTo("#endGameDiv");
-            $("<div style='text-align:center'> <a href='surveys/questions'> <button type='button' class='btn btn-primary' style='text-align:center'> Survey </button> </a> </div>").appendTo("#endGameDiv");
-
-            $('#playAgain').click(function(){ 
-                reinitializeNPCs(); 
-            });
+            // $("<div class='page-header'></div>").appendTo("#endGameDiv");
+            // $("<h1 style='text-align:center'> Ready for the survey? </h1>").appendTo("#endGameDiv");
+            // $("<div style='text-align:center'> <a href='surveys/questions'> <button type='button' class='btn btn-primary' style='text-align:center'> Survey </button> </a> </div>").appendTo("#endGameDiv");
+            $('#newGameDiv').css('display', 'inline');
         }
 
         $('document').ready(function(){
@@ -509,6 +529,9 @@
             });
             $('#info').click(function(){
                 infoPopup();
+            })
+            $('#playAgain').click(function(){
+                reinitializeNPCs();
             })
             initializeNPCs();
         });
