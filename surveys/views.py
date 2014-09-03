@@ -35,10 +35,7 @@ def initialize(numInLine):
     count = 0
     for count in range(numInLine):
         line.append(makeNPC(count))
-
-def displayLine():
-    for person in line:
-
+        
 def displayLine():
     for person in line:
         print "\nName: " , person.name
