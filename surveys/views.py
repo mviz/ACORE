@@ -14,7 +14,6 @@ import time
 from random import random, randint
 
 ###                  The Global Variables           ###
-counter = 0
 line = []
 stateOfNPCCounter = 0
 nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
@@ -25,20 +24,20 @@ gameStatus = 'initial'
 ###                 End of Global Variables          ###
 
 
-def makeNPC():
-    global counter
+def makeNPC(position):
     name = nameList.pop(randint(0, (len(nameList))-1))
     npc = human(name)
-    npc.resourceVector = [1.0, 1.0, 1.0/(counter+1)]
-    counter += 1
+    npc.resourceVector = [1.0, 1.0, 1.0/(position+1)]
     return npc
 
 def initialize(numInLine):
     global line
     count = 0
     for count in range(numInLine):
-        line.append(makeNPC())
-        count += 1 #TODO unless I'm missing something, isn't this redundant?
+        line.append(makeNPC(count))
+
+def displayLine():
+    for person in line:
 
 def displayLine():
     for person in line:
@@ -65,7 +64,7 @@ class SurveyList(generic.ListView):
     model = Question
     template_name = "surveys/survey_google.html"
 
-    def get_context_data(self, **kwargs): 
+    def get_context_data(self, **kwargs):
         return super(SurveyList, self).get_context_data(**kwargs)
 
 def acoreInfoPopup(request):
@@ -106,7 +105,7 @@ def submit_survey(request):
     for answer_obj in choices:
         answer_obj.votes += 1
         answer_obj.save()
-    return HttpResponseRedirect('/surveys/results') 
+    return HttpResponseRedirect('/surveys/results')
 
 
 def homepage_view(request):
@@ -130,7 +129,7 @@ def homepage_view(request):
     return render(request, 'surveys/home.html', context_data)
 
 def reinitialize_data(request):
-    # Resets the NPC data so that the model can be played more than once.  
+    # Resets the NPC data so that the model can be played more than once.
     # Currently doesn't always work, for some unknown reason. TODO.
     global line, counter, nameList
     if(len(line) == 0):
@@ -140,7 +139,7 @@ def reinitialize_data(request):
 
     json_response = {
         "lineLength":len(line),
-    } 
+    }
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
 
