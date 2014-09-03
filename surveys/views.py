@@ -171,6 +171,7 @@ def acore_next_step(request):
     if gameStatus == 'initial':
         print 'Game status: ' , gameStatus
         for indx, person in enumerate(line):
+            person.halveEmotion()
             if indx != 0:
                 person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.4, line[indx-1].resourceVector[2]]
                 print 'Action cost: ' , str(person.actionCost())
@@ -185,6 +186,7 @@ def acore_next_step(request):
     elif gameStatus == 'protest?':
         print 'Game status: ' , gameStatus
         for indx, person in enumerate(line):
+            person.halveEmotion()
             if indx < (len(line)-1):
                 person.decideProtest(beingPassed = (line[indx+1].nextAction == "Pass"))
 
@@ -204,6 +206,7 @@ def acore_next_step(request):
     elif gameStatus == 'penultimate':
         print 'The game status is ' , gameStatus
         for indx, person in enumerate(line):
+            person.halveEmotion()
             if indx != 0:
                 if person.nextAction == 'Pass' and line[indx-1].nextAction == 'Protest':
                     if random() < 0.50:
@@ -219,7 +222,7 @@ def acore_next_step(request):
                     else:
                         person.nextAction = 'Pass_Fail'
                         person.newResourceVector = [1, 0.5, person.resourceVector[2]]
-                        person.computeEmotion(1)
+                    person.computeEmotion(1)
                 elif person.nextAction == 'Pass' and line[indx-1].nextAction == 'Wait':
                     if random() < 0.95:
                         print 'Not being protested'
@@ -232,7 +235,7 @@ def acore_next_step(request):
                     else:
                         person.nextAction = 'Pass_Fail'
                         person.newResourceVector = [1, 0.5, person.resourceVector[2]]
-                        person.computeEmotion(1)
+                    person.computeEmotion(1)
 
         for index, person in enumerate(line):
             if(person.getAction() == 'Pass_Success'):
@@ -245,8 +248,11 @@ def acore_next_step(request):
         print str(line[0].name) , 'gets the Occulus Rift'
         line.pop(0)
         for indx, person in enumerate(line):
+            person.halveEmotion()
             person.nextAction = 'Wait'
-            person.resourceVector[2] = 1.0/(indx+1)
+            person.newResourceVector = [person.resourceVector[0], person.resourceVector[1], 1.0/(indx+1)]
+            person.computeEmotion(1)
+            person.resourceVector = person.newResourceVector
 
         displayLine()
         gameStatus = 'initial'

@@ -90,7 +90,6 @@ class NPC(object):
 				self.nextAction = 'Wait'
 
 	def computeEmotion(self, expectation):
-		self.emotion = [emo/2 for emo in  self.emotion]
 		for indx, resource in enumerate(self.resourceVector):
 			desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
 			if (desire > 0) and (expectation == 1):
@@ -101,6 +100,9 @@ class NPC(object):
 				self.emotion[2] += desire           #The Sorrow Emotion
 			elif (desire < 0) and (expectation < 1):
 				self.emotion[3] += desire * expectation    #The Fear Emotion
+
+	def halveEmotion(self):
+		self.emotion = [emo/2 for emo in  self.emotion]
 
 
 class human(NPC):
