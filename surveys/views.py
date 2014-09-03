@@ -14,7 +14,6 @@ import time
 from random import random, randint
 
 ###                  The Global Variables           ###
-counter = 0
 line = []
 stateOfNPCCounter = 0
 nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
@@ -25,21 +24,18 @@ gameStatus = 'initial'
 ###                 End of Global Variables          ###
 
 
-def makeNPC():
-    global counter
+def makeNPC(position):
     name = nameList.pop(randint(0, (len(nameList))-1))
     npc = human(name)
-    npc.resourceVector = [1.0, 1.0, 1.0/(counter+1)]
-    counter += 1
+    npc.resourceVector = [1.0, 1.0, 1.0/(position+1)]
     return npc
 
 def initialize(numInLine):
     global line
     count = 0
     for count in range(numInLine):
-        line.append(makeNPC())
-        count += 1 #TODO unless I'm missing something, isn't this redundant?
-
+        line.append(makeNPC(count))
+        
 def displayLine():
     for person in line:
         print "\nName: " , person.name
@@ -65,7 +61,7 @@ class SurveyList(generic.ListView):
     model = Question
     template_name = "surveys/survey_google.html"
 
-    def get_context_data(self, **kwargs): 
+    def get_context_data(self, **kwargs):
         return super(SurveyList, self).get_context_data(**kwargs)
 
 def acoreInfoPopup(request):
@@ -106,7 +102,7 @@ def submit_survey(request):
     for answer_obj in choices:
         answer_obj.votes += 1
         answer_obj.save()
-    return HttpResponseRedirect('/surveys/results') 
+    return HttpResponseRedirect('/surveys/results')
 
 
 def homepage_view(request):
@@ -130,7 +126,7 @@ def homepage_view(request):
     return render(request, 'surveys/home.html', context_data)
 
 def reinitialize_data(request):
-    # Resets the NPC data so that the model can be played more than once.  
+    # Resets the NPC data so that the model can be played more than once.
     # Currently doesn't always work, for some unknown reason. TODO.
     global line, counter, nameList
     if(len(line) == 0):
@@ -140,7 +136,7 @@ def reinitialize_data(request):
 
     json_response = {
         "lineLength":len(line),
-    } 
+    }
     return HttpResponse(json.dumps(json_response), content_type='application/json')
 
 
@@ -171,6 +167,7 @@ def acore_next_step(request):
     if gameStatus == 'initial':
         print 'Game status: ' , gameStatus
         for indx, person in enumerate(line):
+            person.halveEmotion()
             if indx != 0:
                 person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.4, line[indx-1].resourceVector[2]]
                 print 'Action cost: ' , str(person.actionCost())
@@ -185,6 +182,7 @@ def acore_next_step(request):
     elif gameStatus == 'protest?':
         print 'Game status: ' , gameStatus
         for indx, person in enumerate(line):
+            person.halveEmotion()
             if indx < (len(line)-1):
                 person.decideProtest(beingPassed = (line[indx+1].nextAction == "Pass"))
 
@@ -204,6 +202,7 @@ def acore_next_step(request):
     elif gameStatus == 'penultimate':
         print 'The game status is ' , gameStatus
         for indx, person in enumerate(line):
+            person.halveEmotion()
             if indx != 0:
                 if person.nextAction == 'Pass' and line[indx-1].nextAction == 'Protest':
                     if random() < 0.50:
@@ -219,7 +218,7 @@ def acore_next_step(request):
                     else:
                         person.nextAction = 'Pass_Fail'
                         person.newResourceVector = [1, 0.5, person.resourceVector[2]]
-                        person.computeEmotion(1)
+                    person.computeEmotion(1)
                 elif person.nextAction == 'Pass' and line[indx-1].nextAction == 'Wait':
                     if random() < 0.95:
                         print 'Not being protested'
@@ -232,7 +231,7 @@ def acore_next_step(request):
                     else:
                         person.nextAction = 'Pass_Fail'
                         person.newResourceVector = [1, 0.5, person.resourceVector[2]]
-                        person.computeEmotion(1)
+                    person.computeEmotion(1)
 
         for index, person in enumerate(line):
             if(person.getAction() == 'Pass_Success'):
@@ -245,8 +244,11 @@ def acore_next_step(request):
         print str(line[0].name) , 'gets the Occulus Rift'
         line.pop(0)
         for indx, person in enumerate(line):
+            person.halveEmotion()
             person.nextAction = 'Wait'
-            person.resourceVector[2] = 1.0/(indx+1)
+            person.newResourceVector = [person.resourceVector[0], person.resourceVector[1], 1.0/(indx+1)]
+            person.computeEmotion(1)
+            person.resourceVector = person.newResourceVector
 
         displayLine()
         gameStatus = 'initial'
