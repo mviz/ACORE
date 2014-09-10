@@ -23,17 +23,21 @@
 
     <div class='col-sm-12' id='npcDiv' style='position:relative;'>
         <div >
-            <button id="nextStep" class="btn btn-success" style='margin-left:0px' type="button" > Next Step </button>
+            <button id="nextStep" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Next Step </button>
             <button id="info" class="btn btn-warning " type="button" > i </button>
         </div>
 
+        <div style='width:100px; height:100px; float:left'>
+            <img src='{% static "surveys/OculusRift.jpg" %}' style='width:100%; height:auto; margin-top:100px'/>
+        </div>
+
         <div id='newGameDiv' style='display:none;'>
-            <div class='col-sm-6'> 
+            <div class='col-sm-4'> 
                 <h2 style='text-align:center'> Game Over! </h2>
                 <div style='text-align:center'> <button class='btn btn-danger' id='playAgain' > Play Again </button> </div>
                 <div class='page-header'> </div>
             </div>
-            <div class='col-sm-6'>
+            <div class='col-sm-4'>
                 <h2 style='text-align:center'> Ready for the survey? </h2>
                 <div style='text-align:center'> <a href='/surveys/questions'> <button class='btn btn-primary'> Survey </button> </a></div>
                 <div class='page-header'> </div>
@@ -474,7 +478,7 @@
                 var movingLeft = $('#npcParent' + (passingIndex + 1));
                 var movingRight = $('#npcParent' + passingIndex);
 
-                var marginDif = parseInt(movingLeft.css('marginLeft')) + parseInt(movingRight.css('marginLeft')); // Likely just 20 pixels
+                var marginDif = parseInt(movingLeft.css('marginLeft')) + parseInt(movingRight.css('marginRight')); // Likely just 20 pixels
                 var leftWidth = movingLeft.outerWidth() + marginDif;
                 var rightWidth = movingRight.outerWidth() + marginDif; //TODO these numbers are likely static, and don't need to be computed each time
 
