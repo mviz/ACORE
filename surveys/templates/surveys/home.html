@@ -163,7 +163,8 @@
 
     .chatbox {
         margin-top: 10px;
-        background-color: green;
+        border: 1px solid green;
+        border-radius: 10px;
         height: 20px;
         text-align: center;
     }
@@ -470,7 +471,7 @@
                     }
                     for(var i = 0; i < npcCount; i++){
                         document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
-                        $('#chat_' + nameList[i]).text('Test')
+                        $('#chat_' + nameList[i]).text(actionList[i])
                         $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
                         $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
                         $('#hopetext_' + nameList[i]).text('Hope ' + getEmotionPercent(emotionList[i][1]) + '%');
