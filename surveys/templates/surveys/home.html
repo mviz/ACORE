@@ -175,6 +175,12 @@
 {% block js %}
     <script>
 
+        // Returns a random integer between min (included) and max (excluded)
+        // Using Math.round() will give you a non-uniform distribution!
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
         function getEmotionPercent(emotionString){ 
             for(var i = 0; i < emotionString.length ; i ++){
                 if(emotionString.charAt(i) == '.'){
@@ -189,34 +195,10 @@
             }
         }
 
-        function getHighestEmotion(emotionList){
-            /* Takes input as a list of strings indicating the levels of emotions of the NPCs. 
-            It finds the emotion with the highest aboslute value and returns
-            the corresponding image to represent the NPCs dominent emotion.
-            It will change in the future by returning the face of the specific NPC rather than
-            returning a generic face, for a female. */
-            var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
-            var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
-            var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
-            var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
-            var maxEmo = 1;
-            var emoURL = '{% static "surveys/hope1.jpg" %}' 
-            if(maxEmo < joyEmo){
-                maxEmo = joyEmo;
-                emoURL = '{% static "surveys/happy3.jpg" %}' 
-            } 
-            if(maxEmo < hopeEmo){
-                maxEmo = hopeEmo;
-                emoURL = '{% static "surveys/hope3.jpg" %}' 
-            } 
-            if(maxEmo < sorrowEmo){
-                maxEmo = sorrowEmo;
-                emoURL = '{% static "surveys/sad1.jpg" %}' 
-            }
-            if(maxEmo < fearEmo){
-                emoURL = '{%  static "surveys/fear2.jpg" %}' 
-            }
-            return emoURL;
+        function getProtestText(){
+            var protests = ['Stop!', 'Where are you going?', 'You shall not pass!'];
+            counter = getRandomInt(0,3);
+            return protests[counter];
         }
 
         function getDynamicFace(emotionList){
@@ -401,7 +383,7 @@
                     $("<div id='npcParent" + (i+1) + "' class='npc-container npcHolder'> </div>").appendTo("#npcDiv");
                     $("<div id='chat_" + nameList[i] + "' class='chatbox'> </div>").appendTo("#npcParent" + (i+1));
 
-                    $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
+                    $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
 
                     $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
@@ -469,9 +451,15 @@
                     } else {
                         document.getElementById('nextStep').disabled = false;
                     }
+
                     for(var i = 0; i < npcCount; i++){
                         document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
-                        $('#chat_' + nameList[i]).text(actionList[i])
+                        if(actionList[i] == 'Protest'){
+                            $('#chat_' + nameList[i]).text(getProtestText())
+                        } else {
+                            $('#chat_' + nameList[i]).text('')
+                        }
+                        console.log(emotionList[i][0])
                         $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
                         $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
                         $('#hopetext_' + nameList[i]).text('Hope ' + getEmotionPercent(emotionList[i][1]) + '%');

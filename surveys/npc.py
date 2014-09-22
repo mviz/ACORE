@@ -12,6 +12,7 @@ June 23rd: Changed the resource sturcture to the vector model.
 """
 
 from random import random
+from math import fabs
 
 
 class NPC(object):
@@ -100,6 +101,21 @@ class NPC(object):
 				self.emotion[2] += desire           #The Sorrow Emotion
 			elif (desire < 0) and (expectation < 1):
 				self.emotion[3] += desire * expectation    #The Fear Emotion
+
+			print "Joy: " , self.emotion[0], "Sorrow: " , self.emotion[2]
+			if ((fabs(self.emotion[0])-fabs(self.emotion[2])) > 0):
+				self.emotion[0] = self.emotion[0]-fabs(self.emotion[2])
+				self.emotion[2] = 0
+			else:
+				self.emotion[2] = fabs(self.emotion[2])-self.emotion[0]
+				self.emotion[0] = 0
+
+			if ((self.emotion[1]-fabs(self.emotion[3])) > 0):
+				self.emotion[1] = self.emotion[1]-fabs(self.emotion[3])
+				self.emotion[3] = 0
+			else:
+				self.emotion[3] = fabs(self.emotion[3])-self.emotion[1]
+				self.emotion[1] = 0
 
 	def halveEmotion(self):
 		self.emotion = [emo/2 for emo in  self.emotion]
