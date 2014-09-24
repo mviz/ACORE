@@ -161,13 +161,51 @@
         white-space:nowrap;
     }
 
-    .chatbox {
+/*    .chatbox {
         margin-top: 10px;
         border: 1px solid green;
         border-radius: 10px;
         height: 20px;
         text-align: center;
-    }
+    }*/
+
+
+    div.callout {
+    height: 80px;
+    width: 140px;
+    float: left;
+}
+
+div.callout {
+    background-color: #444;
+    background-image: -moz-linear-gradient(top, #444, #444);
+    position: relative;
+    color: #ccc;
+    padding: 10px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 20px #999;
+    margin: 25px;
+    min-height: 50px;
+    border: 1px solid #333;
+    text-shadow: 0 0 1px #000;
+    
+    /*box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;*/
+}
+
+.callout::before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    border: 0.8em solid transparent;
+    position: absolute;
+}
+
+.callout.top::before {
+    left: 45%;
+    bottom: -20px;
+    border-top: 10px solid #444;
+}
+
 
 </style>
 {% endblock css %}
@@ -387,7 +425,7 @@
 
                 for(var i = 0; i < npcCount; i++){
                     $("<div id='npcParent" + (i+1) + "' class='npc-container npcHolder'> </div>").appendTo("#npcDiv");
-                    $("<div id='chat_" + nameList[i] + "' class='chatbox'> </div>").appendTo("#npcParent" + (i+1));
+                    $("<div id='chat_" + nameList[i] + "' class='callout top'> </div>").appendTo("#npcParent" + (i+1));
 
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
@@ -458,12 +496,20 @@
                         document.getElementById('nextStep').disabled = false;
                     }
 
+                    if (gameStatus == 'final'){
+                        $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?')
+                    } else {
+                            $('#chat_' + nameList[i]).text('')
+                        }
+
                     for(var i = 0; i < npcCount; i++){
                         document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
-                        if(actionList[i] == 'Protest'){
-                            $('#chat_' + nameList[i]).text(getProtestText())
-                        } else {
-                            $('#chat_' + nameList[i]).text('')
+                        if (gameStatus == 'protest?'){
+                            if(actionList[i] == 'Protest'){
+                                $('#chat_' + nameList[i]).text(getProtestText())
+                            } else {
+                                $('#chat_' + nameList[i]).text('')
+                            }
                         }
                         console.log(emotionList[i][0])
                         $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
