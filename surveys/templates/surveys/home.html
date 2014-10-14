@@ -6,28 +6,17 @@
 {% block title %}ACORE{% endblock title %}
 
 {% block page_content %} 
-    <div style='height:4em; width:100%; margin-left:15px; margin-right:15px;  margin-bottom: 1cm; background-color:#eee;'>
-        <span id='status1' class='game-status'>
-            <h4 class='status-text'> Passive Phase </h4> 
-        </span>
-        <span id='status2' class='game-status'>
-            <h4 class='status-text'> Planning Phase </h4> 
-        </span>
-        <span id='status3' class='game-status'>
-            <h4 class='status-text'> Protesting Phase </h4> 
-        </span>
-        <span id='status4' class='game-status'>
-            <h4 class='status-text'> Passing Phase </h4> 
-        </span>
+    <div style='height:1em; width:100%; margin-left:15px; margin-right:15px;  margin-bottom: 1cm; '>
+
     </div>
 
     <div class='col-sm-12' id='npcDiv' style='position:relative;'>
         <div >
-            <button id="nextStep" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Next Step </button>
+            <button id="startButton" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Start </button>
             <button id="info" class="btn btn-warning " type="button" > i </button>
         </div>
 
-        <div style='width:100px; height:100px; float:left'>
+        <div style='width:200px; height:170px; float:left'>
             <img src='{% static "surveys/OculusRift.jpg" %}' style='width:100%; height:auto; margin-top:100px'/>
         </div>
 
@@ -43,13 +32,7 @@
                 <div class='page-header'> </div>
             </div>
         </div>
-
-        
-
     </div>
-
-
-    
 {% endblock page_content %}
 
 
@@ -62,150 +45,7 @@
         font-family: Helvetica, Arial;
     }
 
-    dt { 
-        float: left; 
-        padding: 4px; 
-    }
-
-    .npcHolder{
-        /*TODO change these dimensions to proportions, such that different screen sizes and images can be used*/
-        float:left;
-        width:150px;
-        height:360px;
-        margin-right:20px;
-        position:relative;
-    }
-
-    .npcImage{
-        width:100%;
-        height:auto;
-    }
-
-    .scoreboard-color-legend{         
-        border-radius:50%; 
-        border-style:solid; 
-        height:1em; 
-        width:1em; 
-        float:left;
-    }
-
-    .graph_bar {
-        margin-bottom: 10px;
-        color: #fff;
-        text-align: center;
-        border-radius: 2px;
-        height: 30px;
-    }
-
-    .neutral_bar{
-        background: -webkit-gradient(linear, left top, left bottom, from(#afafd3), to(#d4d4d4));
-    }
-
-    .hope_bar {
-        background: -webkit-gradient(linear, left top, left bottom, from(#2b669a), to(#4098e6));
-    }
-    .joy_bar {
-        background: -webkit-gradient(linear, left top, left bottom, from(#3b8f3b), to(#5edf5e));
-    }
-    .fear_bar {
-        background: -webkit-gradient(linear, left top, left bottom, from(#965d0c), to(#e38d13));
-    }
-    .sorrow_bar { 
-        background: -webkit-gradient(linear, left top, left bottom, from(#b92c28), to(#6e1b18));
-    }
-
-    .pass-fail-alert {
-        background-color:#ccc;
-        border-radius:4px;
-        border-width:1px;
-        border-style:solid;
-        border-color:#aaa;
-        display:block;
-        font-family: Helvetica, Arial;
-        margin:0;
-        padding:15px;
-        text-align:center;
-    }
-
-    .game-status{
-        width:25%;
-        height:100%;
-        float:left;
-    }
-
-    .active-status{
-        background-color:#888;
-        border-color:#888;
-        border-style:solid;
-        border-radius:5px;
-    }
-
-    .nonactive-status{
-        background-color:#eee;
-    }
-
-    .status-text{
-        color:#ffffff; 
-        text-align:center;
-        padding-left:0px; 
-        padding-right:0px;
-        padding-top:0.25cm;
-        font-family:Helvetica, Arial;
-    }
-
-    .info-button{
-        margin-left:1em; 
-    }
-
-    .one-line{
-        white-space:nowrap;
-    }
-
-/*    .chatbox {
-        margin-top: 10px;
-        border: 1px solid green;
-        border-radius: 10px;
-        height: 20px;
-        text-align: center;
-    }*/
-
-
-    div.callout {
-    height: 80px;
-    width: 140px;
-    float: left;
-}
-
-div.callout {
-    background-color: #444;
-    background-image: -moz-linear-gradient(top, #444, #444);
-    position: relative;
-    color: #ccc;
-    padding: 10px;
-    border-radius: 3px;
-    box-shadow: 0px 0px 20px #999;
-    margin: 25px;
-    min-height: 50px;
-    border: 1px solid #333;
-    text-shadow: 0 0 1px #000;
     
-    /*box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;*/
-}
-
-.callout::before {
-    content: "";
-    width: 0px;
-    height: 0px;
-    border: 0.8em solid transparent;
-    position: absolute;
-}
-
-.callout.top::before {
-    left: 45%;
-    bottom: -20px;
-    border-top: 10px solid #444;
-}
-
 
 </style>
 {% endblock css %}
@@ -386,7 +226,6 @@ div.callout {
             }
             xmlhttp.send();
             document.getElementById('info').disabled = false;
-            document.getElementById('nextStep').disabled = false;
             $('#referenceDiv').css('opacity', '1');
 
             var newGameDiv = document.getElementById('newGameDiv');
@@ -415,7 +254,6 @@ div.callout {
 
                 //$('#gameStatus').html(getGameStatusTitle(gameStatus));
                 highlightGameStatus(gameStatus);
-                document.getElementById('nextStep').disabled = false;
 
                 for(var i = 0; i < npcCount; i++){
                     $("<div id='npcParent" + (i+1) + "' class='npc-container npcHolder'> </div>").appendTo("#npcDiv");
@@ -464,12 +302,11 @@ div.callout {
             initializeNPCs();
         }
 
-        function updateNPCs(){
+        function updateNPCs(runIntervalID){
             /* Called everytime the nextStep button is pressed, which represents the change in the game state
             in the model. All of the npc information that needs to be changed in the UI is fetched from a JSON call.
             The next step button is disabled such that the user cannot ruin the animations by spamming the button.
             The changes made in the specific steps are in their respective functions as a matter of organization. */
-            document.getElementById('nextStep').disabled = true; 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
             xmlhttp.onload=function(){
@@ -485,10 +322,8 @@ div.callout {
                     if(gameStatus == 'penultimate'){
                         penultimateUpdate(passingNPCs, nameList);
                     } else if (gameStatus == 'final'){
-                        finalUpdate(npcCount);
-                    } else {
-                        document.getElementById('nextStep').disabled = false;
-                    }
+                        finalUpdate(npcCount, runIntervalID);
+                    } 
 
                     if (gameStatus == 'final'){
                         $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?')
@@ -556,7 +391,6 @@ div.callout {
                     movingLeft.animate({left: -rightWidth}, 750),
                     movingRight.animate({left: leftWidth}, 750)).then(
                 function(){
-                    document.getElementById('nextStep').disabled = false;
                     movingLeft.insertBefore(movingRight);
                     movingLeft.css('left', 0);
                     movingRight.css('left', 0);
@@ -568,12 +402,9 @@ div.callout {
                 $('#ptemp').attr('id', 'npcParent' + passingIndex);
 
             }
-            if(passingNPCs.length == 0){
-                document.getElementById('nextStep').disabled = false;
-            }
         }
 
-        function finalUpdate(npcCount){
+        function finalUpdate(npcCount, runIntervalID){
             /* When it's time for the NPC in first place to receive their item, they are no longer included in teh list of
             npcs, so they are removed froim the layout by a fade out, and all of the NPCs underneath are moved upward to 
             take the higher positions.  In the case that the line is now empty, the game over text and button will appear so that
@@ -590,30 +421,25 @@ div.callout {
 
                 for(var i = 2; i <=npcCount + 1; i++){
                     $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
-                    document.getElementById('nextStep').disabled = false;
                 }
             });
             if(npcCount == 0){
-                setUpEndGame();
+                setUpEndGame(runIntervalID);
             }
         }
 
-        function setUpEndGame(){
-            document.getElementById('nextStep').disabled = true; // Prevents the user from changing the game state when the game is over
-
-            // $("<div style='text-align:center' id='endGameDiv'></div>").appendTo("#npcDiv");
-            // $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#endGameDiv");
-            // $("<div style='text-align:center'><button id='playAgain' class='btn btn-danger' type='button'> Play Again? </button></div> ").appendTo("#endGameDiv");
-
-            // $("<div class='page-header'></div>").appendTo("#endGameDiv");
-            // $("<h1 style='text-align:center'> Ready for the survey? </h1>").appendTo("#endGameDiv");
-            // $("<div style='text-align:center'> <a href='surveys/questions'> <button type='button' class='btn btn-primary' style='text-align:center'> Survey </button> </a> </div>").appendTo("#endGameDiv");
+        function setUpEndGame(runIntervalID){
+            clearInterval(runIntervalID);
             $('#newGameDiv').css('display', 'inline');
         }
 
         $('document').ready(function(){
-            $('#nextStep').click(function(){
-                updateNPCs();
+            $('#startButton').click(function(){
+                document.getElementById('startButton').disabled = true; // Prevents the user from changing the game state 
+                var runIntervalID = window.setInterval(function(){
+                    updateNPCs(runIntervalID);
+                }, 1000);  //5 second delay
+                
             });
             $('#info').click(function(){
                 infoPopup();
