@@ -84,6 +84,12 @@
             var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
             var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
             var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
+
+            var normalRandomInt = getRandomInt(0,2)
+            var joyRandomInt = getRandomInt(0,2)
+            var sorrowRandomInt = getRandomInt(0,2)
+            var hopeRandomInt = getRandomInt(0,2)
+            var fearRandomInt = getRandomInt(0,2)
             
             var emotionalTable = [
                 ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress2.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
