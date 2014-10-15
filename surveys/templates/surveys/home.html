@@ -75,8 +75,14 @@
 
         function getProtestText(){
             var protests = ['Stop!', 'Where are you going?', 'You shall not pass!'];
-            counter = getRandomInt(0,3);
+            counter = getRandomInt(0,protests.length -1);
             return protests[counter];
+        }
+
+        function getPassedText() {
+            var passedText = ['Not fair!', 'I will get back at you'];
+            counter = getRandomInt(0,passedText.length -1);
+            return passedText[counter];
         }
 
         function getDynamicFace(emotionList){
@@ -194,26 +200,9 @@
             } 
         }
 
-        function highlightGameStatus(gameStatus){
-            if(gameStatus == 'initial'){
-                $('#status1').attr('class', 'game-status nonactive-status');
-                $('#status2').attr('class', 'game-status active-status');
-            }else if (gameStatus == 'protest?'){
-                $('#status2').attr('class', 'game-status nonactive-status');
-                $('#status3').attr('class', 'game-status active-status');
-            }else if (gameStatus == 'penultimate'){
-                $('#status3').attr('class', 'game-status nonactive-status');
-                $('#status4').attr('class', 'game-status active-status');
-            }else{
-                $('#status4').attr('class', 'game-status nonactive-status');
-                $('#status1').attr('class', 'game-status active-status');
-            }
-        }
-
         function infoPopup(){
             var width = window.innerWidth;
             var height = window.innerHeight;
-            // newWindow = window.open('surveys/infoPopup', "ACORE Eplanation", "toolbar=no, scrollbars=no, resizable=yes, top=" + (height*.125) + ", left=" + (width * 0.125) + ", width=" + (width*0.75) +", height=" + (height * 0.75));
             newWindow = window.open('surveys/infoPopup', "ACORE Eplanation", "toolbar=no, scrollbars=no, resizable=yes, top=" + (height*.125) + ", left=" + (width * 0.125) + ", width=" + (width*0.75) +", height=" + (height * 0.75));
 
             if (window.focus) {
@@ -240,7 +229,20 @@
 
         }
 
-        // issue here is when is initializeNPCs called, adn when are they initialized in teh views.py. make sure you dont have to 
+        function clearCallouts (nameList) {
+            for (var i = nameList.length - 1; i >= 0; i--) {
+                $('#chat_' + nameList[i]).text('');
+                $('#chat_' + nameList[i]).removeClass("callout");
+            };
+        }
+
+        function removeAnimate (nameList) {
+            for (var i = nameList.length - 1; i >= 0; i--) {
+                $('#npcParent' + i).removeClass('passAnimate');
+            };   
+        }
+
+        // issue here is when is initializeNPCs called, and when are they initialized in the views.py. make sure you dont have to 
         // initialize them before hand. Also, maybe they can be intialized, who knows. check it out.
 
         function initializeNPCs(){
@@ -258,12 +260,9 @@
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
 
-                //$('#gameStatus').html(getGameStatusTitle(gameStatus));
-                highlightGameStatus(gameStatus);
-
                 for(var i = 0; i < npcCount; i++){
                     $("<div id='npcParent" + (i+1) + "' class='npc-container npcHolder'> </div>").appendTo("#npcDiv");
-                    $("<div id='chat_" + nameList[i] + "' class='callout top'> </div>").appendTo("#npcParent" + (i+1));
+                    $("<div id='chat_" + nameList[i] + "' class='calloutFrame top'> </div>").appendTo("#npcParent" + (i+1));
 
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
@@ -280,6 +279,8 @@
                     $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
 
                 }
+                $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?')
+                $('#chat_' + nameList[0]).addClass("callout");
                 if(npcCount == 0){
                     setUpEndGame();                  
                 }
@@ -329,10 +330,13 @@
                         penultimateUpdate(passingNPCs, nameList);
                     } else if (gameStatus == 'final'){
                         finalUpdate(npcCount, runIntervalID);
+                        clearCallouts(nameList);
+                        removeAnimate(nameList);
                     } 
 
                     if (gameStatus == 'final'){
-                        $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?')
+                        $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?');
+                        $('#chat_' + nameList[0]).addClass("callout");
                     } else {
                             $('#chat_' + nameList[i]).text('')
                         }
@@ -341,9 +345,14 @@
                         document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
                         if (gameStatus == 'protest?'){
                             if(actionList[i] == 'Protest'){
-                                $('#chat_' + nameList[i]).text(getProtestText())
+                                $('#chat_' + nameList[i]).text(getProtestText());
+                                $('#chat_' + nameList[i]).addClass("callout");
                             } else {
-                                $('#chat_' + nameList[i]).text('')
+                                $('#chat_' + nameList[i]).text('');
+                                $('#chat_' + nameList[i]).removeClass("callout");
+                            }
+                            if(actionList[i] == 'Pass'){
+                                $('#npcParent' + (i+1)).addClass("passAnimate");
                             }
                         }
                         console.log(emotionList[i][0])
@@ -356,8 +365,6 @@
                         $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
-
-                    //$('#gameStatus').html(getGameStatusTitle(gameStatus));
                     highlightGameStatus(gameStatus);
             }
             xmlhttp.send();
@@ -369,21 +376,7 @@
             reactivated after the animation is finished to prevent overlapping animations. */
             for(var i=0; i < passingNPCs.length; i ++){
                 
-                var passingIndex = passingNPCs[i]
-                // var movingUp = $('#npcParent'+ (passingIndex + 1));
-                // var movingDown = $('#npcParent' + passingIndex);
-                // var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
-                // var upHeight = movingUp.outerHeight() + marginDif;
-                // var downHeight = movingDown.outerHeight() + marginDif;
-                // $.when(
-                //     movingUp.animate({top: -downHeight}, 750),
-                //     movingDown.animate({top: upHeight},750)).then( 
-                // function(){
-                //     document.getElementById('nextStep').disabled = false;
-                //     movingUp.insertBefore(movingDown);
-                //     movingUp.css('top', '0px');
-                //     movingDown.css('top', '0px');
-                // });
+                var passingIndex = passingNPCs[i];
 
                 var movingLeft = $('#npcParent' + (passingIndex + 1));
                 var movingRight = $('#npcParent' + passingIndex);
@@ -407,12 +400,15 @@
                 $('#npcParent'+ passingIndex).attr('id', 'npcParent'+ (passingIndex + 1));                                
                 $('#ptemp').attr('id', 'npcParent' + passingIndex);
 
+                $('#chat_' + nameList[passingIndex]).text(getPassedText());
+                $('#chat_' + nameList[passingIndex]).addClass("callout");
+                removeAnimate(nameList);
             }
         }
 
         function finalUpdate(npcCount, runIntervalID){
-            /* When it's time for the NPC in first place to receive their item, they are no longer included in teh list of
-            npcs, so they are removed froim the layout by a fade out, and all of the NPCs underneath are moved upward to 
+            /* When it's time for the NPC in first place to receive their item, they are no longer included in the list of
+            npcs, so they are removed from the layout by a fade out, and all of the NPCs underneath are moved upward to 
             take the higher positions.  In the case that the line is now empty, the game over text and button will appear so that
             the user can start a new game. Currently, the new game button doesn't always work, and I have no idea what it's 
             successful execution is dependant on. */
@@ -444,7 +440,7 @@
                 document.getElementById('startButton').disabled = true; // Prevents the user from changing the game state 
                 var runIntervalID = window.setInterval(function(){
                     updateNPCs(runIntervalID);
-                }, 1000);  //5 second delay
+                }, 1500);  //1.5 second delay
                 
             });
             $('#info').click(function(){
