@@ -13,11 +13,10 @@
     <div class='col-sm-12' id='npcDiv' style='position:relative;'>
         <div >
             <button id="startButton" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Start </button>
-            <button id="info" class="btn btn-warning " type="button" > i </button>
         </div>
 
         <div style='width:200px; height:170px; float:left'>
-            <img src='{% static "surveys/OculusRift.jpg" %}' style='width:100%; height:auto; margin-top:100px'/>
+            <img src='{% static "surveys/OculusRift.jpg" %}' style='width:100%; height:auto; margin-top:150px'/>
         </div>
 
         <div id='newGameDiv' style='display:none;'>
@@ -267,16 +266,16 @@
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
 
-                    $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
-                    $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
-                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
+                    // $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
+                    // $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
 
                 }
                 $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?')
