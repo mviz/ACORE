@@ -20,16 +20,19 @@
         </div>
 
         <div id='newGameDiv' style='display:none;'>
-            <div class='col-sm-4'> 
-                <h2 style='text-align:center'> Game Over! </h2>
-                <div style='text-align:center'> <button class='btn btn-danger' id='playAgain' > Play Again </button> </div>
+            <div class='col-sm-8'> 
+                <h2 style='text-align:center'> Your next run of the same scenario will start in 5 seconds! </h2>
                 <div class='page-header'> </div>
             </div>
+        </div>
+
+        <div id="surveyDiv" style='display:none;'>
             <div class='col-sm-4'>
                 <h2 style='text-align:center'> Ready for the survey? </h2>
                 <div style='text-align:center'> <a href='/surveys/questions'> <button class='btn btn-primary'> Survey </button> </a></div>
                 <div class='page-header'> </div>
             </div>
+            
         </div>
     </div>
 {% endblock page_content %}
@@ -62,14 +65,19 @@
             for(var i = 0; i < emotionString.length ; i ++){
                 if(emotionString.charAt(i) == '.'){
                     if((emotionString.charAt(i+1) == '0') && (emotionString.substring(i+1).length > 1)){ //this sends 4% instead of 04%
-                        return emotionString.substring(i+2);
+                        return boost(emotionString.substring(i+2));
                     }
                     if((emotionString.charAt(i+1) != '0') && (emotionString.substring(i+1).length == 1)){ //for 0.4, it returns 40% instead of 4%
-                        return emotionString.charAt(i+1) + '0'
+                        return boost(emotionString.charAt(i+1) + '0');
                     }
-                    return emotionString.substring(i+1);
+                    return boost(emotionString.substring(i+1));
                 }
             }
+        }
+
+        function boost(emotionString){
+            boostFactor = 2;
+            return ((parseInt(emotionString)) * boostFactor).toString();
         }
 
         function getProtestText(){
@@ -266,16 +274,22 @@
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
 
-                    // $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
-                    // $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
-                    // $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    // $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
+                    // $("<div class='progress' id='" + nameList[i] + "Chart'> Hope </div>").appendTo("#" + nameList[i] + "Bar");
+                    // $('<div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>').appendTo("#" + nameList[i] + "Chart");
+
+
+
+
+                    $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
+                    $("<dt id='joytext_" + nameList[i] + "'> Joy - " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dt id='hopetext_" + nameList[i] + "'> Hope - " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow - " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dt id='feartext_" + nameList[i] + "'> Fear - " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
 
                 }
                 $('#chat_' + nameList[0]).text('Can I get an Oculus Rift please?')
@@ -355,16 +369,15 @@
                             }
                         }
                         console.log(emotionList[i][0])
-                        $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
+                        $('#joytext_' + nameList[i]).text('Joy - ' + getEmotionPercent(emotionList[i][0]) + '%');
                         $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
-                        $('#hopetext_' + nameList[i]).text('Hope ' + getEmotionPercent(emotionList[i][1]) + '%');
+                        $('#hopetext_' + nameList[i]).text('Hope - ' + getEmotionPercent(emotionList[i][1]) + '%');
                         $('#hopebar_'+nameList[i]).width(getEmotionPercent(emotionList[i][1]) +'%');
-                        $('#sorrowtext_' + nameList[i]).text('Sorrow ' + getEmotionPercent(emotionList[i][2]) + '%');
+                        $('#sorrowtext_' + nameList[i]).text('Sorrow - ' + getEmotionPercent(emotionList[i][2]) + '%');
                         $('#sorrowbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][2]) + '%');
-                        $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
+                        $('#feartext_' + nameList[i]).text('Fear - ' + getEmotionPercent(emotionList[i][3]) + '%');
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
-                    highlightGameStatus(gameStatus);
             }
             xmlhttp.send();
         }
@@ -432,6 +445,10 @@
         function setUpEndGame(runIntervalID){
             clearInterval(runIntervalID);
             $('#newGameDiv').css('display', 'inline');
+            setTimeout(function(){
+                reinitializeNPCs();
+                document.getElementById('startButton').disabled = false;
+            }, 5000);
         }
 
         $('document').ready(function(){

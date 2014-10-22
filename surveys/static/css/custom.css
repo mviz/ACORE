@@ -15,6 +15,7 @@ dt {
     .npcImage{
         width:100%;
         height:auto;
+        margin-bottom: 5px;
     }
 
     .scoreboard-color-legend{         
@@ -26,15 +27,16 @@ dt {
     }
 
     .graph_bar {
-        margin-bottom: 10px;
-        color: #fff;
+        margin-bottom: 5px;
+        background-color: green;
+        border-radius: 4px;
         text-align: center;
-        border-radius: 2px;
-        height: 30px;
+        height: 25px;
     }
 
     .neutral_bar{
-        background: -webkit-gradient(linear, left top, left bottom, from(#afafd3), to(#d4d4d4));
+        background: -webkit-gradient(linear, left top, left bottom, from(#2b669a), to(#4098C0));
+        /*background: -webkit-gradient(linear, left top, left bottom, from(#afafd3), to(#d4d4d4));*/
     }
 
     .hope_bar {
