@@ -99,9 +99,9 @@
             var emotionalTable = [
                 ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress2.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
                 ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/fear2.jpg" %}', '{% static "surveys/fear1.jpg" %}', '{% static "surveys/normal1.jpg" %}', '{% static "surveys/hope2.jpg" %}', '{% static "surveys/hope3.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy3.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
+                ['{% static "surveys/fear' + getRandomInt(1,4) + '.jpg" %}', '{% static "surveys/fear' + getRandomInt(1,4) + '.jpg" %}', '{% static "surveys/normal1.jpg" %}', '{% static "surveys/hope2.jpg" %}', '{% static "surveys/hope3.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + getRandomInt(1,5) + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + getRandomInt(1,5) + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
             ]
 
             console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
@@ -364,7 +364,6 @@
                         $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
                         $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
-                    highlightGameStatus(gameStatus);
             }
             xmlhttp.send();
         }
@@ -439,7 +438,7 @@
                 document.getElementById('startButton').disabled = true; // Prevents the user from changing the game state 
                 var runIntervalID = window.setInterval(function(){
                     updateNPCs(runIntervalID);
-                }, 1500);  //1.5 second delay
+                }, 2000);  //1.5 second delay
                 
             });
             $('#info').click(function(){
