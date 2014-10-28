@@ -16,9 +16,11 @@ from random import random, randint
 ###                  The Global Variables           ###
 line = []
 stateOfNPCCounter = 0
-nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
-"Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam",
-"Ahmed", "Merriam"]
+#nameList = ["Alex", "Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
+#"Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam",
+#"Ahmed", "Merriam"]
+nameList = ["Alex", "Smith", "Jonathan", "William", "David",  "Chris", "Edward",
+"Sergio", "Matthew", "Kevin", "Liam", "Ahmed"]
 initialized = False
 gameStatus = 'initial'
 ###                 End of Global Variables          ###
@@ -41,11 +43,11 @@ def displayLine():
         print "\nName: " , person.name
         print "Emotion: " , person.getEmotion()
         print "Desired Action: " , person.nextAction
-        #print "Protest Cost: " , round(person.protestCost(), 2)
-        #print "Wait Cost: " , round(person.waitCost(), 2)
-        #print "Pass Cost: " , round(person.passCost(), 2)
-        #print "Resources: " , person.resourceVector
-        #print "Weight Vector" , [round(Weight, 2) for Weight in person.resourceWeights]
+        print "Protest Cost: " , round(person.protestCost(), 2)
+        print "Wait Cost: " , round(person.waitCost(), 2)
+        print "Pass Cost: " , round(person.passCost(), 2)
+        print "Resources: " , person.resourceVector
+        print "Weight Vector" , [round(Weight, 2) for Weight in person.resourceWeights]
         #print "New Resources: " , person.newResourceVector
 
 

@@ -102,7 +102,6 @@ class NPC(object):
 			elif (desire < 0) and (expectation < 1):
 				self.emotion[3] += desire * expectation    #The Fear Emotion
 
-			print "Joy: " , self.emotion[0], "Sorrow: " , self.emotion[2]
 			if ((fabs(self.emotion[0])-fabs(self.emotion[2])) > 0):
 				self.emotion[0] = self.emotion[0]-fabs(self.emotion[2])
 				self.emotion[2] = 0
