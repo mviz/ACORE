@@ -6,12 +6,12 @@
 {% block title %}ACORE{% endblock title %}
 
 {% block page_content %} 
-    <div style='height:1em; width:100%; margin-left:15px; margin-right:15px;  margin-bottom: 1cm; '>
+    <div style='height:0.5em; width:100%; margin-left:15px; margin-right:15px;  margin-bottom: 1cm; '>
 
     </div>
 
     <div class='col-sm-12' id='npcDiv' style='position:relative;'>
-        <h3 style='text-align:center'> Scenario A </h3>
+        <h3 style='text-align:center; margin-top: 0;'> Scenario A </h3>
         <div >
             <button id="startButton" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Start </button>
         </div>
@@ -85,13 +85,13 @@
 
         function getProtestText(){
             var protests = ['Stop!', 'Where are you going?', 'You shall not pass!'];
-            counter = getRandomInt(0,protests.length -1);
+            counter = getRandomInt(0,protests.length);
             return protests[counter];
         }
 
         function getPassedText() {
             var passedText = ['Not fair!', 'I will get back at you'];
-            counter = getRandomInt(0,passedText.length -1);
+            counter = getRandomInt(0,passedText.length);
             return passedText[counter];
         }
 
@@ -119,8 +119,6 @@
 
             var x = 2;
             var y = 2;
-            //var deltaX = hopeEmo - fearEmo;
-            //var deltaY = joyEmo - sorrowEmo;
             if ((joyEmo + hopeEmo) > (sorrowEmo + fearEmo)) {
                 if (joyEmo > hopeEmo){
                 if (joyEmo > 0) {
@@ -167,8 +165,6 @@
             }
 
 
-          
-           // console.log("deltaX:" + deltaX + "deltaY" + deltaY);
             console.log("x: " + x + " y: " + y + "emTab[x,y]: " + emotionalTable[x][y]);
             return emotionalTable[x][y];
         }
@@ -284,15 +280,15 @@
 
 
 
-                    $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
-                    $("<dt id='joytext_" + nameList[i] + "'> Joy - " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='hopetext_" + nameList[i] + "'> Hope - " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow - " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='feartext_" + nameList[i] + "'> Fear - " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
+                    // $("<dt id='joytext_" + nameList[i] + "'> Joy - " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='hopetext_" + nameList[i] + "'> Hope - " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow - " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='feartext_" + nameList[i] + "'> Fear - " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
 
                 }
                 $('#chat_' + nameList[0]).text('Can I get a copy of Destiny?')
@@ -368,14 +364,14 @@
                             }
                         }
                         console.log(emotionList[i][0])
-                        $('#joytext_' + nameList[i]).text('Joy - ' + getEmotionPercent(emotionList[i][0]) + '%');
-                        $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
-                        $('#hopetext_' + nameList[i]).text('Hope - ' + getEmotionPercent(emotionList[i][1]) + '%');
-                        $('#hopebar_'+nameList[i]).width(getEmotionPercent(emotionList[i][1]) +'%');
-                        $('#sorrowtext_' + nameList[i]).text('Sorrow - ' + getEmotionPercent(emotionList[i][2]) + '%');
-                        $('#sorrowbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][2]) + '%');
-                        $('#feartext_' + nameList[i]).text('Fear - ' + getEmotionPercent(emotionList[i][3]) + '%');
-                        $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
+                        // $('#joytext_' + nameList[i]).text('Joy - ' + getEmotionPercent(emotionList[i][0]) + '%');
+                        // $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
+                        // $('#hopetext_' + nameList[i]).text('Hope - ' + getEmotionPercent(emotionList[i][1]) + '%');
+                        // $('#hopebar_'+nameList[i]).width(getEmotionPercent(emotionList[i][1]) +'%');
+                        // $('#sorrowtext_' + nameList[i]).text('Sorrow - ' + getEmotionPercent(emotionList[i][2]) + '%');
+                        // $('#sorrowbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][2]) + '%');
+                        // $('#feartext_' + nameList[i]).text('Fear - ' + getEmotionPercent(emotionList[i][3]) + '%');
+                        // $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
             }
             xmlhttp.send();
