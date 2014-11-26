@@ -11,11 +11,12 @@
     </div>
 
     <div class='col-sm-12' id='npcDiv' style='position:relative;'>
+        <h3 style='text-align:center'> Scenario A </h3>
         <div >
             <button id="startButton" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Start </button>
         </div>
 
-        <div style='width:200px; height:170px; float:left; margin-right: 10px;'>
+        <div id="logoDiv" style='width:200px; height:170px; float:left; margin-right: 10px;'>
             <img src='{% static "surveys/Destiny.jpg" %}' style='width:100%; height:auto; margin-top:200px; border: 2px solid black; border-radius: 5px;'/>
         </div>
 
@@ -27,7 +28,7 @@
         </div>
 
         <div id="surveyDiv" style='display:none;'>
-            <div class='col-sm-4'>
+            <div class='col-sm-4 col-sm-offset-2'>
                 <iframe src="https://docs.google.com/forms/d/1u45bdpV5petVDmPkIQNfZkR9vCEF-m2TUsmIiAf3mGk/viewform?embedded=true" width="860" height="1000" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
             </div>
             
@@ -451,6 +452,8 @@
             }
             else {
                 //Have to load a new page
+                $('#logoDiv').css('display', 'none');
+                $('#startButton').css('display', 'none');
                 $('#surveyDiv').css('display', 'inline');
             }
         }
@@ -460,7 +463,7 @@
                 document.getElementById('startButton').disabled = true; // Prevents the user from changing the game state 
                 var runIntervalID = window.setInterval(function(){
                     updateNPCs(runIntervalID);
-                }, 2000);  //1.5 second delay
+                }, 1500);  //1.5 second delay
                 
             });
             $('#info').click(function(){
