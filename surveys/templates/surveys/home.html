@@ -28,9 +28,7 @@
 
         <div id="surveyDiv" style='display:none;'>
             <div class='col-sm-4'>
-                <h2 style='text-align:center'> Ready for the survey? </h2>
-                <div style='text-align:center'> <a href='/surveys/questions'> <button class='btn btn-primary'> Survey </button> </a></div>
-                <div class='page-header'> </div>
+                <iframe src="https://docs.google.com/forms/d/1u45bdpV5petVDmPkIQNfZkR9vCEF-m2TUsmIiAf3mGk/viewform?embedded=true" width="860" height="1000" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
             </div>
             
         </div>
@@ -54,6 +52,10 @@
 
 {% block js %}
     <script>
+        //GLOBAL VARIABLE//
+        var repeat = true; //Set true initially so that we get the repeat run
+
+
 
         // Returns a random integer between min (included) and max (excluded)
         // Using Math.round() will give you a non-uniform distribution!
@@ -294,10 +296,6 @@
                 }
                 $('#chat_' + nameList[0]).text('Can I get a copy of Destiny?')
                 $('#chat_' + nameList[0]).addClass("callout");
-                if(npcCount == 0){
-                    setUpEndGame();                  
-                }
-                
             }
             xmlhttp.send();
         }
@@ -318,7 +316,7 @@
             xmlhttp.send();              
 
             $('#newGameDiv').css('display', 'none')
-            
+            repeat = false; //Setting it to false so that the function does not repeat again
             initializeNPCs();
         }
 
@@ -444,11 +442,17 @@
 
         function setUpEndGame(runIntervalID){
             clearInterval(runIntervalID);
-            $('#newGameDiv').css('display', 'inline');
-            setTimeout(function(){
+            if (repeat == true) {
+                $('#newGameDiv').css('display', 'inline');
+                setTimeout(function(){
                 reinitializeNPCs();
                 document.getElementById('startButton').disabled = false;
             }, 5000);
+            }
+            else {
+                //Have to load a new page
+                $('#surveyDiv').css('display', 'inline');
+            }
         }
 
         $('document').ready(function(){

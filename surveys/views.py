@@ -133,7 +133,8 @@ def reinitialize_data(request):
     global line, counter, nameList
     if(len(line) == 0):
         counter = 0 #yathi
-        nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward", "Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam", "Ahmed", "Merriam"]
+        nameList = ["Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris",
+         "Lisa", "Edward", "Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam", "Ahmed", "Merriam"]
         initialize(numInLine = 6) #TODO name list will eventually run out
 
     json_response = {
