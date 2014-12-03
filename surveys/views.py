@@ -333,5 +333,12 @@ def get_npc_new_resources():
         new_list.append(temp)
     return new_list
 
+def get_npc_health():
+    global line
+    new_list = []
+    for npc in line:
+        new_list.append(npc.resourceVector[0])
+    return new_list
+
 
 
