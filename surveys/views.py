@@ -259,12 +259,14 @@ def acore_next_step(request):
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
+    npc_health = get_npc_health()
     npc_count = len(line)
 
     json_response = {
         'names':npc_names,
         'actions':npc_actions,
         'emotions':npc_emotions,
+        'health':npc_health,
         "npc_count":npc_count,
         "passing_list": passing_people,
         "gameStatus": convert_game_status(gameStatus),
@@ -337,7 +339,7 @@ def get_npc_health():
     global line
     new_list = []
     for npc in line:
-        new_list.append(npc.resourceVector[0])
+        new_list.append(npc.resourceVector[0]*100)
     return new_list
 
 

@@ -264,6 +264,7 @@
                 var nameList = npcData["names"];
                 var actionList = npcData["actions"];
                 var emotionList = npcData["emotions"];
+                var healthList = npcData["health"];
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
 
@@ -275,7 +276,7 @@
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
 
                     $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
-                    $("<progress id='health_" + nameList[i] + "' class='healthBar' value='100' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
+                    $("<progress id='health_" + nameList[i] + "' class='healthBar' value='" + healthList[i] + "' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
 
                     // $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
                     // $("<dt id='joytext_" + nameList[i] + "'> Joy - " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
@@ -328,6 +329,7 @@
                     var nameList = npcData["names"];
                     var actionList = npcData["actions"];
                     var emotionList = npcData["emotions"];
+                    var healthList = npcData["health"];
                     var gameStatus = npcData["gameStatus"];
                     var passingNPCs = npcData["passing_list"];
 
