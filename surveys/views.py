@@ -148,11 +148,13 @@ def initialize_data(request):
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
+    npc_health = get_npc_health()
     npc_count = len(line)
     json_response = {
         'names':npc_names,
         'actions':npc_actions,
         'emotions':npc_emotions,
+        'health':npc_health,
         "npc_count":npc_count,
         "gameStatus": convert_game_status(gameStatus),
     }
@@ -261,6 +263,8 @@ def acore_next_step(request):
     npc_emotions = get_npc_emotions()
     npc_health = get_npc_health()
     npc_count = len(line)
+
+    print npc_health
 
     json_response = {
         'names':npc_names,
