@@ -116,7 +116,7 @@
                 ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + getRandomInt(1,5) + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
             ]
 
-            console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
+//            console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
 
             var x = 2;
             var y = 2;
@@ -166,7 +166,7 @@
             }
 
 
-            console.log("x: " + x + " y: " + y + "emTab[x,y]: " + emotionalTable[x][y]);
+           // console.log("x: " + x + " y: " + y + "emTab[x,y]: " + emotionalTable[x][y]);
             return emotionalTable[x][y];
         }
 
@@ -344,9 +344,7 @@
                     if (gameStatus == 'final'){
                         $('#chat_' + nameList[0]).text('Can I get a copy of Destiny?');
                         $('#chat_' + nameList[0]).addClass("callout");
-                    } else {
-                            $('#chat_' + nameList[i]).text('')
-                        }
+                    }
 
                     for(var i = 0; i < npcCount; i++){
                         document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
@@ -362,7 +360,7 @@
                                 $('#npcParent' + (i+1)).addClass("passAnimate");
                             }
                         }
-                        console.log(emotionList[i][0])
+                      //  console.log(emotionList[i][0])
                         // $('#joytext_' + nameList[i]).text('Joy - ' + getEmotionPercent(emotionList[i][0]) + '%');
                         // $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
                         // $('#hopetext_' + nameList[i]).text('Hope - ' + getEmotionPercent(emotionList[i][1]) + '%');
@@ -391,7 +389,6 @@
                 var leftWidth = movingLeft.outerWidth() + marginDif;
                 var rightWidth = movingRight.outerWidth() + marginDif; //TODO these numbers are likely static, and don't need to be computed each time
 
-                console.log('leftwidth: ' + leftWidth  + " rightWidth: " + rightWidth);
                 $.when(
                     movingLeft.animate({left: -rightWidth}, 750),
                     movingRight.animate({left: leftWidth}, 750)).then(
@@ -408,8 +405,10 @@
 
                 $('#chat_' + nameList[passingIndex]).text(getPassedText());
                 $('#chat_' + nameList[passingIndex]).addClass("callout");
-                removeAnimate(nameList);
             }
+            removeAnimate(nameList);
+            console.log(nameList)
+
         }
 
         function finalUpdate(npcCount, runIntervalID){
