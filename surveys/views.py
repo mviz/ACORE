@@ -39,6 +39,7 @@ def initialize(numInLine):
         line.append(makeNPC(count))
         
 def displayLine():
+    #A DEBUG function used to check the values. 
     for person in line:
         print "\nName: " , person.name
         print "Emotion: " , person.getEmotion()
@@ -174,11 +175,12 @@ def acore_next_step(request):
         for indx, person in enumerate(line):
             person.halveEmotion()
             if indx != 0:
+                #The line below is the resources if a person does decide to pass
                 person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.4, line[indx-1].resourceVector[2]]
                 print 'Action cost: ' , str(person.actionCost())
                 if person.actionCost() > 0:
                     person.nextAction = 'Pass'
-                    person.computeEmotion(0.95)
+                    person.computeEmotion(0.95) #0.95 is the degree of certaininty. TODO: We have to find a way to compute it. 
 
         displayLine()
         gameStatus = 'protest?'
@@ -191,14 +193,14 @@ def acore_next_step(request):
             if indx < (len(line)-1):
                 person.decideProtest(beingPassed = (line[indx+1].nextAction == "Pass"))
 
-        for indx, person in enumerate(line):
+        for indx, person in enumerate(line): #So that the person stops protesting if the person after him has switched from pass -> protest
             if indx < (len(line)-1):
-                person.sanityCheck(indx, notbeingPassed = (line[indx+1].nextAction != 'Pass'))
+                person.sanityCheck(indx, notbeingPassed = (line[indx+1].nextAction != 'Pass')) 
 
         for indx, person in enumerate(line):
             if person.nextAction == 'Protest':
                 person.newResourceVector = [person.resourceVector[0], person.resourceVector[1]-0.10, line[indx+1].resourceVector[2]]
-                person.computeEmotion(0.95)
+                person.computeEmotion(0.95) #Why?!
 
 
         displayLine()
@@ -225,17 +227,14 @@ def acore_next_step(request):
                         person.newResourceVector = [1, 0.5, person.resourceVector[2]]
                     person.computeEmotion(1)
                 elif person.nextAction == 'Pass' and line[indx-1].nextAction == 'Wait':
-                    if random() < 0.95:
-                        print 'Not being protested'
-                        person.nextAction = 'Pass_Success'
-                        person.computeEmotion(1)
-                        line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx-1].resourceVector[2]-0.3]
-                        line[indx-1].computeEmotion(1)
-                        line[indx-1].resourceVector = line[indx-1].newResourceVector
-                        line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
-                    else:
-                        person.nextAction = 'Pass_Fail'
-                        person.newResourceVector = [1, 0.5, person.resourceVector[2]]
+                    print 'Not being protested'
+                    person.nextAction = 'Pass_Success'
+                    person.computeEmotion(1)
+                    line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx].resourceVector[2]]
+                    line[indx-1].computeEmotion(1)
+                    line[indx-1].resourceVector = line[indx-1].newResourceVector
+                    line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
+
                     person.computeEmotion(1)
 
         for index, person in enumerate(line):
@@ -257,6 +256,9 @@ def acore_next_step(request):
 
         displayLine()
         gameStatus = 'initial'
+
+
+### From here on is the code to collect the data is JSON and pass them to the webpage ###
 
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
