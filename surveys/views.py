@@ -199,10 +199,8 @@ def acore_next_step(request):
 
         for indx, person in enumerate(line):
             if person.nextAction == 'Protest':
-                person.newResourceVector = [person.resourceVector[0], person.resourceVector[1]-0.10, line[indx+1].resourceVector[2]]
+                person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.10, line[indx+1].resourceVector[2]]
                 person.computeEmotion(0.95) #Why?!
-
-
         displayLine()
         gameStatus = 'penultimate'
 
@@ -219,7 +217,7 @@ def acore_next_step(request):
                         line[indx-1].nextAction = 'Wait'
                         line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx].resourceVector[2]]
                         line[indx-1].computeEmotion(1)
-                        person.resourceVector = person.newResourceVector
+                        person.resourceVector = person.newResourceVector   #This is to make the new resources as the current resources
                         line[indx-1].resourceVector = line[indx-1].newResourceVector
                         line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
                     else:
@@ -233,11 +231,13 @@ def acore_next_step(request):
                     line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx].resourceVector[2]]
                     line[indx-1].computeEmotion(1)
                     line[indx-1].resourceVector = line[indx-1].newResourceVector
+                    person.resourceVector = person.newResourceVector   #This is to make the new resources as the current resources
                     line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
 
                     person.computeEmotion(1)
 
         for index, person in enumerate(line):
+            #This is to add the list of all places where the animation has to happen. To be passed to the html. 
             if(person.getAction() == 'Pass_Success'):
                 passing_people.append(index + 1) # +2 because they already made the pass, and the css is indexed from 1
         displayLine()
@@ -253,12 +253,8 @@ def acore_next_step(request):
             person.newResourceVector = [person.resourceVector[0], person.resourceVector[1], 1.0/(indx+1)]
             person.computeEmotion(1)
             person.resourceVector = person.newResourceVector
-
         displayLine()
         gameStatus = 'initial'
-
-
-### From here on is the code to collect the data is JSON and pass them to the webpage ###
 
     npc_names = get_npc_names()
     npc_actions = get_npc_actions()
