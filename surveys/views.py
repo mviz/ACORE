@@ -11,6 +11,7 @@ import json
 from emotion import *
 from npc import human
 import time
+import itertools
 from random import random, randint
 
 ###                  The Global Variables           ###
@@ -25,6 +26,11 @@ initialized = False
 gameStatus = 'initial'
 ###                 End of Global Variables          ###
 
+def reverse_enumerate(iterable):
+    """
+    Enumerate over an iterable in reverse order while retaining proper indexes
+    """
+    return itertools.izip(reversed(xrange(len(iterable))), reversed(iterable))
 
 def makeNPC(position):
     name = nameList.pop(randint(0, (len(nameList))-1))
@@ -44,11 +50,8 @@ def displayLine():
         print "\nName: " , person.name
         print "Emotion: " , person.getEmotion()
         print "Desired Action: " , person.nextAction
-        print "Protest Cost: " , round(person.protestCost(), 2)
-        print "Wait Cost: " , round(person.waitCost(), 2)
-        print "Pass Cost: " , round(person.passCost(), 2)
         print "Resources: " , person.resourceVector
-        print "Weight Vector" , [round(Weight, 2) for Weight in person.resourceWeights]
+        #print "Weight Vector" , [round(Weight, 2) for Weight in person.resourceWeights]
         #print "New Resources: " , person.newResourceVector
 
 
@@ -188,19 +191,22 @@ def acore_next_step(request):
 
     elif gameStatus == 'protest?':
         print 'Game status: ' , gameStatus
-        for indx, person in enumerate(line):
+        for indx, person in reverse_enumerate(line): #going in reverse to avoid the case of someone protesting when the next person has switched actions
             person.halveEmotion()
             if indx < (len(line)-1):
-                person.decideProtest(beingPassed = (line[indx+1].nextAction == "Pass"))
+                if line[indx+1].nextAction == "Pass":
+                    print "Someoen passing " , person.name
+                    person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.10, person.resourceVector[2]]
+                    print "\n\n\n Action Cost: " + str(person.actionCost())
+                    print "\n\n\n Wait Cost: " + str(person.waitCost())
+                    if person.actionCost() > person.waitCost():
+                        person.nextAction = 'Protest'
+                        person.computeEmotion(0.95)
+                    else:
+                        person.nextAction = "Wait"
+                        person.newResourceVector = [person.resourceVector[0], person.resourceVector[1], line[indx+1].resourceVector[2]]
+                        person.computeEmotion(0.95)
 
-        for indx, person in enumerate(line): #So that the person stops protesting if the person after him has switched from pass -> protest
-            if indx < (len(line)-1):
-                person.sanityCheck(indx, notbeingPassed = (line[indx+1].nextAction != 'Pass')) 
-
-        for indx, person in enumerate(line):
-            if person.nextAction == 'Protest':
-                person.newResourceVector = [person.resourceVector[0]-0.05, person.resourceVector[1]-0.10, line[indx+1].resourceVector[2]]
-                person.computeEmotion(0.95) #Why?!
         displayLine()
         gameStatus = 'penultimate'
 
@@ -215,26 +221,25 @@ def acore_next_step(request):
                         person.nextAction = 'Pass_Success'
                         person.computeEmotion(1)
                         line[indx-1].nextAction = 'Wait'
-                        line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx].resourceVector[2]]
+                        line[indx-1].newResourceVector[2] = line[indx].resourceVector[2] #The person goes back
                         line[indx-1].computeEmotion(1)
                         person.resourceVector = person.newResourceVector   #This is to make the new resources as the current resources
                         line[indx-1].resourceVector = line[indx-1].newResourceVector
                         line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
                     else:
                         person.nextAction = 'Pass_Fail'
-                        person.newResourceVector = [1, 0.5, person.resourceVector[2]]
+                        person.resourceVector = [person.newResourceVector[0], person.newResourceVector[1], person.resourceVector[2]]
                     person.computeEmotion(1)
                 elif person.nextAction == 'Pass' and line[indx-1].nextAction == 'Wait':
                     print 'Not being protested'
                     person.nextAction = 'Pass_Success'
                     person.computeEmotion(1)
-                    line[indx-1].newResourceVector = [line[indx-1].resourceVector[0], line[indx-1].resourceVector[1], line[indx].resourceVector[2]]
                     line[indx-1].computeEmotion(1)
                     line[indx-1].resourceVector = line[indx-1].newResourceVector
                     person.resourceVector = person.newResourceVector   #This is to make the new resources as the current resources
                     line[indx], line[indx-1] = line[indx-1], line[indx] #Code to swap the 2 positions
 
-                    person.computeEmotion(1)
+#                    person.computeEmotion(1)
 
         for index, person in enumerate(line):
             #This is to add the list of all places where the animation has to happen. To be passed to the html. 
