@@ -96,7 +96,7 @@
             return passedText[counter];
         }
 
-        function getDynamicFace(emotionList){
+        function getDynamicFace(emotionList, charname){
             var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
             var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
             var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
@@ -107,13 +107,25 @@
             var sorrowRandomInt = getRandomInt(0,2)
             var hopeRandomInt = getRandomInt(0,2)
             var fearRandomInt = getRandomInt(0,2)
+
+            var imagecounter = 4;
+
+            if (charname == 'Alex' || charname == 'Smith' || charname == 'Johnson') {
+                imagecounter = 1;
+            }
+            else if (charname == 'Mary' || charname == 'Lisa' || charname == 'Laura' || charname == 'Sarah' || charname == 'Emilie'){
+                imagecounter = 2;
+            }   
+            else if (charname == 'William' || charname == "David" || charname == 'Edward'){
+                imagecounter = 3;
+            }
             
             var emotionalTable = [
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress2.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/fear' + getRandomInt(1,4) + '.jpg" %}', '{% static "surveys/fear' + getRandomInt(1,4) + '.jpg" %}', '{% static "surveys/normal1.jpg" %}', '{% static "surveys/hope2.jpg" %}', '{% static "surveys/hope3.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + getRandomInt(1,5) + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + getRandomInt(1,5) + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/fear' + imagecounter + '.jpg" %}', '{% static "surveys/fear' + imagecounter + '.jpg" %}', '{% static "surveys/normal' + imagecounter + '.jpg" %}', '{% static "surveys/hope' + imagecounter + '.jpg" %}', '{% static "surveys/hope' + imagecounter + '.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
             ]
 
 //            console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
@@ -273,7 +285,7 @@
                     $("<div id='chat_" + nameList[i] + "' class='calloutFrame top'> </div>").appendTo("#npcParent" + (i+1));
 
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
-                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage goodrepu' />").appendTo("#npcParent" + (i+1));
+                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i], nameList[i]) + "' class='npcImage goodrepu' />").appendTo("#npcParent" + (i+1));
 
                     $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
                     $("<progress id='health_" + nameList[i] + "' class='healthBar' value='" + healthList[i] + "' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
@@ -330,6 +342,7 @@
                     var actionList = npcData["actions"];
                     var emotionList = npcData["emotions"];
                     var healthList = npcData["health"];
+                    var repuList = npcData["repu"];
                     var gameStatus = npcData["gameStatus"];
                     var passingNPCs = npcData["passing_list"];
 
@@ -346,8 +359,21 @@
                         $('#chat_' + nameList[0]).addClass("callout");
                     }
 
+
+
                     for(var i = 0; i < npcCount; i++){
-                        document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
+                        document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i], nameList[i]);
+                        //Code for Reputation changes
+                        if (repuList[i] < 70) {
+                            $('#npcFace' + nameList[i]).removeClass("goodrepu");
+                            $('#npcFace' + nameList[i]).removeClass("sosorepu");
+                            $('#npcFace' + nameList[i]).addClass("badrepu");
+                        } else if (repuList[i] < 100) {
+                            $('#npcFace' + nameList[i]).removeClass("goodrepu");
+                            $('#npcFace' + nameList[i]).addClass("sosorepu");
+                        }
+                        //End code for Reputation changes
+                        
                         if (gameStatus == 'protest?'){
                             if(actionList[i] == 'Protest'){
                                 $('#chat_' + nameList[i]).text(getProtestText());
@@ -360,6 +386,8 @@
                                 $('#npcParent' + (i+1)).addClass("passAnimate");
                             }
                         }
+
+
                       //  console.log(emotionList[i][0])
                         // $('#joytext_' + nameList[i]).text('Joy - ' + getEmotionPercent(emotionList[i][0]) + '%');
                         // $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');

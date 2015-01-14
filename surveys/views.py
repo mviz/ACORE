@@ -17,11 +17,11 @@ from random import random, randint
 ###                  The Global Variables           ###
 line = []
 stateOfNPCCounter = 0
-#nameList = ["Alex", "Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
-#"Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam",
-#"Ahmed", "Merriam"]
-nameList = ["Alex", "Smith", "Jonathan", "William", "David",  "Chris", "Edward",
-"Sergio", "Matthew", "Kevin", "Liam", "Ahmed"]
+nameList = ["Alex", "Smith", "Johnson", "William", "Mary", "David", "Jennifer", "Chris", "Lisa", "Edward",
+"Laura", "Sergio", "Sarah", "Emilie", "Matthew", "Kevin", "Liam",
+"Ahmed"]
+#nameList = ["Alex", "Smith", "Jonathan", "William", "David",  "Chris", "Edward",
+#"Sergio", "Matthew", "Kevin", "Liam", "Ahmed"]
 initialized = False
 gameStatus = 'initial'
 ###                 End of Global Variables          ###
@@ -153,12 +153,14 @@ def initialize_data(request):
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
     npc_health = get_npc_health()
+    npc_repu = get_npc_repu()
     npc_count = len(line)
     json_response = {
         'names':npc_names,
         'actions':npc_actions,
         'emotions':npc_emotions,
         'health':npc_health,
+        'repu':npc_repu,
         "npc_count":npc_count,
         "gameStatus": convert_game_status(gameStatus),
     }
@@ -265,6 +267,7 @@ def acore_next_step(request):
     npc_actions = get_npc_actions()
     npc_emotions = get_npc_emotions()
     npc_health = get_npc_health()
+    npc_repu = get_npc_repu()
     npc_count = len(line)
 
     print npc_health
@@ -274,6 +277,7 @@ def acore_next_step(request):
         'actions':npc_actions,
         'emotions':npc_emotions,
         'health':npc_health,
+        'repu':npc_repu,
         "npc_count":npc_count,
         "passing_list": passing_people,
         "gameStatus": convert_game_status(gameStatus),
@@ -349,5 +353,11 @@ def get_npc_health():
         new_list.append(npc.resourceVector[0]*100)
     return new_list
 
+def get_npc_repu():
+    global line
+    new_list = []
+    for npc in line:
+        new_list.append(npc.resourceVector[1]*100)
+    return new_list
 
 
