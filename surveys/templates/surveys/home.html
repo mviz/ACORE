@@ -273,7 +273,7 @@
                     $("<div id='chat_" + nameList[i] + "' class='calloutFrame top'> </div>").appendTo("#npcParent" + (i+1));
 
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
-                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
+                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage goodrepu' />").appendTo("#npcParent" + (i+1));
 
                     $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
                     $("<progress id='health_" + nameList[i] + "' class='healthBar' value='" + healthList[i] + "' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
@@ -311,7 +311,7 @@
             xmlhttp.send();              
 
             $('#newGameDiv').css('display', 'none')
-            repeat = false; //Setting it to false so that the function does not repeat again
+            repeat = false; //Setting it to false so that the function does not repeat again (Added by Yathi)
             initializeNPCs();
         }
 
@@ -460,12 +460,9 @@
                 }, 2000);  //1.5 second delay
                 
             });
-            $('#info').click(function(){
+            $('#info').click(function(){ //Currently not implemented
                 infoPopup();
             });
-            $('#playAgain').click(function(){
-                reinitializeNPCs();
-            })
             initializeNPCs();
         });
     </script>

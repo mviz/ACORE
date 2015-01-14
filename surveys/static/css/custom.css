@@ -18,6 +18,21 @@ dt {
         margin-bottom: 5px;
     }
 
+    .goodrepu {
+        border: 5px solid green;
+        border-radius: 5px;
+    }
+
+    .sosorepu {
+        border: 5px solid yellow;
+        border-radius: 5px;
+    }
+
+    .badrepu {
+        border: 5px solid red;
+        border-radius: 5px;
+    }
+
     .scoreboard-color-legend{         
         border-radius:50%; 
         border-style:solid; 

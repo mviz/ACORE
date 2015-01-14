@@ -256,7 +256,7 @@ def acore_next_step(request):
             person.halveEmotion()
             person.nextAction = 'Wait'
             person.newResourceVector = [person.resourceVector[0], person.resourceVector[1], 1.0/(indx+1)]
-            person.computeEmotion(1)
+            person.computeEmotion(1) #All happy coz their position is going up
             person.resourceVector = person.newResourceVector
         displayLine()
         gameStatus = 'initial'
