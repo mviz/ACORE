@@ -65,11 +65,6 @@ class NPC(object):
 			(self.newResourceVector[1] - self.resourceVector[1])*self.resourceWeights[1] +
 			(self.newResourceVector[2]- self.resourceVector[2])*self.resourceWeights[2])
 
-	def decideProtest(self, beingPassed):
-		if beingPassed:
-			if self.actionCost() > self.waitCost():
-				self.nextAction = "Protest"
-
 	def computeEmotion(self, expectation):
 		for indx, resource in enumerate(self.resourceVector):
 			desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
