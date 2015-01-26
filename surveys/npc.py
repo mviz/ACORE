@@ -12,6 +12,7 @@ June 23rd: Changed the resource sturcture to the vector model.
 """
 
 from random import random
+from math import fabs
 
 
 class NPC(object):
@@ -55,42 +56,16 @@ class NPC(object):
 	def getEmotion(self):
 		return [':'.join(emo) for emo in zip(self.emoName, [str(round(emoval,2)) for emoval in self.emotion])]
 
-	def passCost(self):
-		return ((1-self.resourceVector[0])*self.resourceWeights[0] +
-			(0.5 - self.resourceVector[1])*self.resourceWeights[1] +
-			(0.3)*self.resourceWeights[2])
-
 	def waitCost(self):
 		return (-0.3)*self.resourceWeights[2]
 
-	def protestCost(self):
-		return ((1-self.resourceVector[0])*self.resourceWeights[0] +
-			(0.85 - self.resourceVector[1])*self.resourceWeights[1])
-
 	def actionCost(self):
+		#This is the function which should be primarily used. 
 		return ((self.newResourceVector[0]-self.resourceVector[0])*self.resourceWeights[0] +
 			(self.newResourceVector[1] - self.resourceVector[1])*self.resourceWeights[1] +
 			(self.newResourceVector[2]- self.resourceVector[2])*self.resourceWeights[2])
 
-	def decidePass(self, position):
-		if self.passCost() > 0:
-			if position != 0:
-				self.nextAction = "Pass"
-
-	def decideProtest(self, beingPassed):
-		if beingPassed:
-			if self.protestCost() > self.waitCost():
-				self.nextAction = "Protest"
-
-	def sanityCheck(self, indx, notbeingPassed):
-		if self.nextAction == "Protest" and notbeingPassed:
-			if self.passCost() > 0:
-				self.nextAction = 'Pass'
-			else:
-				self.nextAction = 'Wait'
-
 	def computeEmotion(self, expectation):
-		self.emotion = [emo/2 for emo in  self.emotion]
 		for indx, resource in enumerate(self.resourceVector):
 			desire = (self.newResourceVector[indx] - resource)*self.resourceWeights[indx]
 			if (desire > 0) and (expectation == 1):
@@ -101,6 +76,23 @@ class NPC(object):
 				self.emotion[2] += desire           #The Sorrow Emotion
 			elif (desire < 0) and (expectation < 1):
 				self.emotion[3] += desire * expectation    #The Fear Emotion
+
+			if ((fabs(self.emotion[0])-fabs(self.emotion[2])) > 0):
+				self.emotion[0] = self.emotion[0]-fabs(self.emotion[2])
+				self.emotion[2] = 0
+			else:
+				self.emotion[2] = fabs(self.emotion[2])-self.emotion[0]
+				self.emotion[0] = 0
+
+			if ((self.emotion[1]-fabs(self.emotion[3])) > 0):
+				self.emotion[1] = self.emotion[1]-fabs(self.emotion[3])
+				self.emotion[3] = 0
+			else:
+				self.emotion[3] = fabs(self.emotion[3])-self.emotion[1]
+				self.emotion[1] = 0
+
+	def halveEmotion(self):
+		self.emotion = [emo/2 for emo in  self.emotion]
 
 
 class human(NPC):

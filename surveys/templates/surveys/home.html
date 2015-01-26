@@ -6,50 +6,34 @@
 {% block title %}ACORE{% endblock title %}
 
 {% block page_content %} 
-    <div style='height:4em; width:100%; margin-left:15px; margin-right:15px;  margin-bottom: 1cm; background-color:#eee;'>
-        <span id='status1' class='game-status'>
-            <h4 class='status-text'> Passive Phase </h4> 
-        </span>
-        <span id='status2' class='game-status'>
-            <h4 class='status-text'> Planning Phase </h4> 
-        </span>
-        <span id='status3' class='game-status'>
-            <h4 class='status-text'> Protesting Phase </h4> 
-        </span>
-        <span id='status4' class='game-status'>
-            <h4 class='status-text'> Passing Phase </h4> 
-        </span>
+    <div style='height:0.5em; width:100%; margin-left:15px; margin-right:15px;  margin-bottom: 1cm; '>
+
     </div>
 
     <div class='col-sm-12' id='npcDiv' style='position:relative;'>
+        <h3 style='text-align:center; margin-top: 0;'> Scenario A </h3>
         <div >
-            <button id="nextStep" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Next Step </button>
-            <button id="info" class="btn btn-warning " type="button" > i </button>
+            <button id="startButton" class="btn btn-success" style='margin-left:0px; width:100px;' type="button" > Start </button>
         </div>
 
-        <div style='width:100px; height:100px; float:left'>
-            <img src='{% static "surveys/OculusRift.jpg" %}' style='width:100%; height:auto; margin-top:100px'/>
+        <div id="logoDiv" style='width:200px; height:170px; float:left; margin-right: 10px;'>
+            <img src='{% static "surveys/Destiny.jpg" %}' style='width:100%; height:auto; margin-top:200px; border: 2px solid black; border-radius: 5px;'/>
         </div>
 
         <div id='newGameDiv' style='display:none;'>
-            <div class='col-sm-4'> 
-                <h2 style='text-align:center'> Game Over! </h2>
-                <div style='text-align:center'> <button class='btn btn-danger' id='playAgain' > Play Again </button> </div>
-                <div class='page-header'> </div>
-            </div>
-            <div class='col-sm-4'>
-                <h2 style='text-align:center'> Ready for the survey? </h2>
-                <div style='text-align:center'> <a href='/surveys/questions'> <button class='btn btn-primary'> Survey </button> </a></div>
+            <div class='col-sm-8'> 
+                <h2 style='text-align:center'> Your next run of the same scenario will start in 5 seconds! </h2>
                 <div class='page-header'> </div>
             </div>
         </div>
 
-        
-
+        <div id="surveyDiv" style='display:none;'>
+            <div class='col-sm-4 col-sm-offset-2'>
+                <iframe src="https://docs.google.com/forms/d/1u45bdpV5petVDmPkIQNfZkR9vCEF-m2TUsmIiAf3mGk/viewform?embedded=true" width="860" height="1000" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+            </div>
+            
+        </div>
     </div>
-
-
-    
 {% endblock page_content %}
 
 
@@ -61,104 +45,8 @@
     * { 
         font-family: Helvetica, Arial;
     }
-
-    dt { 
-        float: left; 
-        padding: 4px; 
-    }
-
-    .npcHolder{
-        /*TODO change these dimensions to proportions, such that different screen sizes and images can be used*/
-        float:left;
-        width:150px;
-        height:360px;
-        margin-right:20px;
-        position:relative;
-    }
-
-    .npcImage{
-        width:100%;
-        height:auto;
-    }
-
-    .scoreboard-color-legend{         
-        border-radius:50%; 
-        border-style:solid; 
-        height:1em; 
-        width:1em; 
-        float:left;
-    }
-
-    .graph_bar {
-        margin-bottom: 10px;
-        color: #fff;
-        text-align: center;
-        border-radius: 2px;
-        height: 30px;
-    }
-
-    .neutral_bar{
-        background: -webkit-gradient(linear, left top, left bottom, from(#afafd3), to(#d4d4d4));
-    }
-
-    .hope_bar {
-        background: -webkit-gradient(linear, left top, left bottom, from(#2b669a), to(#4098e6));
-    }
-    .joy_bar {
-        background: -webkit-gradient(linear, left top, left bottom, from(#3b8f3b), to(#5edf5e));
-    }
-    .fear_bar {
-        background: -webkit-gradient(linear, left top, left bottom, from(#965d0c), to(#e38d13));
-    }
-    .sorrow_bar { 
-        background: -webkit-gradient(linear, left top, left bottom, from(#b92c28), to(#6e1b18));
-    }
-
-    .pass-fail-alert {
-        background-color:#ccc;
-        border-radius:4px;
-        border-width:1px;
-        border-style:solid;
-        border-color:#aaa;
-        display:block;
-        font-family: Helvetica, Arial;
-        margin:0;
-        padding:15px;
-        text-align:center;
-    }
-
-    .game-status{
-        width:25%;
-        height:100%;
-        float:left;
-    }
-
-    .active-status{
-        background-color:#888;
-        border-color:#888;
-        border-style:solid;
-        border-radius:5px;
-    }
-
-    .nonactive-status{
-        background-color:#eee;
-    }
-
-    .status-text{
-        color:#ffffff; 
-        text-align:center;
-        padding-left:0px; 
-        padding-right:0px;
-        padding-top:0.25cm;
-        font-family:Helvetica, Arial;
-    }
-
-    .info-button{
-        margin-left:1em; 
-    }
-
-    .one-line{
-        white-space:nowrap;
+    .healthBar {
+        color: green;
     }
 
 </style>
@@ -166,94 +54,131 @@
 
 {% block js %}
     <script>
+        //GLOBAL VARIABLE//
+        var repeat = true; //Set true initially so that we get the repeat run
+
+
+
+        // Returns a random integer between min (included) and max (excluded)
+        // Using Math.round() will give you a non-uniform distribution!
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
 
         function getEmotionPercent(emotionString){ 
             for(var i = 0; i < emotionString.length ; i ++){
                 if(emotionString.charAt(i) == '.'){
                     if((emotionString.charAt(i+1) == '0') && (emotionString.substring(i+1).length > 1)){ //this sends 4% instead of 04%
-                        return emotionString.substring(i+2);
+                        return boost(emotionString.substring(i+2));
                     }
                     if((emotionString.charAt(i+1) != '0') && (emotionString.substring(i+1).length == 1)){ //for 0.4, it returns 40% instead of 4%
-                        return emotionString.charAt(i+1) + '0'
+                        return boost(emotionString.charAt(i+1) + '0');
                     }
-                    return emotionString.substring(i+1);
+                    return boost(emotionString.substring(i+1));
                 }
             }
         }
 
-        function getHighestEmotion(emotionList){
-            /* Takes input as a list of strings indicating the levels of emotions of the NPCs. 
-            It finds the emotion with the highest aboslute value and returns
-            the corresponding image to represent the NPCs dominent emotion.
-            It will change in the future by returning the face of the specific NPC rather than
-            returning a generic face, for a female. */
-            var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
-            var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
-            var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
-            var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
-            var maxEmo = 1;
-            var emoURL = '{% static "surveys/hope1.jpg" %}' 
-            if(maxEmo < joyEmo){
-                maxEmo = joyEmo;
-                emoURL = '{% static "surveys/happy3.jpg" %}' 
-            } 
-            if(maxEmo < hopeEmo){
-                maxEmo = hopeEmo;
-                emoURL = '{% static "surveys/hope3.jpg" %}' 
-            } 
-            if(maxEmo < sorrowEmo){
-                maxEmo = sorrowEmo;
-                emoURL = '{% static "surveys/sad1.jpg" %}' 
-            }
-            if(maxEmo < fearEmo){
-                emoURL = '{%  static "surveys/fear2.jpg" %}' 
-            }
-            return emoURL;
+        function boost(emotionString){
+            boostFactor = 2;
+            return ((parseInt(emotionString)) * boostFactor).toString();
         }
 
-        function getDynamicFace(emotionList){
+        function getProtestText(){
+            var protests = ['Stop!', 'Where are you going?', 'You shall not pass!'];
+            counter = getRandomInt(0,protests.length);
+            return protests[counter];
+        }
+
+        function getPassedText() {
+            var passedText = ['Not fair!', 'I will get back at you'];
+            counter = getRandomInt(0,passedText.length);
+            return passedText[counter];
+        }
+
+        function getDynamicFace(emotionList, charname){
             var joyEmo = parseInt(getEmotionPercent(emotionList[0]));
             var hopeEmo = parseInt(getEmotionPercent(emotionList[1]));
             var sorrowEmo = parseInt(getEmotionPercent(emotionList[2]));
             var fearEmo = parseInt(getEmotionPercent(emotionList[3]));
+
+            var normalRandomInt = getRandomInt(0,2)
+            var joyRandomInt = getRandomInt(0,2)
+            var sorrowRandomInt = getRandomInt(0,2)
+            var hopeRandomInt = getRandomInt(0,2)
+            var fearRandomInt = getRandomInt(0,2)
+
+            var imagecounter = 4;
+
+            if (charname == 'Alex' || charname == 'Smith' || charname == 'Johnson') {
+                imagecounter = 1;
+            }
+            else if (charname == 'Mary' || charname == 'Lisa' || charname == 'Laura' || charname == 'Sarah' || charname == 'Emilie' || charname == 'Jennifer'){
+                imagecounter = 2;
+            }   
+            else if (charname == 'William' || charname == "David" || charname == 'Edward'){
+                imagecounter = 3;
+            }
             
             var emotionalTable = [
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress2.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/sad1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/fear2.jpg" %}', '{% static "surveys/fear1.jpg" %}', '{% static "surveys/hope1.jpg" %}', '{% static "surveys/hope3.jpg" %}', '{% static "surveys/hope2.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy1.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
-                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy3.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/distress' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/fear' + imagecounter + '.jpg" %}', '{% static "surveys/fear' + imagecounter + '.jpg" %}', '{% static "surveys/normal' + imagecounter + '.jpg" %}', '{% static "surveys/hope' + imagecounter + '.jpg" %}', '{% static "surveys/hope' + imagecounter + '.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}'],
+                ['{% static "surveys/TEMP.jpg" %}', '{% static "surveys/TEMP.jpg" %}', '{% static "surveys/happy' + imagecounter + '.jpg" %}', '{% static "surveys/TEMP.jpg" %}'], ['{% static "surveys/TEMP.jpg" %}']
             ]
 
-            var x = 0;
-            var y = 0;
-            var deltaX = hopeEmo - fearEmo;
-            var deltaY = joyEmo - sorrowEmo;
+//            console.log("joy: " + joyEmo + "hopeEmo: " + hopeEmo + "sorrow: " + sorrowEmo + "fear: " + fearEmo);
 
-            if(deltaX > 30){
-                x = 4;
-            }else if (deltaX > 0){
-                x = 3;
-            } else if (deltaX == 0){
-                x = 2;
-            }else if (deltaX > -30){
-                x = 1
-            }else{
-                x = 0;
+            var x = 2;
+            var y = 2;
+            if ((joyEmo + hopeEmo) > (sorrowEmo + fearEmo)) {
+                if (joyEmo > hopeEmo){
+                if (joyEmo > 0) {
+                    x = 3 
+                    y = 2
+                }
+                else if (joyEmo > 20) {
+                    x = 4
+                    y = 2
+                }
+            }
+            else {
+                if (hopeEmo > 0) {
+                    x = 2
+                    y = 3
+                }
+                else if (hope > 20) {
+                    x = 2
+                    y = 4
+                }
+            }
+            }
+            else {
+                if (sorrowEmo > fearEmo) {
+                    if (sorrowEmo > 0) {
+                        x = 1
+                        y = 2
+                    }
+                    else if (sorrowEmo > 20) {
+                        x = 0
+                        y = 2
+                    }
+                }
+                else {
+                    if (fearEmo > 0) {
+                        x = 2
+                        y = 1
+                    }
+                    else if (fearEmo > 20) {
+                        x = 2 
+                        y = 0
+                    }
+                }
             }
 
-            if(deltaY > 30){
-                y = 4;
-            }else if (deltaY > 0){
-                y = 3;
-            } else if (deltaY == 0){
-                y = 2;
-            }else if (deltaY > -30){
-                y = 1
-            }else{
-                y = 0;
-            }
 
+           // console.log("x: " + x + " y: " + y + "emTab[x,y]: " + emotionalTable[x][y]);
             return emotionalTable[x][y];
         }
 
@@ -294,26 +219,9 @@
             } 
         }
 
-        function highlightGameStatus(gameStatus){
-            if(gameStatus == 'initial'){
-                $('#status1').attr('class', 'game-status nonactive-status');
-                $('#status2').attr('class', 'game-status active-status');
-            }else if (gameStatus == 'protest?'){
-                $('#status2').attr('class', 'game-status nonactive-status');
-                $('#status3').attr('class', 'game-status active-status');
-            }else if (gameStatus == 'penultimate'){
-                $('#status3').attr('class', 'game-status nonactive-status');
-                $('#status4').attr('class', 'game-status active-status');
-            }else{
-                $('#status4').attr('class', 'game-status nonactive-status');
-                $('#status1').attr('class', 'game-status active-status');
-            }
-        }
-
         function infoPopup(){
             var width = window.innerWidth;
             var height = window.innerHeight;
-            // newWindow = window.open('surveys/infoPopup', "ACORE Eplanation", "toolbar=no, scrollbars=no, resizable=yes, top=" + (height*.125) + ", left=" + (width * 0.125) + ", width=" + (width*0.75) +", height=" + (height * 0.75));
             newWindow = window.open('surveys/infoPopup', "ACORE Eplanation", "toolbar=no, scrollbars=no, resizable=yes, top=" + (height*.125) + ", left=" + (width * 0.125) + ", width=" + (width*0.75) +", height=" + (height * 0.75));
 
             if (window.focus) {
@@ -332,7 +240,6 @@
             }
             xmlhttp.send();
             document.getElementById('info').disabled = false;
-            document.getElementById('nextStep').disabled = false;
             $('#referenceDiv').css('opacity', '1');
 
             var newGameDiv = document.getElementById('newGameDiv');
@@ -341,7 +248,20 @@
 
         }
 
-        // issue here is when is initializeNPCs called, adn when are they initialized in teh views.py. make sure you dont have to 
+        function clearCallouts (nameList) {
+            for (var i = nameList.length - 1; i >= 0; i--) {
+                $('#chat_' + nameList[i]).text('');
+                $('#chat_' + nameList[i]).removeClass("callout");
+            };
+        }
+
+        function removeAnimate (nameList) {
+            for (var i = nameList.length; i >= 0; i--) {
+                $('#npcParent' + i).removeClass('passAnimate');
+            };   
+        }
+
+        // issue here is when is initializeNPCs called, and when are they initialized in the views.py. make sure you dont have to 
         // initialize them before hand. Also, maybe they can be intialized, who knows. check it out.
 
         function initializeNPCs(){
@@ -356,35 +276,43 @@
                 var nameList = npcData["names"];
                 var actionList = npcData["actions"];
                 var emotionList = npcData["emotions"];
+                var healthList = npcData["health"];
                 var gameStatus = npcData["gameStatus"];
                 var passingNPCs = npcData["passing_list"];
 
-                //$('#gameStatus').html(getGameStatusTitle(gameStatus));
-                highlightGameStatus(gameStatus);
-                document.getElementById('nextStep').disabled = false;
-
                 for(var i = 0; i < npcCount; i++){
                     $("<div id='npcParent" + (i+1) + "' class='npc-container npcHolder'> </div>").appendTo("#npcDiv");
+                    $("<div id='chat_" + nameList[i] + "' class='calloutFrame top'> </div>").appendTo("#npcParent" + (i+1));
 
-                    $("<h4 style='text-align:left'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
-                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i]) + "' class='npcImage' />").appendTo("#npcParent" + (i+1));
+                    $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
+                    $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i], nameList[i]) + "' class='npcImage goodrepu' />").appendTo("#npcParent" + (i+1));
+                     $("<img id='npcHealth"+ nameList[i] + "' src='{% static "surveys/health1.png" %}' class='healthbox  ' />").appendTo("#npcParent" + (i+1));
 
-                    $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
-                    $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
-                    $("<dt id='joytext_" + nameList[i] + "'> Joy " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='hopetext_" + nameList[i] + "'> Hope " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dt id='feartext_" + nameList[i] + "'> Fear " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
-                    $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // CODE FOR PROGRESS Bar
+
+                    // $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
+                    // $("<progress id='health_" + nameList[i] + "' class='healthBar' value='" + healthList[i] + "' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
+
+                    // CODE FOR PROGRESS BAR END
+
+
+                    // CODE FOR EMOTION BARS
+
+                    // $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
+                    // $("<dt id='joytext_" + nameList[i] + "'> Joy - " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='joybar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][0]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='hopetext_" + nameList[i] + "'> Hope - " + getEmotionPercent(emotionList[i][1]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='hopebar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][1]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='sorrowtext_" + nameList[i] + "'> Sorrow - " + getEmotionPercent(emotionList[i][2]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dt id='feartext_" + nameList[i] + "'> Fear - " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
+                    // $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+
+                    // END CODE FOR EMOTION BAR
 
                 }
-                if(npcCount == 0){
-                    setUpEndGame();                  
-                }
-                
+                $('#chat_' + nameList[0]).text('Can I get a copy of Destiny?')
+                $('#chat_' + nameList[0]).addClass("callout");
             }
             xmlhttp.send();
         }
@@ -405,16 +333,15 @@
             xmlhttp.send();              
 
             $('#newGameDiv').css('display', 'none')
-            
+            repeat = false; //Setting it to false so that the function does not repeat again (Added by Yathi)
             initializeNPCs();
         }
 
-        function updateNPCs(){
+        function updateNPCs(runIntervalID){
             /* Called everytime the nextStep button is pressed, which represents the change in the game state
             in the model. All of the npc information that needs to be changed in the UI is fetched from a JSON call.
             The next step button is disabled such that the user cannot ruin the animations by spamming the button.
             The changes made in the specific steps are in their respective functions as a matter of organization. */
-            document.getElementById('nextStep').disabled = true; 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "surveys/ajax", true);
             xmlhttp.onload=function(){
@@ -424,31 +351,63 @@
                     var nameList = npcData["names"];
                     var actionList = npcData["actions"];
                     var emotionList = npcData["emotions"];
+                    var healthList = npcData["health"];
+                    var repuList = npcData["repu"];
                     var gameStatus = npcData["gameStatus"];
                     var passingNPCs = npcData["passing_list"];
 
                     if(gameStatus == 'penultimate'){
                         penultimateUpdate(passingNPCs, nameList);
                     } else if (gameStatus == 'final'){
-                        finalUpdate(npcCount);
-                    } else {
-                        document.getElementById('nextStep').disabled = false;
+                        finalUpdate(npcCount, runIntervalID);
+                        clearCallouts(nameList);
+                        removeAnimate(nameList);
+                    } 
+
+                    if (gameStatus == 'final'){
+                        $('#chat_' + nameList[0]).text('Can I get a copy of Destiny?');
+                        $('#chat_' + nameList[0]).addClass("callout");
                     }
+
+
+
                     for(var i = 0; i < npcCount; i++){
-                        document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i]);
+                        document.getElementById('npcFace' + nameList[i]).src = getDynamicFace(emotionList[i], nameList[i]);
+                        //Code for Reputation changes
+                        if (repuList[i] < 70) {
+                            $('#npcFace' + nameList[i]).removeClass("goodrepu");
+                            $('#npcFace' + nameList[i]).removeClass("sosorepu");
+                            $('#npcFace' + nameList[i]).addClass("badrepu");
+                        } else if (repuList[i] < 100) {
+                            $('#npcFace' + nameList[i]).removeClass("goodrepu");
+                            $('#npcFace' + nameList[i]).addClass("sosorepu");
+                        }
+                        //End code for Reputation changes
+                        
+                        if (gameStatus == 'protest?'){
+                            if(actionList[i] == 'Protest'){
+                                $('#chat_' + nameList[i]).text(getProtestText());
+                                $('#chat_' + nameList[i]).addClass("callout");
+                            } else {
+                                $('#chat_' + nameList[i]).text('');
+                                $('#chat_' + nameList[i]).removeClass("callout");
+                            }
+                            if(actionList[i] == 'Pass'){
+                                $('#npcParent' + (i+1)).addClass("passAnimate");
+                            }
+                        }
 
-                        $('#joytext_' + nameList[i]).text('Joy ' + getEmotionPercent(emotionList[i][0]) + '%');
-                        $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
-                        $('#hopetext_' + nameList[i]).text('Hope ' + getEmotionPercent(emotionList[i][1]) + '%');
-                        $('#hopebar_'+nameList[i]).width(getEmotionPercent(emotionList[i][1]) +'%');
-                        $('#sorrowtext_' + nameList[i]).text('Sorrow ' + getEmotionPercent(emotionList[i][2]) + '%');
-                        $('#sorrowbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][2]) + '%');
-                        $('#feartext_' + nameList[i]).text('Fear ' + getEmotionPercent(emotionList[i][3]) + '%');
-                        $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
+
+                      //  console.log(emotionList[i][0])
+                        // $('#joytext_' + nameList[i]).text('Joy - ' + getEmotionPercent(emotionList[i][0]) + '%');
+                        // $('#joybar_'+nameList[i]).width(getEmotionPercent(emotionList[i][0]) + '%');
+                        // $('#hopetext_' + nameList[i]).text('Hope - ' + getEmotionPercent(emotionList[i][1]) + '%');
+                        // $('#hopebar_'+nameList[i]).width(getEmotionPercent(emotionList[i][1]) +'%');
+                        // $('#sorrowtext_' + nameList[i]).text('Sorrow - ' + getEmotionPercent(emotionList[i][2]) + '%');
+                        // $('#sorrowbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][2]) + '%');
+                        // $('#feartext_' + nameList[i]).text('Fear - ' + getEmotionPercent(emotionList[i][3]) + '%');
+                        // $('#fearbar_'+nameList[i]).width(getEmotionPercent(emotionList[i][3]) + '%');                        
                     }
-
-                    //$('#gameStatus').html(getGameStatusTitle(gameStatus));
-                    highlightGameStatus(gameStatus);
             }
             xmlhttp.send();
         }
@@ -459,21 +418,7 @@
             reactivated after the animation is finished to prevent overlapping animations. */
             for(var i=0; i < passingNPCs.length; i ++){
                 
-                var passingIndex = passingNPCs[i]
-                // var movingUp = $('#npcParent'+ (passingIndex + 1));
-                // var movingDown = $('#npcParent' + passingIndex);
-                // var marginDif = parseInt(movingUp.css('marginTop')) + parseInt(movingDown.css('marginBottom'));
-                // var upHeight = movingUp.outerHeight() + marginDif;
-                // var downHeight = movingDown.outerHeight() + marginDif;
-                // $.when(
-                //     movingUp.animate({top: -downHeight}, 750),
-                //     movingDown.animate({top: upHeight},750)).then( 
-                // function(){
-                //     document.getElementById('nextStep').disabled = false;
-                //     movingUp.insertBefore(movingDown);
-                //     movingUp.css('top', '0px');
-                //     movingDown.css('top', '0px');
-                // });
+                var passingIndex = passingNPCs[i];
 
                 var movingLeft = $('#npcParent' + (passingIndex + 1));
                 var movingRight = $('#npcParent' + passingIndex);
@@ -482,12 +427,10 @@
                 var leftWidth = movingLeft.outerWidth() + marginDif;
                 var rightWidth = movingRight.outerWidth() + marginDif; //TODO these numbers are likely static, and don't need to be computed each time
 
-                console.log('leftwidth: ' + leftWidth  + " rightWidth: " + rightWidth);
                 $.when(
                     movingLeft.animate({left: -rightWidth}, 750),
                     movingRight.animate({left: leftWidth}, 750)).then(
                 function(){
-                    document.getElementById('nextStep').disabled = false;
                     movingLeft.insertBefore(movingRight);
                     movingLeft.css('left', 0);
                     movingRight.css('left', 0);
@@ -498,15 +441,17 @@
                 $('#npcParent'+ passingIndex).attr('id', 'npcParent'+ (passingIndex + 1));                                
                 $('#ptemp').attr('id', 'npcParent' + passingIndex);
 
+                $('#chat_' + nameList[passingIndex]).text(getPassedText());
+                $('#chat_' + nameList[passingIndex]).addClass("callout");
             }
-            if(passingNPCs.length == 0){
-                document.getElementById('nextStep').disabled = false;
-            }
+            removeAnimate(nameList);
+            console.log(nameList)
+
         }
 
-        function finalUpdate(npcCount){
-            /* When it's time for the NPC in first place to receive their item, they are no longer included in teh list of
-            npcs, so they are removed froim the layout by a fade out, and all of the NPCs underneath are moved upward to 
+        function finalUpdate(npcCount, runIntervalID){
+            /* When it's time for the NPC in first place to receive their item, they are no longer included in the list of
+            npcs, so they are removed from the layout by a fade out, and all of the NPCs underneath are moved upward to 
             take the higher positions.  In the case that the line is now empty, the game over text and button will appear so that
             the user can start a new game. Currently, the new game button doesn't always work, and I have no idea what it's 
             successful execution is dependant on. */
@@ -521,37 +466,41 @@
 
                 for(var i = 2; i <=npcCount + 1; i++){
                     $('#npcParent' + i).attr('id', 'npcParent' + (i-1));
-                    document.getElementById('nextStep').disabled = false;
                 }
             });
             if(npcCount == 0){
-                setUpEndGame();
+                setUpEndGame(runIntervalID);
             }
         }
 
-        function setUpEndGame(){
-            document.getElementById('nextStep').disabled = true; // Prevents the user from changing the game state when the game is over
-
-            // $("<div style='text-align:center' id='endGameDiv'></div>").appendTo("#npcDiv");
-            // $("<h1 style='text-align:center'> Game Over! </h1>").appendTo("#endGameDiv");
-            // $("<div style='text-align:center'><button id='playAgain' class='btn btn-danger' type='button'> Play Again? </button></div> ").appendTo("#endGameDiv");
-
-            // $("<div class='page-header'></div>").appendTo("#endGameDiv");
-            // $("<h1 style='text-align:center'> Ready for the survey? </h1>").appendTo("#endGameDiv");
-            // $("<div style='text-align:center'> <a href='surveys/questions'> <button type='button' class='btn btn-primary' style='text-align:center'> Survey </button> </a> </div>").appendTo("#endGameDiv");
-            $('#newGameDiv').css('display', 'inline');
+        function setUpEndGame(runIntervalID){
+            clearInterval(runIntervalID);
+            if (repeat == true) {
+                $('#newGameDiv').css('display', 'inline');
+                setTimeout(function(){
+                reinitializeNPCs();
+                document.getElementById('startButton').disabled = false;
+            }, 5000);
+            }
+            else {
+                //Have to load a new page
+                $('#logoDiv').css('display', 'none');
+                $('#startButton').css('display', 'none');
+                $('#surveyDiv').css('display', 'inline');
+            }
         }
 
         $('document').ready(function(){
-            $('#nextStep').click(function(){
-                updateNPCs();
+            $('#startButton').click(function(){
+                document.getElementById('startButton').disabled = true; // Prevents the user from changing the game state 
+                var runIntervalID = window.setInterval(function(){
+                    updateNPCs(runIntervalID);
+                }, 2000);  //1.5 second delay
+                
             });
-            $('#info').click(function(){
+            $('#info').click(function(){ //Currently not implemented
                 infoPopup();
             });
-            $('#playAgain').click(function(){
-                reinitializeNPCs();
-            })
             initializeNPCs();
         });
     </script>
