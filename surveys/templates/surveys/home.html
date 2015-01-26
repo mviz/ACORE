@@ -113,7 +113,7 @@
             if (charname == 'Alex' || charname == 'Smith' || charname == 'Johnson') {
                 imagecounter = 1;
             }
-            else if (charname == 'Mary' || charname == 'Lisa' || charname == 'Laura' || charname == 'Sarah' || charname == 'Emilie'){
+            else if (charname == 'Mary' || charname == 'Lisa' || charname == 'Laura' || charname == 'Sarah' || charname == 'Emilie' || charname == 'Jennifer'){
                 imagecounter = 2;
             }   
             else if (charname == 'William' || charname == "David" || charname == 'Edward'){
@@ -286,9 +286,17 @@
 
                     $("<h4 style='text-align:center'><strong>" + nameList[i] +" </strong></h4>").appendTo("#npcParent" + (i+1));
                     $("<img id='npcFace"+ nameList[i] + "' src='" + getDynamicFace(emotionList[i], nameList[i]) + "' class='npcImage goodrepu' />").appendTo("#npcParent" + (i+1));
+                     $("<img id='npcHealth"+ nameList[i] + "' src='{% static "surveys/health1.png" %}' class='healthbox  ' />").appendTo("#npcParent" + (i+1));
 
-                    $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
-                    $("<progress id='health_" + nameList[i] + "' class='healthBar' value='" + healthList[i] + "' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
+                    // CODE FOR PROGRESS Bar
+
+                    // $("<div id='" + nameList[i] + "Bar'> </div>").appendTo("#npcParent" + (i+1));
+                    // $("<progress id='health_" + nameList[i] + "' class='healthBar' value='" + healthList[i] + "' max='100'></progress>").appendTo("#" + nameList[i] + "Bar");
+
+                    // CODE FOR PROGRESS BAR END
+
+
+                    // CODE FOR EMOTION BARS
 
                     // $("<dl style='width:100%' id='" + nameList[i] + "Chart' > </dl>").appendTo("#" + nameList[i] + "Bar");
                     // $("<dt id='joytext_" + nameList[i] + "'> Joy - " + getEmotionPercent(emotionList[i][0]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
@@ -299,6 +307,8 @@
                     // $("<dd><div id='sorrowbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][2]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
                     // $("<dt id='feartext_" + nameList[i] + "'> Fear - " + getEmotionPercent(emotionList[i][3]) + "%</dt>").appendTo("#" + nameList[i] + "Chart");
                     // $("<dd><div id='fearbar_" + nameList[i] + "' class='graph_bar neutral_bar' style='width:" + getEmotionPercent(emotionList[i][3]) + "%'> &nbsp </div></dd>").appendTo("#" + nameList[i] + "Chart");
+
+                    // END CODE FOR EMOTION BAR
 
                 }
                 $('#chat_' + nameList[0]).text('Can I get a copy of Destiny?')

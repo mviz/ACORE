@@ -41,6 +41,11 @@ dt {
         float:left;
     }
 
+    .healthbox {
+        width:100%;
+        height:auto;
+    }
+
     .graph_bar {
         margin-bottom: 5px;
         background-color: green;
